@@ -1,12 +1,6 @@
 #!/bin/bash
 
-sudo rm -r Signal-Server
-
-git clone https://github.com/signalapp/Signal-Server.git && cd Signal-Server && git checkout e6917d8
-
 mvn clean install -DskipTests -Pexclude-spam-filter
-
-cd ~/Desktop
 
 sudo docker-compose up -d
 

@@ -9,7 +9,7 @@ Quick Manual Instructions
 
 1. `update` and `upgrade`
 
-2. Install the latest versions of Java and Maven
+2. Install the latest versions of Java, Maven, Docker, and Docker-Compose
 
 3. Clone this repo
 
@@ -21,7 +21,7 @@ Quick Manual Instructions
 
 6. Grab certificates with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar certificate`
 
-7. Run all the other dependancies ----> UNFINISHED
+7. Run all the other dependancies in Docker containers ----> UNFINISHED
 
 8. Run server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
 
@@ -36,7 +36,7 @@ Idiot-Proof Manual Instructions
 
     2.2. If Java isn’t installed, you will be prompted with different versions to install. `sudo apt install openjdk-VERSION-jre-headless` the latest openjdk version listed there
 
-3. Manually install the latest version of Maven - apt installs an older version
+3. Manually install the latest version of Maven
 
     3.1. [Download the latest `maven-apache-VERSION-bin.zip`](https://maven.apache.org/download.cgi?)
 
@@ -48,23 +48,45 @@ Idiot-Proof Manual Instructions
 
     3.5. Apply the changes with `. ~/.bashrc`, then check Maven with `mvn --version`
 
-4. Clone this repo with `git clone https://github.com/JJTofflemire/Signal-Server.git`
+4. Install Docker and Docker-Compose (following [this](https://www.howtogeek.com/devops/how-to-install-docker-and-docker-compose-on-linux/) guide)
+
+    Docker: 
+    
+    4.1. `sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release`
+
+    4.2. `curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg`
+
+    4.3. `echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null`
+
+    4.4. `sudo apt install docker-ce docker-ce-cli containerd.io`
+
+    4.5. If you want to test the Docker installation, run `sudo docker run hello-world:latest`
+
+    Docker-Compose:
+    
+    4.6. `sudo curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`, or replace `2.18.1` with the [latest stable release](https://github.com/docker/compose/releases)
+
+    4.7. `sudo chmod +x /usr/local/bin/docker-compose`
+
+    4.8. If you want to test the docker-compose isntallation, run `sudo docker-compose --version`
+
+5. Clone this repo with `git clone https://github.com/JJTofflemire/Signal-Server.git`
 
     4.1. If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
 
-5. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config` or in a separate folder if you are using the install script
+6. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config` or in a separate folder if you are using the install script
 
     5.1. ----> UNFINISHED, add all the dependancies needed to run and all the optional ones
 
     5.2. Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
 
-6. Compile with `mvn clean install -DskipTests -Pexclude-spam-filter`
+7. Compile with `mvn clean install -DskipTests -Pexclude-spam-filter`
 
-7. Generate the required certificates with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar certificate`
+8. Generate the required certificates with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar certificate`
 
-8. Run all dependancies wrapped in Docker containers ----> UNFINISHED
+9.  Run all dependancies wrapped in Docker containers ----> UNFINISHED
 
-9. Start the server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
+10. Start the server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
 
 To-Do
 -----------------
