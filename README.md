@@ -30,9 +30,9 @@ Idiot-Proof Manual Instructions
 
 1. Make sure everything is up-to-date with `sudo apt update` and `sudo apt upgrade`
 
-2. Install the latest version of Java \
+2. Install the latest version of Java
 
-    2.1. Enter `java --version` into the terminal \
+    2.1. Enter `java --version` into the terminal
 
     2.2. If Java isn’t installed, you will be prompted with different versions to install. `sudo apt install openjdk-VERSION-jre-headless` the latest openjdk version listed there
 
@@ -40,21 +40,21 @@ Idiot-Proof Manual Instructions
 
     3.1. [Download the latest `maven-apache-VERSION-bin.zip`](https://maven.apache.org/download.cgi?)
 
-    3.2. Unzip the file and place it anywhere that won't get deleted (I put it in Home) \
+    3.2. Unzip the file and place it anywhere that won't get deleted (I put it in Home)
 
-    3.3. Add the path to the `bin` folder inside `maven-apache-VERSION-bin` to `.bashrc` \
+    3.3. Add the path to the `bin` folder inside `maven-apache-VERSION-bin` to `.bashrc`
 
-    3.4. Open `.bashrc` with `sudo nano ~/.bashrc` and add `export PATH=“/path/to/apache-maven-VERSION/bin:$PATH”` then save and exit \
+    3.4. Open `.bashrc` with `sudo nano ~/.bashrc` and add `export PATH=“/path/to/apache-maven-VERSION/bin:$PATH”` then save and exit
 
     3.5. Apply the changes with `. ~/.bashrc`, then check Maven with `mvn --version`
 
-4. Clone this repo with `git clone https://github.com/JJTofflemire/Signal-Server.git` \
+4. Clone this repo with `git clone https://github.com/JJTofflemire/Signal-Server.git`
 
     4.1. If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
 
-5. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config` or in a separate folder if you are using the install script \
+5. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config` or in a separate folder if you are using the install script
 
-    5.1. ----> UNFINISHED, add all the dependancies needed to run and all the optional ones \
+    5.1. ----> UNFINISHED, add all the dependancies needed to run and all the optional ones
 
     5.2. Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
 
