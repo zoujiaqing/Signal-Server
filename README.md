@@ -8,13 +8,21 @@ Quick Manual Instructions
 -----------------
 
 1. `update` and `upgrade`
+
 2. Install the latest versions of Java and Maven
+
 3. Clone this repo \
+
     a. If you clone the Signal-Server, you can grab all the extra files included in this repo and hope that the new commits haven't broken too much
+
 4. Fill out the `service/config/sample.yml` and `service/config/sample-secrets-bundle.yml`
+
 5. Run `mvn clean install -DskipTests -Pexclude-spam-filter`
+
 6. Grab certificates with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar certificate`
+
 7. Run all the other dependancies ----> UNFINISHED
+
 8. Run server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
 
 Idiot-Proof Manual Instructions
