@@ -1,3 +1,4 @@
+# signalapp's .gitignores (boo they should include the run.sh
 target
 local.properties
 .idea
@@ -29,3 +30,7 @@ deployer.log
 .project
 .classpath
 .settings
+# my .gitignores
+.vscode
+config.yml
+config-secrets-bundle.yml
