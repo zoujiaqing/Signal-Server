@@ -15,7 +15,7 @@ Quick Manual Instructions
 
     3.1. If you clone the Signal-Server, you can grab all the extra files included in this repo and hope that the new commits haven't broken too much
 
-4. Fill out the `service/config/sample.yml` and `service/config/sample-secrets-bundle.yml`
+4. Fill out the `service/config/sample.yml` and `service/config/sample-secrets-bundle.yml` - [here is some documentation if needed](sample-yml-config-documentation.md)
 
 5. Run `mvn clean install -DskipTests -Pexclude-spam-filter`
 
@@ -48,7 +48,7 @@ Idiot-Proof Manual Instructions
 
     3.5. Apply the changes with `. ~/.bashrc`, then check Maven with `mvn --version`
 
-4. Install Docker and Docker-Compose (following [this](https://www.howtogeek.com/devops/how-to-install-docker-and-docker-compose-on-linux/) guide)
+4. Install Docker and Docker-Compose ([taken from this guide](https://www.howtogeek.com/devops/how-to-install-docker-and-docker-compose-on-linux/))
 
     Docker: 
     
@@ -76,7 +76,7 @@ Idiot-Proof Manual Instructions
 
 6. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config` or in a separate folder if you are using the install script
 
-    5.1. ----> UNFINISHED, add all the dependancies needed to run and all the optional ones
+    5.1. [Here is an outline of what needs to be filled out (and what can be left blank) and short instructions on the more annoying bits](sample-yml-config-documentation.md)
 
     5.2. Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
 
@@ -91,22 +91,28 @@ Idiot-Proof Manual Instructions
 To-Do
 -----------------
 
-~~- Get Signal-Server to compile locally (figure out dependancies and whatnot)~~
+- ~~Get Signal-Server to compile locally (figure out dependancies and whatnot)~~
 
-~~- Get Signal-Server to start locally~~
+- ~~Get Signal-Server to start locally~~
 
-- Fill out `sample.yml` and `sample-secrets-bundle.yml`
+- Fill out `sample.yml` and `sample-secrets-bundle.yml` enough to get the server to run without crashing
 
     - Document what is required and what is optional
 
-    - Create Docker containers for all other servers and services that Signal-Server needs to run
+ - ~~Create Docker containers for all other servers and services that Signal-Server needs to run~~
 
-    - Add documentation on extra dependancies needed for said servers and services
-
-- Create a bash script to automate the process
-
-    - Add short documentation on 
+    - ~~Add documentation on extra dependancies needed for said servers and services~~
+    
+    - Get Google Cloud to work and document it
+  
+  - Confirm that the current Redis setup functions for storing information
+  
+  - Convert all localhost configs to a real server that a client could connect to
 
 - Successfully get this fork of Signal-Server to connect to a fork of the android app
 
-- Add an example `sample.yml` and `sample-secrets-bundle.yml` with comments on what to fill out
+- Create a bash script to automate the process
+
+    - Add short documentation on using script once it is finished and server runs
+
+- Add an example `sample.yml` and `sample-secrets-bundle.yml` with shorthand comments on what to fill out
