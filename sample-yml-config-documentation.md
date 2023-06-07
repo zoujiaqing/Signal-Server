@@ -12,15 +12,60 @@ Dependancies
 
   - [Redis](#redis-notes)
 
-- Optional, but won't function without configuration
+- Optional, just make sure the values aren't empty (`unset` should work)
 
   - Braintree
 
   - Datadog
 
   - Stripe
+  
+  - paymentsService
+  
+  - subscription
+  
+  - oneTimeDoncations
+  
+- Unknown (will get sorted into the above)
+  
+  - DirectoryV2
+  
+  - svr2
+  
+  - apn
+  
+  - fcm
+  
+  - unidentifiedDelivery
+  
+  - recaptcha
+  
+  - hCaptcha
+  
+  - storageService
+  
+  - backupService
+  
+  - zkConfig
+  
+  - genericZkConfig
+  
+  - appConfig
+  
+  - remoteConfig
+  
+  - artService
+  
+  - badges
+  
+  - registrationService
 
-- [Here is an example of sample.yml with some shorthand comments](sample-with-added-comments.yml) (it probably won't be finisehd)
+- [Here is an example of sample.yml with some shorthand comments](sample-with-added-comments.yml) (unfinished)
+
+General / Misc
+-----------------
+
+- Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
 
 AWS IAM Configuration
 -----------------
@@ -108,59 +153,61 @@ GCP Configuration
 
 1. Make a Google Cloud account and two projects
 
-- Create an account with Google Cloud - you can you a pre-existing Google account, but you will have to add a payment method in order to use Google Cloud
+  1.1. Create an account with Google Cloud - you can you a pre-existing Google account, but you will have to add a payment method in order to use Google Cloud
 
-- Make a new project for the bucket, and another for the encryption key
+  1.2. Make a new project for the bucket, and another for the encryption key
 
 2. Create a service account to manage the encryption key
 
-- Select the bucket project
+  2.1. Select the bucket project
 
-- In the left navigation panel, select `Service Accounts` under `IAM & ADMIN`
+  2.2. In the left navigation panel, select `Service Accounts` under `IAM & ADMIN`
 
-- In the middle top, select `Create Service Account`
+  2.3. In the middle top, select `Create Service Account`
 
-  - Under `Grant this service account access to project`, add the role `Owner` and the role `Cloud KMS CryptoKey Encrypter/Decrypter`
+  2.4. Under `Grant this service account access to project`, add the role `Owner` and the role `Cloud KMS CryptoKey Encrypter/Decrypter`
 
 3. Create the bucket
 
-- In the left navigation panel, select `Buckets` under `Cloud Storage`
+   3.1. In the left navigation panel, select `Buckets` under `Cloud Storage`
 
-  - Hit `CREATE` in the top middle of the screen
+  3.2. Hit `CREATE` in the top middle of the screen
   
-  - Configure it (I think the config doesn't super matter outside of how it handles keys), and select the region you want to use - I used `us (multiple regions in the United States)`
+  3.3. Configure it (I think the config doesn't super matter outside of how it handles keys), and select the region you want to use - I used `us (multiple regions in the United States)`
 
 4. Create the encryption key
 
-- Switch to the key project
+  4.1. Switch to the key project
 
-- Select `Key Management` from the left sidebar nested inside `Security`
+  4.2. Select `Key Management` from the left sidebar nested inside `Security`
 
-- A screen asking to enable `KMS` should appear - hit `ENABLE`, wait for it to load, then reload the browser
+  4.3. A screen asking to enable `KMS` should appear - hit `ENABLE`, wait for it to load, then reload the browser
 
-- Once here, there should be a button in the top middle of the sceen labelled `Create Key ring`
+  4.4. Once here, there should be a button in the top middle of the sceen labelled `Create Key ring`
 
-  - Create a key ring with a matching region to the bucket
+  4.5. Create a key ring with a matching region to the bucket
   
-  - The rest of the default configuration should be fine, so create the key
+  4.6. The rest of the default configuration should be fine, so create the key
 
 5. Linking the KMS created key to the bucket
 
-- Switch back to the bucket project
+  5.1. Switch back to the bucket project
 
-- Click on the created bucket, and open the tab `CONFIGURATION`
+  5.2. Click on the created bucket, and open the tab `CONFIGURATION`
 
-- Near the bottom, there is a line: `Encryption Type`. Hit the edit button
+  5.3. Near the bottom, there is a line: `Encryption Type`. Hit the edit button
 
-  - Select the option for `Customer Managed Key (CMEK)`, and choose the key from the drop-down
+  5.4. Select the option for `Customer Managed Key (CMEK)`, and choose the key from the drop-down
   
-  - The key probably won't show up by default, so hit `SWITCH PROJECT` and select the key project. The key should appear now
+  5.5. The key probably won't show up by default, so hit `SWITCH PROJECT` and select the key project. The key should appear now
   
-  - `SAVE`
+  5.6 `SAVE`
 
 6. Downloading the generated key
 
 - I think you have to get 3rd party software to generate a key for you, then create a new key and import it (that way you can also generate a json on your own)
+- Notes to self: install `gcloud` tools, and create a key and keyring using the cli
+  - Acutally, this might not work either :(
 
 Redis Notes
 -----------------
