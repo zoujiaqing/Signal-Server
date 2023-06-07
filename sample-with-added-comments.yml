@@ -3,6 +3,7 @@
 # `unset` values will need to be set to work properly.
 # Most other values are technically valid for a local/demonstration environment, but are probably not production-ready.
 
+# Datadog configuration. Fine to leave empty
 logging:
   level: INFO
   appenders:
@@ -15,6 +16,7 @@ logging:
       apiKey: secret://datadog.apiKey
       environment: staging
 
+# More Datadog config
 metrics:
   reporters:
     - type: signal-datadog
@@ -51,6 +53,7 @@ adminEventLoggingConfiguration:
   projectId: some-project-id
   logName: some-log-name
 
+# Stripe payment service: optional
 stripe:
   apiKey: secret://stripe.apiKey
   idempotencyKeyGenerator: secret://stripe.idempotencyKeyGenerator
@@ -61,7 +64,7 @@ stripe:
   # - ...
   # - Nth supported currency
 
-
+# Braintree - same as Stripe
 braintree:
   merchantId: unset
   publicKey: unset
@@ -76,9 +79,11 @@ braintree:
   # - ...
   # - Nth supported currency
 
+# DynamoDb is very neccesary, unfortunately -> you can follow sample-yml-config-documentation.md
 dynamoDbClientConfiguration:
   region: us-west-2 # AWS Region
 
+# Ditto
 dynamoDbTables:
   accounts:
     tableName: Example_Accounts
@@ -128,6 +133,7 @@ dynamoDbTables:
   verificationSessions:
     tableName: Example_VerificationSessions
 
+# Config to connect to the Dockerized Redis-Cluster - you will have to mess with ports and domain (or just use Localhost)
 cacheCluster: # Redis server configuration for cache cluster
   configurationUri: redis://redis.example.com:6379/
 
@@ -143,11 +149,13 @@ pushSchedulerCluster: # Redis server configuration for push scheduler cluster
 rateLimitersCluster: # Redis server configuration for rate limiters cluster
   configurationUri: redis://redis.example.com:6379/
 
+# I have no clue
 directoryV2:
   client: # Configuration for interfacing with Contact Discovery Service v2 cluster
     userAuthenticationTokenSharedSecret: secret://directoryV2.client.userAuthenticationTokenSharedSecret
     userIdTokenSharedSecret: secret://directoryV2.client.userIdTokenSharedSecret
 
+# I have no clue
 svr2:
   uri: svr2.example.com
   userAuthenticationTokenSharedSecret: secret://svr2.userAuthenticationTokenSharedSecret
@@ -185,12 +193,14 @@ messageCache: # Redis server configuration for message store cache
 metricsCluster:
   configurationUri: redis://redis.example.com:6379/
 
+# AWS Bucket config
 awsAttachments: # AWS S3 configuration
   accessKey: secret://awsAttachments.accessKey
   accessSecret: secret://awsAttachments.accessSecret
   bucket: aws-attachments
   region: us-west-2
 
+# Google Cloud storage config
 gcpAttachments: # GCP Storage configuration
   domain: example.com
   email: user@example.cocm

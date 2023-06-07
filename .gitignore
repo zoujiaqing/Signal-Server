@@ -34,3 +34,4 @@ deployer.log
 .vscode
 config.yml
 config-secrets-bundle.yml
+.DS*

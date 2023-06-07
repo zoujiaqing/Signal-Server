@@ -1,9 +1,8 @@
 #!/bin/bash
 
-sudo docker-compose down
+# You may have to add or remove sudo to these commands depending on how you have configured Docker
+docker-compose down
 
-sudo docker-compose up -d
+docker-compose up -d
 
-java -jar -Dsecrets.bundle.filename=config-secrets-bundle.yml service/target/TextSecureServer-0.0.0-dirty-SNAPSHOT.jar server config.yml
-
-
+java -jar -Dsecrets.bundle.filename=config-secrets-bundle.yml service/target/TextSecureServer-0.0.0-SNAPSHOT.jar server config.yml
