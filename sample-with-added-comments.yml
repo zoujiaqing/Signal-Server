@@ -41,6 +41,7 @@ metrics:
         - ^lettuce\..+$
   reportOnStop: true
 
+# This is the Google Cloud service account .json file spot. Past everything from the .json in here
 adminEventLoggingConfiguration:
   credentials: |
     {
