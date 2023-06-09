@@ -16,6 +16,8 @@
   - cdn.accessKey
   - cdn.accessSecret
   
+[Braintree](#general-instructions)
+
 [Google Cloud](#google-cloud)
 - In `sample.yml`
   - adminEventLoggingConfiguration
@@ -34,8 +36,6 @@
   - metricsCluster
 
 ### Optional, just make sure the values aren't empty (`unset` should work)
-
-- Braintree
 
 - Datadog
 
@@ -71,18 +71,23 @@
 ## General Instructions
 
 - Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
+- Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
 
 ## AWS
 
-### AWS IAM Configuration
+### AWS AppConfig
 
-- Create an account with AWS
+- Search for `AWS AppConfig` and hit `Create Application`
 
-- Go to IAM and create a user with full access (this is definitely not entirely safe but hey, it gets the job done)
-  
-- Copy the access key and access secret, and paste them into `awsAttachments.accessKey` and `awsAttachments.accessSecret`, and `cdn.accessKey` and `cdn.accessSecret` in [sample-secrets-bundle](/service/config/sample-secrets-bundle.yml)
-  
-- If you give the IAM user full access, you can reuse the same access key and secret for both buckets
+- Under `Configuration Profiles and Feature Flags`, hit `CREATE` and choose `Feature Flag`. Enter a name and hit `Create feature flag configuration profile`
+
+- In the `Environments` tab, select `Create Environment`, enter a name, and ceate the environment
+
+- Do something with versions
+
+- Hit `Create Application` and choose immediately for the timeframe
+
+- Enter the names of the application, environment, and configuration into their sections under `appConfig` in `sample.yml`
 
 ### AWS Buckets Configuration
 
@@ -125,6 +130,16 @@
   - ReportMessage
   - Subscriptions
   - VerificationSessions
+
+### AWS IAM Configuration
+
+- Create an account with AWS
+
+- Go to IAM and create a user with full access (this is definitely not entirely safe but hey, it gets the job done)
+  
+- Copy the access key and access secret, and paste them into `awsAttachments.accessKey` and `awsAttachments.accessSecret`, and `cdn.accessKey` and `cdn.accessSecret` in [sample-secrets-bundle](/service/config/sample-secrets-bundle.yml)
+  
+- If you give the IAM user full access, you can reuse the same access key and secret for both buckets
 
 ## Google Cloud
 

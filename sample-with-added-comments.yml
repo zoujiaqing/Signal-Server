@@ -70,7 +70,7 @@ braintree:
   merchantId: unset
   publicKey: unset
   privateKey: secret://braintree.privateKey
-  environment: unset
+  environment: unset # set this as `sandbox` so Signal-Server can run
   graphqlUrl: unset
   merchantAccounts:
     # ISO 4217 currency code and its corresponding sub-merchant account
@@ -306,6 +306,8 @@ zkConfig:
 genericZkConfig:
   serverSecret: secret://genericZkConfig.serverSecret
 
+
+# AWS appConfig spot
 appConfig:
   application: example
   environment: example
