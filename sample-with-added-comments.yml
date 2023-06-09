@@ -41,7 +41,7 @@ metrics:
         - ^lettuce\..+$
   reportOnStop: true
 
-# This is the Google Cloud service account .json file spot. Past everything from the .json in here
+# Authentication for the Google Cloud Service Account. Paste the entire downloaded .json key here, leaving no spaces between credentials and secondaryCredentials. secondaryCredentials is fine to leave empty
 adminEventLoggingConfiguration:
   credentials: |
     {
@@ -51,7 +51,7 @@ adminEventLoggingConfiguration:
     {
       "key": "value"
     }
-  projectId: some-project-id
+  projectId: some-project-id # It's fine to leave these two empty
   logName: some-log-name
 
 # Stripe payment service: optional
@@ -203,11 +203,11 @@ awsAttachments: # AWS S3 configuration
 
 # Google Cloud storage config
 gcpAttachments: # GCP Storage configuration
-  domain: example.com
-  email: user@example.cocm
+  domain: example.com # Service Account email
+  email: user@example.com # Bucket Cloud Console URL
   maxSizeInBytes: 1024
   pathPrefix:
-  rsaSigningKey: secret://gcpAttachments.rsaSigningKey
+  rsaSigningKey: secret://gcpAttachments.rsaSigningKey # The Secret value you create
 
 accountDatabaseCrawler:
   chunkSize: 10           # accounts per run

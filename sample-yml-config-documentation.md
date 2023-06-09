@@ -1,74 +1,80 @@
-Sample.yml Config Documentation
-=================
+# Sample.yml Config Documentation
 
-Dependancies
------------------
+## Dependancies
 
-- Required:
+### Required
 
-  - [AWS](#aws-iam-configuration)
+[AWS](#aws)
+- In `sample.yml`
+  - dynamoDbClientConfiguration
+  - dynamoDbTables
+  - awsAttachments
+  - cdn
+- In `sample-secrets-bundel.yml`
+  - awsAttachments.accessKey
+  - awsAttachments.accessSecret
+  - cdn.accessKey
+  - cdn.accessSecret
   
-  - [GCP](#gcp-configuration)
+[Google Cloud](#google-cloud)
+- In `sample.yml`
+  - adminEventLoggingConfiguration
+  - gcpAttachments
+- In `sample-secrets-bundel.yml`
+  - gcpAttachments.rsaSigningKey
 
-  - [Redis](#redis-notes)
+[Redis](#redis-notes)
+- In `Sample.yml`
+  - cacheCluster
+  - clientPresenceCluster
+  - pubsub
+  - pushSchedulerCluster
+  - rateLimitersCluster
+  - messageCache
+  - metricsCluster
 
-- Optional, just make sure the values aren't empty (`unset` should work)
+### Optional, just make sure the values aren't empty (`unset` should work)
 
-  - Braintree
+- Braintree
 
-  - Datadog
+- Datadog
 
-  - Stripe
+- Stripe
   
-  - paymentsService
+- paymentsService
   
-  - subscription
+- subscription
   
-  - oneTimeDoncations
+- oneTimeDoncations
   
-- Unknown (will get sorted into the above)
+### Unknown (will get sorted into the above)
   
-  - DirectoryV2
-  
-  - svr2
-  
-  - apn
-  
-  - fcm
-  
-  - unidentifiedDelivery
-  
-  - recaptcha
-  
-  - hCaptcha
-  
-  - storageService
-  
-  - backupService
-  
-  - zkConfig
-  
-  - genericZkConfig
-  
-  - appConfig
-  
-  - remoteConfig
-  
-  - artService
-  
-  - badges
-  
-  - registrationService
+- DirectoryV2
+- svr2
+- apn
+- fcm
+- unidentifiedDelivery
+- recaptcha
+- hCaptcha
+- storageService
+- backupService
+- zkConfig
+- genericZkConfig
+- appConfig
+- remoteConfig  
+- artService
+- badges  
+- registrationService
 
-- [Here is an example of sample.yml with some shorthand comments](sample-with-added-comments.yml) (unfinished)
+- <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/sample-with-added-comments.yml" target="_blank">Here is an example of sample.yml with some shorthand comments</a>
 
-General / Misc
------------------
+## General Instructions
 
 - Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
 
-AWS IAM Configuration
------------------
+## AWS
+
+### AWS IAM Configuration
 
 - Create an account with AWS
 
@@ -78,8 +84,7 @@ AWS IAM Configuration
   
 - If you give the IAM user full access, you can reuse the same access key and secret for both buckets
 
-AWS Buckets Configuration
------------------
+### AWS Buckets Configuration
 
 - Go to S3 and create the two buckets below (I don't think you need to change any other settings)
   
@@ -87,94 +92,81 @@ AWS Buckets Configuration
   
   - cdn
   
-AWS DynamoDb Configuration
------------------
+### AWS DynamoDb Configuration
   
-- Sign into AWS, look up DynamoDb, and make tables of all of the following(not sure what to do about Partition Keys)
+- Sign into AWS, look up DynamoDb, and make tables of all of the following (not sure what to do about Partition Keys)
 
 - If you change these names, also change them in [sample.yml](/service/config/sample.yml)
   
   - Accounts
-  
   - Accounts_PhoneNumbers
-  
   - Accounts_PhoneNumberIdentifiers
-  
   - Accounts_Usernames
-  
   - DeletedAccounts
-  
   - DeletedAccountsLock
-  
   - IssuedReceipts
-  
     - expiration: P30D
-  
     - generator: abcdefg12345678=
-  
   - Keys
-  
   - PQ_Keys
-  
   - PQ_Last_Resort_Keys
-  
   - Messages
-  
     - expiration: P30D
-
   - PendingAccounts
-
   - PendingDevices
-
   - PhoneNumberIdentifiers
-  
   - Profiles
-  
   - PushChallenge
-  
   - RedeemedReceipts
-  
     - expiration: P30D
-  
   - RegistrationRecovery
-  
     - expiration: P30D
-  
   - RemoteConfig
-  
   - ReportMessage
-  
   - Subscriptions
-  
   - VerificationSessions
 
-GCP Configuration
------------------
+## Google Cloud
 
-1. Log into Google Cloud and create a service account that can manage the Bucket
+1. Create a Google Cloud accont and enter info / payment
 
-    2.1. Select the bucket project
+2. Make a project
 
-    2.2. In the left navigation panel, select `Service Accounts` under `IAM & ADMIN`
+    2.1. The option should be in the top left, and select `NEW PROJECT`
 
-    2.3. In the middle top, select `Create Service Account`
+3. Make a bucket
 
-    2.4. Under `Grant this service account access to project`, add the role `Owner` and the role `Cloud KMS CryptoKey Encrypter/Decrypter`
-    
-    2.5. Copy the email address and paste it into your `sample.yml`
+    3.1. Select `Buckets`, located under `Cloud Storage` inside the left-hand hamburger menu
 
-2. Create the bucket
+    3.2. Create a bucket - exact configuration doesn't matter
 
-    3.1. In the left navigation panel, select `Buckets` under `Cloud Storage`
+    3.3. On the `CONFIGURATION` tab inside the bucket, copy the `Cloud Console URL` and paste it into the `domain` section of `gcpAttachments` in `sample.yml`
 
-    3.2. Hit `CREATE` in the top middle of the screen
-  
-    3.3. Configure it (default configuration works fine), and select the region you want to use - I used `us (multiple regions in the United States)`
+4. Make a service account and a key
 
-- NOTES: Use just one project, make a service account with key and download the json, make the bucket with google's key, make a secret in secret manager and make it match the secret rsaSigningKey
+    4.1. Select `Service Accounts`, located under `IAM & Admin` inside hamburger menu
 
-Redis Notes
------------------
+    4.2. In the top middle, select `CREATE SERVICE ACCOUNT`
+
+    4.3. Make sure to add the roles `Owner` and `Cloud KMS CryptoKey Encrypter/Decrypter`
+
+    4.4. Copy the email address of the service account and paste it into the `email` section of `gcpAttachments` in `sample.yml`
+
+    4.5. Select the service account and select the `KEYS` tab
+
+    4.6. Hit `ADD KEY`, then `Create new key` and select `JSON` as the format for the downloaded key
+
+    4.7. Copy and paste the all the contents of the `JSON` into `credentials` under `adminEventLoggingConfiguration` (replacing the existing `key` and curly brackets) in `sample.yml`
+
+5. Make a secret
+
+    5.1. Open `Secret Manager` inside `Security` from the hamburger menu
+
+   5.2. Select `CREATE SECRET` and enter a secret value matching the format from `gcpAttachments.rsaSigningKey` inside `sample-secrets-bundle.yml`
+
+   5.3. Specifically, keep the line breaks and the `-----BEGIN/END PRIVATE KEY-----` (and make sure what is in the Google Cloud Secret and the `rsaSigningKey` match)
+
+## Redis Notes
 
 - Currently the [docker-compose.yml](docker-compose.yml) file has a redis-cluster generated by ChatGPT, using `Localhost` and ports 7000-7002
 
