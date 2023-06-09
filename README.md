@@ -4,10 +4,10 @@
 
 ## Useful Resources
 
-- <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/sample-yml-config-documentation.md" target="_blank">Documentation on filling out a sample.yml</a>
-- <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/sample-with-added-comments.yml" target="_blank">A sample.yml file with added short-hand comments</a>
-- <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/quickstart.sh" target="_blank">A script to automate starting the server</a>
-- <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/dependancies.md" target="_blank">Dependancies installation notes</a>
+- [Documentation on filling out a sample.yml](sample-yml-config-documentation.md)
+- [A `sample.yml` file with allded short-hand comments](sample-with-added-comments.yml)
+- [A script to automate starting the server](quickstart.sh)
+- [Dependancies installation notes](dependancies.md)
 
 ## Dependancies
 
@@ -23,7 +23,7 @@
 
 2. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config`
 
-    2.1. <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/sample-yml-config-documentation.md" target="_blank">Here is some notes on filling out the config files</a>
+    2.1. [Here are some notes on filling out the config files](sample-yml-config-documentation.md)
 
 3. Compile with `mvn clean install -DskipTests -Pexclude-spam-filter`
 

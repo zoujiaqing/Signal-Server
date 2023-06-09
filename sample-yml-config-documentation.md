@@ -66,7 +66,7 @@
 - badges  
 - registrationService
 
-- <a href="https://github.com/JJTofflemire/Signal-Server/blob/main/sample-with-added-comments.yml" target="_blank">Here is an example of sample.yml with some shorthand comments</a>
+- [Here is an example of `sample.yml` with some extra comments](sample-with-added-comments.yml)
 
 ## General Instructions
 
