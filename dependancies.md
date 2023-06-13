@@ -1,3 +1,8 @@
+# Dependancies Installation Notes
+
+- I wrote this on Ubuntu 22.04.2 LTS, but these notes should be the same for running plain Debian
+- These notes should be pretty dummy-proof since I wrote them for myself
+
 1. Make sure everything is up-to-date with `sudo apt update` and `sudo apt upgrade`
 
 2. Install the latest version of Java

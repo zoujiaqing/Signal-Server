@@ -1,13 +1,15 @@
 # Signal-Server Full Installation Guide
 
-- Written for Signal-Server v9.81.0 and ran on Ubuntu 22.04.2 LTS
+- Written for Signal-Server v9.81.0
+- Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
 
 ## Useful Resources
 
+- [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
 - [Documentation on filling out a sample.yml](sample-yml-config-documentation.md)
 - [A `sample.yml` file with allded short-hand comments](sample-with-added-comments.yml)
 - [A script to automate starting the server](quickstart.sh)
-- [Dependancies installation notes](dependancies.md)
+- [Dependancies installation notes for Ubuntu / Debian](dependancies.md)
 
 ## Dependancies
 
@@ -43,13 +45,17 @@
 
   - This way personal config files can be kept seperate from the rest of the repo
 
+## Connecting the server to an Android app (unfinished)
+
+- Current documentation on getting the Android app running and connected to this server is [here](https://github.com/JJTofflemire/Signal-Android)
+
 ## To-Do
 
 - ~~Get Signal-Server to compile locally (figure out dependancies and whatnot)~~
 
 - ~~Get Signal-Server to start locally~~
 
-- Fill out `sample.yml` and `sample-secrets-bundle.yml` enough to get the server to run without crashing
+- ~~Fill out `sample.yml` and `sample-secrets-bundle.yml` enough to get the server to run without crashing~~
 
     - ~~Document what is required and what is optional~~
 
@@ -58,10 +64,14 @@
     - ~~Add documentation on extra dependancies needed for said servers and services~~
     
   - ~~Get Google Cloud to create a bucket with a key that I have a copy of~~
-  
-  - Confirm that the current Redis setup functions for storing information
 
-  - Fix Braintree (it's unhappy with `unset`)
+  - ~~Fix Braintree (it's unhappy with `unset`)~~
+
+- Confirm that the current Redis setup functions for storing information
+
+- Confirm that AWS / Google Cloud function as intended
+
+- Sort out the requirements that can be dockerized
 
 - Figure out what the deal is with extracting certificates with `certificate` when running the server
 
@@ -69,7 +79,7 @@
 
 - Convert all localhost configs to a real server that a client could connect to
 
-- Create a bash script to automate the process (currently [quickstart.sh](quickstart.sh))
+- ~~Create a bash script to automate the process (currently [quickstart.sh](quickstart.sh))~~
 
     - Make it automatically start the correct file regardless of varying naming schemes
     
@@ -81,4 +91,6 @@
 
 - Also get Signal-iOS and Signal-Desktop working with a personal Signal-Server
 
-- Strip out some of the parts I don't want (payment, calls, stories etc)
+- Completely strip out some of the parts I don't want (payment, calls, stories etc)
+
+- Remove all cloud dependancies (basically impossible)
