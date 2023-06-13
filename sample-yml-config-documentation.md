@@ -71,6 +71,7 @@
 ## General Instructions
 
 - Specify your AWS region with `sudo nano ~/.bashrc`, add `export AWS_REGION=your-region` to the end of the file, then run `. ~/.bashrc`
+- Set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to the created AWS key and secret
 - Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
 
 ## AWS
