@@ -15,6 +15,7 @@
 
 - Java (openjdk)
 - Maven (v3.8.6 or newer)
+  - If on Debian, you may need to manually install a newer version
 - Docker and Docker-Compose
 
 ## Installation
@@ -94,3 +95,5 @@
 - Completely strip out some of the parts I don't want (payment, calls, stories etc)
 
 - Remove all cloud dependancies (basically impossible)
+
+  - [Replace AWS with Minio](https://github.com/aqnouch/Signal-Setup-Guide/tree/master/signal-minio) (outdated guide most likely)
