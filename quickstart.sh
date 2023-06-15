@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# I export the environmental variables when I start the server instead of keeping them in .bashrc (mostly so I can put my .bashrc on Github because I tend to forget or lose it)
+source secrets.sh
+
 # You may have to add or remove sudo to these commands depending on how you have configured Docker
 sudo docker-compose down
 

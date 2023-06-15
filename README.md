@@ -45,6 +45,10 @@
 - By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in its directory, renamed to `config.yml` and `config-secrets-bundle.yml`
 
   - This way personal config files can be kept seperate from the rest of the repo
+  
+- Currently, `quickstart.sh` exports any environmental variables needed by the server so that they don't have to live permanently in `.bashrc`
+
+  - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](sample-yml-config-documentation.md) (if not, just comment it out)
 
 ## Connecting the server to an Android app (unfinished)
 

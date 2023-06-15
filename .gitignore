@@ -35,3 +35,4 @@ deployer.log
 config.yml
 config-secrets-bundle.yml
 .DS*
+secrets.sh
