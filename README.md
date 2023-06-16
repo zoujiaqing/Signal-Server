@@ -6,8 +6,9 @@
 ## Useful Resources
 
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
-- [Documentation on filling out a sample.yml](sample-yml-config-documentation.md)
-- [A `sample.yml` file with allded short-hand comments](sample-with-added-comments.yml)
+- [Documentation on filling out a sample.yml](config-documentation.md)
+- [A `sample.yml` file with added short-hand comments](documented-sample.yml)
+- [A `sample-secrets-bundle.yml` with added comments](documented-sample-secrets-bundle.yml)
 - [A script to automate starting the server](quickstart.sh)
 - [Dependancies installation notes for Ubuntu / Debian](dependancies.md)
 
@@ -24,33 +25,39 @@
 
     1.1. If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
 
-2. Fill out `sample.yml` and `sample-secrets-bundle.yml`, either in `service/config`
+2. Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
 
-    2.1. [Here are some notes on filling out the config files](sample-yml-config-documentation.md)
+    2.1. [Here](config-documentation.md) are some notes on filling out the config files
 
 3. Compile with `mvn clean install -DskipTests -Pexclude-spam-filter`
 
 4. Generate the required certificates with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar certificate`
+  
+    4.1. NOTE: currently I have no idea what this is for, but every old Signal-Server guide includes this, so it will probably be important in connecting to Signal-Android
 
-5.  Run all dependancies wrapped in Docker containers ----> UNFINISHED
+5.  Run all dependancies wrapped in Docker containers with `sudo docker-compose up -d`
 
 6. Start the server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
 
-    6.1. You can test the server to make sure everything is working right by going to `localhost:8080`
+    6.1. `quickstart.sh` skips steps 5-6, but requires a modified `sample.yml`/`sample-secrets-bundle.yml` setup ([see the `quickstart.sh` section](#starting-the-sever-with-quickstartsh))
+
+    6.2. You can test the server to make sure everything is working right by going to `localhost:8080`
 
       NOTE: This doesn't work yet, so getting the server to talk to the android app is still ambitious
 
 ## Starting the sever with [quickstart.sh](quickstart.sh)
 
-- `quickstart.sh` is the bash script currently used for starting Signal-Server and all dependancies required
+- `quickstart.sh` is a bash script used to starting Signal-Server and all dependancies required with `source quickstart.sh`
 
 - Currently the script should correctly identify the correct `server.jar` to start regardless of version or which repository is used
 
-- By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in `quickstart`'s directory, renamed to `config.yml` and `config-secrets-bundle.yml` to keep personal config files seperated from the sample files
+  - If `quickstart.sh` can't run the correct server, there is a bare-bones version commented out at the bottom of the script
+
+- By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in the working directory, renamed to `config.yml` and `config-secrets-bundle.yml` to keep personal config files seperated from the sample files
 
 - Currently, `quickstart.sh` exports any environmental variables needed by the server so that they don't have to live permanently in `.bashrc`
 
-  - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](sample-yml-config-documentation.md) (if not, just comment it out)
+  - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](config-documentation.md) (if not, just comment it out)
 
 ## Connecting the server to an Android app (unfinished)
 

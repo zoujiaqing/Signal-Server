@@ -1,4 +1,11 @@
-# Sample.yml Config Documentation
+# Config Documentation
+
+- This is documentation for filling out `sample.yml` and `sample-secrets-bundle.yml` inside `/service/config/`
+  - Currently unfinished, but hopefully most of the parts in [Unknown](#unknown-will-get-sorted-into-the-above) will be unnecessary
+  - Everything in the [Optional](#optional)/[Unknown](#unknown-will-get-sorted-into-the-above) sections are notes to myself for ironing out kinks in Signal-Server/Signal-Android, and can be ignored for configuration purposes
+
+- [Here](documented-sample.yml) is an example of `sample.yml` with extra comments
+- [Here](documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments
 
 ## Dependancies
 
@@ -10,13 +17,16 @@
   - dynamoDbTables
   - awsAttachments
   - cdn
+  - appConfig
 - In `sample-secrets-bundel.yml`
   - awsAttachments.accessKey
   - awsAttachments.accessSecret
   - cdn.accessKey
   - cdn.accessSecret
   
-[Braintree](#general-instructions)
+[Braintree](#braintree)
+- In `sample.yml`
+  - braintree
 
 [Google Cloud](#google-cloud)
 - In `sample.yml`
@@ -35,50 +45,83 @@
   - messageCache
   - metricsCluster
 
-### Optional, just make sure the values aren't empty (`unset` should work)
+### Optional
 
-- Datadog
+Leave untouched:
+- In `sample.yml`
+  - Datadog
+  - Stripe
+  - paymentsService 
+  - subscription
+  - oneTimeDoncations
+- In `sample-secrets-bundle.yml`
+  - datadog.apiKey
+  - stripe.apiKey
+  - stripe.idempotencyKeyGenerator
+  - braintree.privateKey
+  - paymentsService.userAuthenticationTokenSharedSecret
+  - paymentsService.fixerApiKey
+  - paymentsService.coinMarketCapApiKey
 
-- Stripe
-  
-- paymentsService
-  
-- subscription
-  
-- oneTimeDoncations
-  
+I believe that you can use Signal's url in `Signal-Android` (untested)
+- In `sample.yml`
+  - recaptcha
+  - hCaptcha
+  - badges
+  - svr2
+- In `sample-secrets-bundle.yml`
+  - svr2.userAuthenticationTokenSharedSecret
+  - svr2.userIdTokenSharedSecret
+  - hCaptcha.apiKey
+
+I beleive that you can set a local directory instead of using cloud storage (untested)
+- In `sample.yml`
+  - storageService
+  - backupService
+- In `sample-secrets-bundle.yml`
+  - storageService.userAuthenticationTokenSharedSecret
+  - backupService.userAuthenticationTokenSharedSecret
+
+
 ### Unknown (will get sorted into the above)
-  
+
+In `sample.yml`
+
 - DirectoryV2
-- svr2
 - apn
 - fcm
 - unidentifiedDelivery
-- recaptcha
-- hCaptcha
-- storageService
-- backupService
 - zkConfig
 - genericZkConfig
-- appConfig
 - remoteConfig  
 - artService
-- badges  
 - registrationService
 
-- [Here is an example of `sample.yml` with some extra comments](sample-with-added-comments.yml)
+In `sample-secrets-bundle.yml`
 
-## General Instructions
-
-- Specify AWS dependancies with `sudo nano ~/.bashrc`, then add `export AWS_REGION=your-region`, `export AWS_ACCESS_KEY_ID=key`, and `export AWS_SECRET_ACCESS_KEY=secret` to the end of the file, then run `. ~/.bashrc`
-
-  - Instead of setting these environmental variables in `.bashrc`, you can create a `secrets.sh` file that `quickstart.sh` calls when starting Signal-Server
-
-- Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
+- directoryV2.client.userAuthenticationTokenSharedSecret
+- directoryV2.client.userIdTokenSharedSecret
+- apn.signingKey
+- fcm.credentials
+- unidentifiedDelivery.certificate
+- unidentifiedDelivery.privateKey
+- zkConfig.serverSecret
+- genericZkConfig.serverSecret
+- remoteConfig.authorizedTokens
+- artService.userAuthenticationTokenSharedSecret
+- artService.userAuthenticationTokenUserIdSecret
+- currentReportingKey.secret
+- currentReportingKey.salt
 
 ## AWS
 
-### AWS AppConfig
+### AWS Initial setup
+
+- Specify AWS dependancies with `sudo nano ~/.bashrc`, then add `export AWS_REGION=your-region`, `export AWS_ACCESS_KEY_ID=key`, and `export AWS_SECRET_ACCESS_KEY=secret` to the end of the file, then run `. ~/.bashrc`
+
+  - Instead of setting these environmental variables in `.bashrc`, you can create a `secrets.sh` file with the same three lines that `quickstart.sh` calls when starting Signal-Server
+
+### AWS appConfig
 
 - Search for `AWS AppConfig` and hit `Create Application`
 
@@ -143,6 +186,10 @@
 - Copy the access key and access secret, and paste them into `awsAttachments.accessKey` and `awsAttachments.accessSecret`, and `cdn.accessKey` and `cdn.accessSecret` in [sample-secrets-bundle](/service/config/sample-secrets-bundle.yml)
   
 - If you give the IAM user full access, you can reuse the same access key and secret for both buckets
+
+## Braintree
+
+- Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
 
 ## Google Cloud
 

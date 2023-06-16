@@ -1,7 +1,7 @@
 # Example, relatively minimal, configuration that passes validation (see `io.dropwizard.cli.CheckCommand`)
 #
 # `unset` values will need to be set to work properly.
-# Most other values are technically valid for a local/demonstration environment, but are probably not production-ready.
+# Most other values are technically valid for a local/demonstration environment, but are probably not production-ready. -signalapp
 
 # Datadog configuration. Fine to leave empty
 logging:
@@ -16,7 +16,7 @@ logging:
       apiKey: secret://datadog.apiKey
       environment: staging
 
-# More Datadog config
+# More Datadog conf - requiredig. Fine to leave empty
 metrics:
   reporters:
     - type: signal-datadog
@@ -54,7 +54,7 @@ adminEventLoggingConfiguration:
   projectId: some-project-id # It's fine to leave these two empty
   logName: some-log-name
 
-# Stripe payment service: optional
+# Stripe payment service: fine to leave empty
 stripe:
   apiKey: secret://stripe.apiKey
   idempotencyKeyGenerator: secret://stripe.idempotencyKeyGenerator
@@ -65,7 +65,7 @@ stripe:
   # - ...
   # - Nth supported currency
 
-# Braintree - same as Stripe
+# Braintree - fine to leave empty
 braintree:
   merchantId: unset
   publicKey: unset
@@ -80,11 +80,11 @@ braintree:
   # - ...
   # - Nth supported currency
 
-# DynamoDb is very neccesary, unfortunately -> you can follow sample-yml-config-documentation.md
+# DynamoDb is required, though I think `export AWS_REGION=region` overrides this region
 dynamoDbClientConfiguration:
   region: us-west-2 # AWS Region
 
-# Ditto
+# Must fill out
 dynamoDbTables:
   accounts:
     tableName: Example_Accounts
@@ -134,19 +134,23 @@ dynamoDbTables:
   verificationSessions:
     tableName: Example_VerificationSessions
 
-# Config to connect to the Dockerized Redis-Cluster - you will have to mess with ports and domain (or just use Localhost)
+# Config to connect to the Dockerized Redis-Cluster - you will have to mess with ports and domain (or just use localhost)
 cacheCluster: # Redis server configuration for cache cluster
   configurationUri: redis://redis.example.com:6379/
 
+# More Redis config - required
 clientPresenceCluster: # Redis server configuration for client presence cluster
   configurationUri: redis://redis.example.com:6379/
 
+# More Redis config - required
 pubsub: # Redis server configuration for pubsub cluster
   uri: redis://redis.example.com:6379/
 
+# More Redis config - required
 pushSchedulerCluster: # Redis server configuration for push scheduler cluster
   configurationUri: redis://redis.example.com:6379/
 
+# More Redis config - required
 rateLimitersCluster: # Redis server configuration for rate limiters cluster
   configurationUri: redis://redis.example.com:6379/
 
@@ -156,7 +160,7 @@ directoryV2:
     userAuthenticationTokenSharedSecret: secret://directoryV2.client.userAuthenticationTokenSharedSecret
     userIdTokenSharedSecret: secret://directoryV2.client.userIdTokenSharedSecret
 
-# I have no clue
+# I think this is used in Signal-Android, but you might be able to use the default Signal one
 svr2:
   uri: svr2.example.com
   userAuthenticationTokenSharedSecret: secret://svr2.userAuthenticationTokenSharedSecret
@@ -186,22 +190,24 @@ svr2:
       -----END CERTIFICATE-----
 
 
+# More Redis config - required
 messageCache: # Redis server configuration for message store cache
   persistDelayMinutes: 1
   cluster:
     configurationUri: redis://redis.example.com:6379/
 
+# More Redis config - required
 metricsCluster:
   configurationUri: redis://redis.example.com:6379/
 
-# AWS Bucket config
+# AWS Bucket config - required
 awsAttachments: # AWS S3 configuration
   accessKey: secret://awsAttachments.accessKey
   accessSecret: secret://awsAttachments.accessSecret
   bucket: aws-attachments
   region: us-west-2
 
-# Google Cloud storage config
+# Google Cloud storage config - required
 gcpAttachments: # GCP Storage configuration
   domain: example.com # Service Account email
   email: user@example.com # Bucket Cloud Console URL
@@ -209,9 +215,11 @@ gcpAttachments: # GCP Storage configuration
   pathPrefix:
   rsaSigningKey: secret://gcpAttachments.rsaSigningKey # The Secret value you create
 
+# I have no clue
 accountDatabaseCrawler:
   chunkSize: 10           # accounts per run
 
+# I don't know if this is required
 apn: # Apple Push Notifications configuration
   sandbox: true
   bundleId: com.example.textsecuregcm
@@ -219,32 +227,39 @@ apn: # Apple Push Notifications configuration
   teamId: unset
   signingKey: secret://apn.signingKey
 
+# I don't know if this is required
 fcm: # FCM configuration
   credentials: secret://fcm.credentials
 
+# AWS configuration - required (look in sample-secrets-bundle.yml)
 cdn:
   accessKey: secret://cdn.accessKey
   accessSecret: secret://cdn.accessSecret
   bucket: cdn        # S3 Bucket name
   region: us-west-2  # AWS region
 
+# Optional datadog config
 datadog:
   apiKey: secret://datadog.apiKey
   environment: dev
 
+# I have no clue
 unidentifiedDelivery:
   certificate: secret://unidentifiedDelivery.certificate
   privateKey: secret://unidentifiedDelivery.privateKey
   expiresDays: 7
 
+# Required but I think you can use Signal's domain for this in Signal-Android
 recaptcha:
   projectPath: projects/example
   credentialConfigurationJson: "{ }" # service account configuration for backend authentication
   secondaryCredentialConfigurationJson: "{ }" # service account configuration for backend authentication
 
+# Required but I think you can use Signal's domain for this in Signal-Android
 hCaptcha:
   apiKey: secret://hCaptcha.apiKey
 
+# I have no clue, if this refers to `SIGNAL_STORAGE`, then you might be able to point to a local file and ignore this
 storageService:
   uri: storage.example.com
   userAuthenticationTokenSharedSecret: secret://storageService.userAuthenticationTokenSharedSecret
@@ -272,6 +287,7 @@ storageService:
       AAAAAAAAAAAAAAAAAAAA
       -----END CERTIFICATE-----
 
+# I have no clue
 backupService:
   uri: backup.example.com
   userAuthenticationTokenSharedSecret: secret://backupService.userAuthenticationTokenSharedSecret
@@ -299,10 +315,12 @@ backupService:
       AAAAAAAAAAAAAAAAAAAA
       -----END CERTIFICATE-----
 
+# I have no clue
 zkConfig:
   serverPublic: ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
   serverSecret: secret://zkConfig.serverSecret
 
+# I have no clue
 genericZkConfig:
   serverSecret: secret://genericZkConfig.serverSecret
 
@@ -313,6 +331,7 @@ appConfig:
   environment: example
   configuration: example
 
+# I have no clue
 remoteConfig:
   authorizedTokens: secret://remoteConfig.authorizedTokens
   authorizedUsers:
@@ -329,6 +348,7 @@ remoteConfig:
   globalConfig: # keys and values that are given to clients on GET /v1/config
     EXAMPLE_KEY: VALUE
 
+# Not required
 paymentsService:
   userAuthenticationTokenSharedSecret: secret://paymentsService.userAuthenticationTokenSharedSecret
   fixerApiKey: secret://paymentsService.fixerApiKey
@@ -339,10 +359,12 @@ paymentsService:
     # list of symbols for supported currencies
     - MOB
 
+# I have no clue
 artService:
   userAuthenticationTokenSharedSecret: secret://artService.userAuthenticationTokenSharedSecret
   userAuthenticationTokenUserIdSecret: secret://artService.userAuthenticationTokenUserIdSecret
 
+# I think you can use Signal's default badges url in Signal-Android
 badges:
   badges:
     - id: TEST
@@ -363,6 +385,7 @@ badges:
   receiptLevels:
     '1': TEST
 
+# Optional
 subscription: # configuration for Stripe subscriptions
   badgeGracePeriod: P15D
   levels:
@@ -376,6 +399,7 @@ subscription: # configuration for Stripe subscriptions
             STRIPE: price_example   # stripe Price ID
             BRAINTREE: plan_example # braintree Plan ID
 
+# Optional
 oneTimeDonations:
   boost:
     level: 1
@@ -398,6 +422,7 @@ oneTimeDonations:
         - '20'
         - '40'
 
+# I'm not sure but I think it's important
 registrationService:
   host: registration.example.com
   port: 443
