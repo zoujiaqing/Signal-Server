@@ -36,16 +36,18 @@
 
 6. Start the server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
 
+    6.1. You can test the server to make sure everything is working right by going to `localhost:8080`
+
+      NOTE: This doesn't work yet, so getting the server to talk to the android app is still ambitious
+
 ## Starting the sever with [quickstart.sh](quickstart.sh)
 
 - `quickstart.sh` is the bash script currently used for starting Signal-Server and all dependancies required
 
-- Depending on how Signal-Server was compiled, the name of the `TextSecureServer-<version>-<other descriptors>.jar` might differ
+- Currently the script should correctly identify the correct `server.jar` to start regardless of version or which repository is used
 
-- By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in its directory, renamed to `config.yml` and `config-secrets-bundle.yml`
+- By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in `quickstart`'s directory, renamed to `config.yml` and `config-secrets-bundle.yml` to keep personal config files seperated from the sample files
 
-  - This way personal config files can be kept seperate from the rest of the repo
-  
 - Currently, `quickstart.sh` exports any environmental variables needed by the server so that they don't have to live permanently in `.bashrc`
 
   - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](sample-yml-config-documentation.md) (if not, just comment it out)
@@ -71,6 +73,8 @@
   - ~~Get Google Cloud to create a bucket with a key that I have a copy of~~
 
   - ~~Fix Braintree (it's unhappy with `unset`)~~
+
+- Confirm that the server is actually running and reachable on `localhost`
 
 - Confirm that the current Redis setup functions for storing information
 
