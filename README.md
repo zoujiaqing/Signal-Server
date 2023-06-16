@@ -58,6 +58,8 @@
 - Currently, `quickstart.sh` exports any environmental variables needed by the server so that they don't have to live permanently in `.bashrc`
 
   - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](config-documentation.md) (if not, just comment it out)
+  
+- `quickstart.sh` also automatically stops all dependancies when it recieves a keyboard interrupt (Ctrl+C)
 
 ## Connecting the server to an Android app (unfinished)
 
@@ -81,13 +83,13 @@
 
   - ~~Fix Braintree (it's unhappy with `unset`)~~
 
-- Confirm that the server is actually running and reachable on `localhost`
+- get the server to be reachable on `localhost`
 
 - Confirm that the current Redis setup functions for storing information
 
 - Confirm that AWS / Google Cloud function as intended
 
-- Sort out the requirements that can be dockerized
+- ~~Sort out the requirements that can be dockerized~~
 
 - Figure out what the deal is with extracting certificates with `certificate` when running the server
 
@@ -97,7 +99,7 @@
 
 - ~~Create a bash script to automate the process (currently [quickstart.sh](quickstart.sh))~~
 
-    - Make it automatically start the correct file regardless of varying naming schemes
+    - ~~Make it automatically start the correct file regardless of varying naming schemes~~
     
     - ~~Add documentation~~
 

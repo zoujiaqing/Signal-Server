@@ -11,8 +11,8 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
   source secrets.sh
 
   # You may have to add or remove sudo to these commands depending on how you have configured Docker
-  sudo docker-compose down
-  sudo docker-compose up -d
+  docker-compose down
+  docker-compose up -d
 
   # Start the server with the selected JAR file and configuration
   java -jar -Dsecrets.bundle.filename=config-secrets-bundle.yml "$jar_file" server config.yml
@@ -20,6 +20,17 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
 else
   echo "No valid Signal-Server JAR file found." # Else echo that the server couldn't be found -ChatGPT
 fi
+
+# Get the process ID (PID) of the Java process -ChatGPT
+JAVA_PID=$!
+
+# Wait for the Java process to exit -ChatGPT
+while kill -0 $JAVA_PID > /dev/null 2>&1; do
+    sleep 1
+done
+
+# Stop the server and clean up -ChatGPT
+sudo docker-compose down
 
 # The script above should always work, but in case it fails here is the bare-bones version:
 #
