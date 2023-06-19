@@ -59,7 +59,7 @@
 
   - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](config-documentation.md) (if not, just comment it out)
   
-- `quickstart.sh` also automatically stops all dependancies when it recieves a keyboard interrupt (Ctrl+C)
+- `quickstart.sh` also automatically stops all dependancies when it recieves a keyboard interrupt (Ctrl+C) or when the server crashes
 
 ## Connecting the server to an Android app (unfinished)
 
