@@ -83,7 +83,9 @@
 
   - ~~Fix Braintree (it's unhappy with `unset`)~~
 
-- get the server to be reachable on `localhost`
+- Check out aqnouch's server setup guide and see if any of it is relavent to getting the server to be reachable on `localhost`
+
+- Get the server to be reachable on `localhost`
 
 - Confirm that the current Redis setup functions for storing information
 
