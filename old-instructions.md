@@ -15,3 +15,9 @@
 
 - Signal-Android needs to manually enable certificates in order to connect to Signal-Server on `localhost`
 - There are a bunch more steps to follow [here](https://github.com/madeindra/signal-setup-guide/tree/master/signal-android)
+
+- All postgres dependancies have been migrated to DynamoDB in AWS
+
+- `curl -X POST/HOST <domain>
+- `logcat` in Android Studio
+- pain

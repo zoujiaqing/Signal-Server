@@ -10,6 +10,7 @@
 - [A `sample.yml` file with added short-hand comments](documented-sample.yml)
 - [A `sample-secrets-bundle.yml` with added comments](documented-sample-secrets-bundle.yml)
 - [A script to automate starting the server](quickstart.sh)
+- [A script for fast recloning, compiling, and running](server-recloner.sh)
 - [Dependancies installation notes for Ubuntu / Debian](dependancies.md)
 
 ## Dependancies
@@ -83,9 +84,11 @@
 
   - ~~Fix Braintree (it's unhappy with `unset`)~~
 
-- Check out aqnouch's server setup guide and see if any of it is relavent to getting the server to be reachable on `localhost`
+- ~~Check out aqnouch's server setup guide and see if any of it is relavent to getting the server to be reachable on `localhost`~~
 
 - Get the server to be reachable on `localhost`
+
+  - I can follow [Madeindra's](https://github.com/madeindra/signal-setup-guide/tree/master/signal-android) guide to do this
 
 - Confirm that the current Redis setup functions for storing information
 
@@ -94,6 +97,8 @@
 - ~~Sort out the requirements that can be dockerized~~
 
 - Figure out what the deal is with extracting certificates with `certificate` when running the server
+
+  - It is what you need to put in `whisper.store` and IS necessary
 
 - Successfully get this fork of Signal-Server to connect to a fork of the android app
 
@@ -112,7 +117,3 @@
 - Also get Signal-iOS and Signal-Desktop working with a personal Signal-Server
 
 - Completely strip out some of the parts I don't want (payment, calls, stories etc)
-
-- Remove all cloud dependancies (basically impossible)
-
-  - [Replace AWS with Minio](https://github.com/aqnouch/Signal-Setup-Guide/tree/master/signal-minio) (outdated guide most likely)
