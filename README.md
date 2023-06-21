@@ -10,6 +10,7 @@
 - [A `sample.yml` file with added short-hand comments](documented-sample.yml)
 - [A `sample-secrets-bundle.yml` with added comments](documented-sample-secrets-bundle.yml)
 - [A script to automate starting the server](quickstart.sh)
+- [A sample `secrets.sh` script to use with `quickstart.sh`](sample-secrets.sh)
 - [A script for fast recloning, compiling, and running](server-recloner.sh)
 - [Dependancies installation notes for Ubuntu / Debian](dependancies.md)
 
@@ -17,34 +18,48 @@
 
 - Java (openjdk)
 - Maven (v3.8.6 or newer)
-  - If on Debian, you may need to manually install a newer version
+  - If on Debian, you may need to [manually install a newer version](dependancies.md)
 - Docker and Docker-Compose
 
-## Installation
+## Compilation
 
-1. Clone this repo with `git clone https://github.com/JJTofflemire/Signal-Server.git`
+Clone this repo:
 
-    1.1. If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
+```
+git clone https://github.com/JJTofflemire/Signal-Server.git
+```
 
-2. Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
+- If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
 
-    2.1. [Here](config-documentation.md) are some notes on filling out the config files
+Compile with:
 
-3. Compile with `mvn clean install -DskipTests -Pexclude-spam-filter`
+```
+mvn clean install -DskipTests -Pexclude-spam-filter
+```
 
-4. Generate the required certificates with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar certificate`
-  
-    4.1. NOTE: currently I have no idea what this is for, but every old Signal-Server guide includes this, so it will probably be important in connecting to Signal-Android
+For quick recloning, [here](server-recloner.sh) is a script that moves personal `config.yml`, `config-secrets-bundle.yml`, and `secrets.sh` files out of `Signal-Server` before recloning and rebuilding with `source server-recloner.sh`
 
-5.  Run all dependancies wrapped in Docker containers with `sudo docker-compose up -d`
+- Make sure you move `sever-recloner.sh` one directory up from `Signal-Server`
 
-6. Start the server with `java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml`
+## Configuration
 
-    6.1. `quickstart.sh` skips steps 5-6, but requires a modified `sample.yml`/`sample-secrets-bundle.yml` setup ([see the `quickstart.sh` section](#starting-the-sever-with-quickstartsh))
+Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
 
-    6.2. You can test the server to make sure everything is working right by going to `localhost:8080`
+- Any configuration notes related to these two .yml files are located [here](config-documentation.md)
 
-      NOTE: This doesn't work yet, so getting the server to talk to the android app is still ambitious
+## Starting the server
+
+Run all dependancies wrapped in Docker containers with
+
+```
+sudo docker-compose up -d
+```
+
+Start the server with:
+
+``` 
+java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml
+```
 
 ## Starting the sever with [quickstart.sh](quickstart.sh)
 
@@ -58,7 +73,7 @@
 
 - Currently, `quickstart.sh` exports any environmental variables needed by the server so that they don't have to live permanently in `.bashrc`
 
-  - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables described [here](config-documentation.md) (if not, just comment it out)
+  - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables from [config-documentation.md](config-documentation.md#aws-iam-configuration) - [here](sample-secrets.sh) is a `sample-secrets.sh`
   
 - `quickstart.sh` also automatically stops all dependancies when it recieves a keyboard interrupt (Ctrl+C) or when the server crashes
 
@@ -68,52 +83,24 @@
 
 ## To-Do
 
-- ~~Get Signal-Server to compile locally (figure out dependancies and whatnot)~~
+### Configuring the server:
 
-- ~~Get Signal-Server to start locally~~
+- Figure out what to put in `genericZkConfig` - is it the same as `zkConfig`?
 
-- ~~Fill out `sample.yml` and `sample-secrets-bundle.yml` enough to get the server to run without crashing~~
+- Figure out what configuration [appConfig](config-documentation.md#aws-appconfig) wants in its .json file
 
-    - ~~Document what is required and what is optional~~
+- Figure out how to configure `DynamicConfigurationManager` so it doesn't throw an error when running
 
- - ~~Create Docker containers for all other servers and services that Signal-Server needs to run~~
+### Running the server:
 
-    - ~~Add documentation on extra dependancies needed for said servers and services~~
-    
-  - ~~Get Google Cloud to create a bucket with a key that I have a copy of~~
+- Be able to ping the server on `localhost`:
 
-  - ~~Fix Braintree (it's unhappy with `unset`)~~
+  - [Madeindra's](https://github.com/madeindra/signal-setup-guide/tree/master/signal-android) has instructions on this
 
-- ~~Check out aqnouch's server setup guide and see if any of it is relavent to getting the server to be reachable on `localhost`~~
+  - NOTE: the server expects the [`X-Forwarded-for` header](https://github.com/madeindra/signal-setup-guide/tree/master/signal-server-4.xx#proxy)
 
-- Get the server to be reachable on `localhost`
-
-  - I can follow [Madeindra's](https://github.com/madeindra/signal-setup-guide/tree/master/signal-android) guide to do this
-
-- Confirm that the current Redis setup functions for storing information
+- Convert all localhost configs to a real server (using NGINX) that a client could connect to following [this guide](https://github.com/madeindra/signal-setup-guide/tree/master/signal-server-2.92)
 
 - Confirm that AWS / Google Cloud function as intended
 
-- ~~Sort out the requirements that can be dockerized~~
-
-- Figure out what the deal is with extracting certificates with `certificate` when running the server
-
-  - It is what you need to put in `whisper.store` and IS necessary
-
-- Successfully get this fork of Signal-Server to connect to a fork of the android app
-
-- Convert all localhost configs to a real server that a client could connect to
-
-- ~~Create a bash script to automate the process (currently [quickstart.sh](quickstart.sh))~~
-
-    - ~~Make it automatically start the correct file regardless of varying naming schemes~~
-    
-    - ~~Add documentation~~
-
-- ~~Add an example `sample.yml` and `sample-secrets-bundle.yml` with shorthand comments on what to fill out~~
-
-### Extra Credit
-
-- Also get Signal-iOS and Signal-Desktop working with a personal Signal-Server
-
-- Completely strip out some of the parts I don't want (payment, calls, stories etc)
+- Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)

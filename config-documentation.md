@@ -45,6 +45,21 @@
   - messageCache
   - metricsCluster
 
+[UnidentifiedDelivery](#unidentifieddelivery)
+- In `sample.yml`
+  - unidentifiedDelivery
+- In `sample-secrets-bundle.yml`
+  - unidentifiedDelivery.certificate
+  - unidentifiedDelivery.privateKey
+
+[ZkConfig](#zkconfig)
+- In `sample.yml`
+  - zkConfig
+  - genericZkConfig
+- In `sample-secrets-bundle.yml`
+  - zkConfig.serverSecret
+  - genericZkConfig.serverSecret
+
 ### Optional
 
 Leave untouched:
@@ -90,9 +105,6 @@ In `sample.yml`
 - DirectoryV2
 - apn
 - fcm
-- unidentifiedDelivery
-- zkConfig
-- genericZkConfig
 - remoteConfig  
 - artService
 - registrationService
@@ -103,10 +115,6 @@ In `sample-secrets-bundle.yml`
 - directoryV2.client.userIdTokenSharedSecret
 - apn.signingKey
 - fcm.credentials
-- unidentifiedDelivery.certificate
-- unidentifiedDelivery.privateKey
-- zkConfig.serverSecret
-- genericZkConfig.serverSecret
 - remoteConfig.authorizedTokens
 - artService.userAuthenticationTokenSharedSecret
 - artService.userAuthenticationTokenUserIdSecret
@@ -115,17 +123,131 @@ In `sample-secrets-bundle.yml`
 
 ## AWS
 
-### AWS Initial setup
+### AWS IAM Configuration
 
-- Specify AWS dependancies with `sudo nano ~/.bashrc`, then add `export AWS_REGION=your-region`, `export AWS_ACCESS_KEY_ID=key`, and `export AWS_SECRET_ACCESS_KEY=secret` to the end of the file, then run `. ~/.bashrc`
+- Create an account with AWS
 
-  - Instead of setting these environmental variables in `.bashrc`, you can create a `secrets.sh` file with the same three lines that `quickstart.sh` calls when starting Signal-Server
+- Go to IAM and create a user with full access (this is definitely not entirely safe but hey, it gets the job done)
+  
+- Copy the access key and access secret, and paste them into `awsAttachments.accessKey` and `awsAttachments.accessSecret`, and `cdn.accessKey` and `cdn.accessSecret` in [sample-secrets-bundle](/service/config/sample-secrets-bundle.yml)
+  
+- If you give the IAM user full access, you can reuse the same access key and secret for both buckets
+
+### AWS Environmental Variables
+
+- Specify AWS dependancies with `sudo nano ~/.bashrc`, then add:
+
+```
+export AWS_REGION=your-region
+export AWS_ACCESS_KEY_ID=key
+export AWS_SECRET_ACCESS_KEY=secret
+```
+
+- Don't forget to run `. ~/.bashrc`!
+
+- Instead of setting these environmental variables in `.bashrc`, you can create a `secrets.sh` file with the same three lines that `quickstart.sh` calls when starting Signal-Server
 
 ### AWS appConfig
 
 - Search for `AWS AppConfig` and hit `Create Application`
 
-- Under `Configuration Profiles and Feature Flags`, hit `CREATE` and choose `Feature Flag`. Enter a name and hit `Create feature flag configuration profile`
+- Under `Configuration Profiles and Feature Flags`, hit `CREATE` and choose `Feature Flag`. Enter a name and hit `Freeform configuration profile`
+
+- Select `JSON` as the type of `Feature Flag`
+
+  - Enter the following lines:
+
+```
+dynamoDbClientConfiguration:
+  region: us-west-1 # AWS Region
+
+dynamoDbTables:
+  accounts:
+    tableName: Accounts
+    phoneNumberTableName: Accounts_PhoneNumbers
+    phoneNumberIdentifierTableName: Accounts_PhoneNumberIdentifiers
+    usernamesTableName: Accounts_Usernames
+    scanPageSize: 100
+  deletedAccounts:
+    tableName: DeletedAccounts
+  deletedAccountsLock:
+    tableName: DeletedAccountsLock
+  issuedReceipts:
+    tableName: IssuedReceipts
+    expiration: P30D # Duration of time until rows expire
+    generator: abcdefg12345678= # random base64-encoded binary sequence
+  ecKeys:
+    tableName: Keys
+  pqKeys:
+    tableName: PQ_Keys
+  pqLastResortKeys:
+    tableName: PQ_Last_Resort_Keys
+  messages:
+    tableName: Messages
+    expiration: P30D # Duration of time until rows expire
+  pendingAccounts:
+    tableName: PendingAccounts
+  pendingDevices:
+    tableName: PendingDevices
+  phoneNumberIdentifiers:
+    tableName: PhoneNumberIdentifiers
+  profiles:
+    tableName: Profiles
+  pushChallenge:
+    tableName: PushChallenge
+  redeemedReceipts:
+    tableName: RedeemedReceipts
+    expiration: P30D # Duration of time until rows expire
+  registrationRecovery:
+    tableName: RegistrationRecovery
+    expiration: P300D # Duration of time until rows expire
+  remoteConfig:
+    tableName: RemoteConfig
+  reportMessage:
+    tableName: ReportMessage
+  subscriptions:
+    tableName: Subscriptions
+  verificationSessions:
+    tableName: VerificationSessions
+    
+captcha:
+  scoreFloor: 1.0
+  
+registrationService:
+  host: registration.example.com
+  port: 443
+  credentialConfigurationJson: |
+    {
+      "example": "example"
+    }
+  secondaryCredentialConfigurationJson: |
+    {
+      "example": "example"
+    }
+  identityTokenAudience: https://registration.example.com
+  registrationCaCertificate: | # Registration service TLS certificate trust root
+    -----BEGIN CERTIFICATE-----
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
+    AAAAAAAAAAAAAAAAAAAA
+    -----END CERTIFICATE-----
+```
 
 - In the `Environments` tab, select `Create Environment`, enter a name, and ceate the environment
 
@@ -133,7 +255,14 @@ In `sample-secrets-bundle.yml`
 
 - Hit `Create Application` and choose immediately for the timeframe
 
-- Enter the names of the application, environment, and configuration into their sections under `appConfig` in `sample.yml`
+- Enter the names of the application, environment, and configuration into their sections under `appConfig` in `sample.yml`:
+
+```
+appConfig:
+  application:
+  environment:
+  configuration:
+```
 
 ### AWS Buckets Configuration
 
@@ -176,16 +305,6 @@ In `sample-secrets-bundle.yml`
   - ReportMessage
   - Subscriptions
   - VerificationSessions
-
-### AWS IAM Configuration
-
-- Create an account with AWS
-
-- Go to IAM and create a user with full access (this is definitely not entirely safe but hey, it gets the job done)
-  
-- Copy the access key and access secret, and paste them into `awsAttachments.accessKey` and `awsAttachments.accessSecret`, and `cdn.accessKey` and `cdn.accessSecret` in [sample-secrets-bundle](/service/config/sample-secrets-bundle.yml)
-  
-- If you give the IAM user full access, you can reuse the same access key and secret for both buckets
 
 ## Braintree
 
@@ -235,4 +354,83 @@ In `sample-secrets-bundle.yml`
 
 - Currently the [docker-compose.yml](docker-compose.yml) file has a redis-cluster generated by ChatGPT, using `Localhost` and ports 7000-7002
 
-  - I am currently working both from my MacBook and an Ubuntu desktop, and the MacBook doesn't like this port selection. It could be a firewall or a vpn issue though.df 
+  - I am currently working both from my MacBook and an Ubuntu desktop, and the MacBook doesn't like this port selection. It could be a firewall or a vpn issue though
+
+## UnidentifiedDelivery
+
+- Signal-Server wants a certificate in `sample-secrets-bundle.yml` that the server generates:
+
+```
+java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-0.0.0-SNAPSHOT.jar certificate -ca
+```
+
+- Which will output something like this:
+
+```
+Public key : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Private key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+```
+
+- Then take the private key and generate a certificate:
+
+```
+java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-0.0.0-SNAPSHOT.jar certificate --key <Private key> --id <any string of letters or numbers>
+```
+
+- Which will output something like this:
+
+```
+Certificate: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Private key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+```
+
+- I recommend keeping all the outputs somewhere - I put them, commented out, in [`secrets.sh`](sample-secrets.sh)
+
+- Then fill out `unidentifiedDelivery` in `sample.yml`:
+
+```
+unidentifiedDelivery:
+  certificate: secret://unidentifiedDelivery.certificate
+  privateKey: secret://unidentifiedDelivery.privateKey
+  expiresDays: 7 # Probably change this to a much larger number so you don't have to worry about it expiring
+```
+
+- And in `sample-secrets-bundle.yml`:
+
+```
+unidentifiedDelivery.certificate: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+unidentifiedDelivery.privateKey: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+```
+
+## ZkConfig
+
+- Generate a `public` and `private` value:
+
+```
+java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-0.0.0-SNAPSHOT.jar zkparams
+```
+
+- Which will output this:
+
+```
+Public: a really long string
+Private: an even longer string
+```
+
+- I (again) recommend putting these values into [`secrets.sh`](sample-secrets.sh)
+
+- Put the output into `zkConfig` in `sample.yml`
+
+```
+zkConfig:
+  serverPublic: the Public: string
+  serverSecret: secret://zkConfig.serverSecret
+```
+
+- In `sample-secrets-bundle.yml`
+
+```
+zkConfig.serverSecret: the even longer Private: string
+
+genericZkConfig.serverSecret: I'm not sure what goes here
+```
