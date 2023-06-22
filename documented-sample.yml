@@ -243,7 +243,7 @@ datadog:
   apiKey: secret://datadog.apiKey
   environment: dev
 
-# I have no clue
+# Required - generate with `certificate`
 unidentifiedDelivery:
   certificate: secret://unidentifiedDelivery.certificate
   privateKey: secret://unidentifiedDelivery.privateKey
@@ -315,12 +315,12 @@ backupService:
       AAAAAAAAAAAAAAAAAAAA
       -----END CERTIFICATE-----
 
-# I have no clue
+# Necessary - generate with `zkparams`
 zkConfig:
   serverPublic: ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
   serverSecret: secret://zkConfig.serverSecret
 
-# I have no clue
+# Not sure if this is any different from zkConfig
 genericZkConfig:
   serverSecret: secret://genericZkConfig.serverSecret
 

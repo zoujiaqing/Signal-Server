@@ -89,7 +89,11 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 - Figure out what configuration [appConfig](config-documentation.md#aws-appconfig) wants in its .json file
 
-- Figure out how to configure `DynamicConfigurationManager` so it doesn't throw an error when running
+- Figure out how to configure `RegistrationService` so it doesn't throw an error when running
+
+  - I believe the relavent file is [here](https://github.com/signalapp/registration-service/blob/main/src/main/java/org/signal/registration/RegistrationService.java)
+  
+  - This probably requires some kind of keypair, do I need to generate it? how would that work?
 
 ### Running the server:
 
