@@ -13,8 +13,6 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
   # You may have to add or remove sudo here
   docker-compose up -d
 
-  echo ""
-
   # Start the server with the selected JAR file and configuration
   java -jar -Dsecrets.bundle.filename=config-secrets-bundle.yml "$jar_file" server config.yml
 
@@ -30,8 +28,6 @@ JAVA_PID=$!
 while kill -0 $JAVA_PID > /dev/null 2>&1; do
     sleep 1
 done
-
-echo -e "\n"
 
 # Stop the server and clean up -ChatGPT
 docker-compose down
