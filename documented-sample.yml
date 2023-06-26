@@ -160,7 +160,7 @@ directoryV2:
     userAuthenticationTokenSharedSecret: secret://directoryV2.client.userAuthenticationTokenSharedSecret
     userIdTokenSharedSecret: secret://directoryV2.client.userIdTokenSharedSecret
 
-# I think this is used in Signal-Android, but you might be able to use the default Signal one
+# You need to fill out with a dummy certificate for Signal to run
 svr2:
   uri: svr2.example.com
   userAuthenticationTokenSharedSecret: secret://svr2.userAuthenticationTokenSharedSecret
@@ -259,7 +259,7 @@ recaptcha:
 hCaptcha:
   apiKey: secret://hCaptcha.apiKey
 
-# I have no clue, if this refers to `SIGNAL_STORAGE`, then you might be able to point to a local file and ignore this
+# You need to fill out with a dummy certificate for Signal to run
 storageService:
   uri: storage.example.com
   userAuthenticationTokenSharedSecret: secret://storageService.userAuthenticationTokenSharedSecret
@@ -287,7 +287,7 @@ storageService:
       AAAAAAAAAAAAAAAAAAAA
       -----END CERTIFICATE-----
 
-# I have no clue
+# You need to fill out with a dummy certificate for Signal to run
 backupService:
   uri: backup.example.com
   userAuthenticationTokenSharedSecret: secret://backupService.userAuthenticationTokenSharedSecret
@@ -422,7 +422,7 @@ oneTimeDonations:
         - '20'
         - '40'
 
-# I'm not sure but I think it's important
+# Need to fill out
 registrationService:
   host: registration.example.com
   port: 443
@@ -435,7 +435,7 @@ registrationService:
       "example": "example"
     }
   identityTokenAudience: https://registration.example.com
-  registrationCaCertificate: | # Registration service TLS certificate trust root
+  registrationCaCertificate: | # Registration service TLS certificate trust root --> You need to fill out with a dummy certificate for Signal to run
     -----BEGIN CERTIFICATE-----
     ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
     ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz

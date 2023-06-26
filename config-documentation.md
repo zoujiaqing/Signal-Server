@@ -45,10 +45,6 @@
   - messageCache
   - metricsCluster
 
-[registrationService](#registrationservice)
-- In `sample.yml`
-  - registrationService
-
 [UnidentifiedDelivery](#unidentifieddelivery)
 - In `sample.yml`
   - unidentifiedDelivery
@@ -63,6 +59,18 @@
 - In `sample-secrets-bundle.yml`
   - zkConfig.serverSecret
   - genericZkConfig.serverSecret
+
+[Certificate Generation](#certificate-generation)
+- In `sample.yml`
+  - svr2
+  - storageService
+  - backupService
+  - registrationService
+- In `sample-secrets-bundle.yml`
+  - svr2.userAuthenticationTokenSharedSecret
+  - svr2.userIdTokenSharedSecret
+  - storageService.userAuthenticationTokenSharedSecret
+  - backupService.userAuthenticationTokenSharedSecret
 
 ### Optional
 
@@ -87,20 +95,8 @@ I believe that you can use Signal's url in `Signal-Android` (untested)
   - recaptcha
   - hCaptcha
   - badges
-  - svr2
 - In `sample-secrets-bundle.yml`
-  - svr2.userAuthenticationTokenSharedSecret
-  - svr2.userIdTokenSharedSecret
   - hCaptcha.apiKey
-
-I beleive that you can set a local directory instead of using cloud storage (untested)
-- In `sample.yml`
-  - storageService
-  - backupService
-- In `sample-secrets-bundle.yml`
-  - storageService.userAuthenticationTokenSharedSecret
-  - backupService.userAuthenticationTokenSharedSecret
-
 
 ### Unknown (will get sorted into the above)
 
@@ -161,6 +157,12 @@ export AWS_SECRET_ACCESS_KEY=secret
   - Enter the following lines:
 
 ```
+
+# By far the most important bit - this section isn't included anywhere in config.yml but necessary for Signal-Server to run    
+captcha:
+  scoreFloor: 1.0
+
+# I'm not sure if you need the DynamoDB section, but I haven't had time to exhaustively test it
 dynamoDbClientConfiguration:
   region: us-west-1 # AWS Region
 
@@ -212,10 +214,8 @@ dynamoDbTables:
     tableName: Subscriptions
   verificationSessions:
     tableName: VerificationSessions
-    
-captcha:
-  scoreFloor: 1.0
   
+# I'm not convinced that this is required at all, since it is outdated compared to what I have in my config.yml with no problems. You are probably fine to leave it out
 registrationService:
   host: registration.example.com
   port: 443
@@ -250,6 +250,8 @@ registrationService:
     ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
     AAAAAAAAAAAAAAAAAAAA
     -----END CERTIFICATE-----
+
+# Currently there is alot more that I might need to add here - do I have to add all pem key-related bits?
 ```
 
 - In the `Environments` tab, select `Create Environment`, enter a name, and ceate the environment
@@ -359,18 +361,6 @@ appConfig:
 
   - I am currently working both from my MacBook and an Ubuntu desktop, and the MacBook doesn't like this port selection. It could be a firewall or a vpn issue though
 
-## registrationService
-
-- Go to AWS Cognito and create a federated User Pool
-
-  - Here you can generate a domain under `App Integration` and copy the `User pool ID`
-  
-  - Scroll down to `App client`, and copy `Client ID`
-
-- GCloud stuff
-
-- Very unfinished
-
 ## UnidentifiedDelivery
 
 - Signal-Server wants a certificate in `sample-secrets-bundle.yml` that the server generates:
@@ -449,3 +439,81 @@ zkConfig.serverSecret: the even longer Private: string
 
 genericZkConfig.serverSecret: I'm not sure what goes here
 ```
+
+## Certificate Generation
+
+- This section is placed out of alphabetical order because it depends on AWS and Google Cloud (yes it annoys me too)
+
+- `svr2` > `svrCaCertificates`, `storageService` > `storageCaCertificates`, `backupService` > `backupCaCertificates`, and `registrationService` > `registrationCaCertificate` all only look for a valid key of any kind
+
+- Using an example copy-pasted key works fine for all of these sections:
+
+```
+-----BEGIN CERTIFICATE-----
+MIICUTCCAfugAwIBAgIBADANBgkqhkiG9w0BAQQFADBXMQswCQYDVQQGEwJDTjEL
+MAkGA1UECBMCUE4xCzAJBgNVBAcTAkNOMQswCQYDVQQKEwJPTjELMAkGA1UECxMC
+VU4xFDASBgNVBAMTC0hlcm9uZyBZYW5nMB4XDTA1MDcxNTIxMTk0N1oXDTA1MDgx
+NDIxMTk0N1owVzELMAkGA1UEBhMCQ04xCzAJBgNVBAgTAlBOMQswCQYDVQQHEwJD
+TjELMAkGA1UEChMCT04xCzAJBgNVBAsTAlVOMRQwEgYDVQQDEwtIZXJvbmcgWWFu
+ZzBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQCp5hnG7ogBhtlynpOS21cBewKE/B7j
+V14qeyslnr26xZUsSVko36ZnhiaO/zbMOoRcKK9vEcgMtcLFuQTWDl3RAgMBAAGj
+gbEwga4wHQYDVR0OBBYEFFXI70krXeQDxZgbaCQoR4jUDncEMH8GA1UdIwR4MHaA
+FFXI70krXeQDxZgbaCQoR4jUDncEoVukWTBXMQswCQYDVQQGEwJDTjELMAkGA1UE
+CBMCUE4xCzAJBgNVBAcTAkNOMQswCQYDVQQKEwJPTjELMAkGA1UECxMCVU4xFDAS
+BgNVBAMTC0hlcm9uZyBZYW5nggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEE
+BQADQQA/ugzBrjjK9jcWnDVfGHlk3icNRq0oV7Ri32z/+HQX67aRfgZu7KWdI+Ju
+Wm7DCfrPNGVwFWUQOmsPue9rZBgO
+-----END CERTIFICATE-----
+```
+
+- `registrationService` also requires extra configuration with AWS and Google Cloud:
+
+- In AWS, go to `Cognito`
+
+- Select `Create user pool`
+
+- Choose `Federated identity providers` and select `Google` from the options that appear
+
+- Most of the configuration is personal preference, so I went for the least hassle: no MFA, send emails with Cognito, etc
+
+  - In Step 5, make sure to select `Confidential client` under `Initial app client`
+  
+- Under the `App integration` tab, find the `Cognito Domain` and paste it into `sample.yml` > `registrationService` > `host` without the `https://`
+
+  - If there isn't a domain already listed there, create one (there should be a button on the right of that section) and name it anything
+  
+- Integrating this Cognito User Pool with Google Cloud (heavily following [this guide](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds))
+
+  - Go to hamburger menu > `IAM and Admin` > `Workload Identity Federation` and hit `CREATE POOL`
+  
+  - Select `AWS` as the pool's provider
+  
+  - For `Provider ID`: go to AWS > `Cognito` > the created User Pool > `App integration` > scroll to the bottom to the `App clients and analytics` section and copy the `Client ID`
+  
+  - For `AWS account ID`: click on your name in the top right, and the dropdown will have your account ID then create the pool
+  
+  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Admin` and `IAM Workload Identity Pool Admin`
+  
+  - Back in `Workload Identity Federation` > the created pool, hit `GRANT ACCESS` in the top middle-ish, and select the new service account that was just created
+  
+  - On the right, select `CONNECTED SERVICE ACCOUNTS` and hit `Download` under `Client Library Config`
+  
+    - Open the `.json` and make sure that it looks something like this:
+
+```
+{
+  "type": "external_account",
+  "audience": "//iam.googleapis.com/projects/<example_url>",
+  "subject_token_type": "gibberish:gibberish",
+  "service_account_impersonation_url": "https://iamcredentials.googleapis.com/<example_url>",
+  "token_url": "https://sts.googleapis.com/<example_url>",
+  "credential_source": {
+    "environment_id": "aws1",
+    "region_url": "http://169.254.169.254/<example_url>",
+    "url": "http://169.254.169.254/<example_url>",
+    "regional_cred_verification_url": "https://sts.{region}.amazonaws.com<example-url>"
+  }
+}
+```
+
+  - If everything looks right, paste the `.json` into `sample.yml` > `registrationService` > `credentialConfigurationJson` and possibly also `secondaryCredentialConfigurationJson`
