@@ -11,6 +11,12 @@
 
 ### Required
 
+[Apple Push Notifications](#apple-push-notifications-apn)
+- In `sample.yml`
+  - apn
+- In `sample-secrets-bundle.yml`
+  - apn.signingKey
+
 [AWS](#aws)
 - In `sample.yml`
   - dynamoDbClientConfiguration
@@ -103,7 +109,6 @@ I believe that you can use Signal's url in `Signal-Android` (untested)
 In `sample.yml`
 
 - DirectoryV2
-- apn
 - fcm
 - remoteConfig  
 - artService
@@ -112,13 +117,37 @@ In `sample-secrets-bundle.yml`
 
 - directoryV2.client.userAuthenticationTokenSharedSecret
 - directoryV2.client.userIdTokenSharedSecret
-- apn.signingKey
 - fcm.credentials
 - remoteConfig.authorizedTokens
 - artService.userAuthenticationTokenSharedSecret
 - artService.userAuthenticationTokenUserIdSecret
 - currentReportingKey.secret
 - currentReportingKey.salt
+
+## Apple Push Notifications (APN)
+
+- For actual APN implementation, [this guide](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_certificate-based_connection_to_apns) might help
+
+- I am using dummy / test values until it becomes a problem
+
+- In `sample-secrets-bundle.yml`, replace the `apn.signingKey` with:
+
+```
+  -----BEGIN PRIVATE KEY-----
+  MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBd6GS02oWsHHPZRDmI
+  K4owyLme46NVNVisLJSC+cNFFQ==
+  -----END PRIVATE KEY-----
+```
+
+- This key is a dummy key but should stop any apn key-related errors
+
+- It was generated with:
+
+```
+keytool -genkeypair -alias mykey -keyalg EC -keysize 256 -sigalg SHA256withECDSA -keystore keystore.p12 -storetype PKCS12
+
+openssl pkcs12 -in keystore.p12 -nodes -nocerts -out ec_private_key.pem
+```
 
 ## AWS
 
