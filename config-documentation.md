@@ -29,10 +29,16 @@
   - awsAttachments.accessSecret
   - cdn.accessKey
   - cdn.accessSecret
-  
+
 [Braintree](#braintree)
 - In `sample.yml`
   - braintree
+
+[Firebase](#firebase)
+- In `sample.yml`
+  - fcm
+- In `sample-secrets-bundle.yml`
+  - fcm.credentials
 
 [Google Cloud](#google-cloud)
 - In `sample.yml`
@@ -109,7 +115,6 @@ I believe that you can use Signal's url in `Signal-Android` (untested)
 In `sample.yml`
 
 - DirectoryV2
-- fcm
 - remoteConfig  
 - artService
 
@@ -117,7 +122,6 @@ In `sample-secrets-bundle.yml`
 
 - directoryV2.client.userAuthenticationTokenSharedSecret
 - directoryV2.client.userIdTokenSharedSecret
-- fcm.credentials
 - remoteConfig.authorizedTokens
 - artService.userAuthenticationTokenSharedSecret
 - artService.userAuthenticationTokenUserIdSecret
@@ -343,6 +347,18 @@ appConfig:
 ## Braintree
 
 - Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
+
+## Firebase
+
+- Go to [Firebase](firebase.google.com) and create a new project
+
+- When prompted to link this project to an existing one, either create a new one or link it to your main project (it's not recommended by Google but, ah well) (also, this might happen after it is done cooking)
+
+- Once it is done cooking, hit the Settings cog in the top left and select `Project Settings` > `Service accounts`
+
+- Select `Java` under `Admin SDK configuration snippet`, then hit `Generate new private key`
+
+- Paste the `.json` into `fcm.credential` inside `sample-secrets-bundle.yml`
 
 ## Google Cloud
 

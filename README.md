@@ -89,7 +89,9 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 - Figure out what configuration [appConfig](config-documentation.md#aws-appconfig) wants in its .json file
 
-- Set up `apn` and add documentation
+- Add firebase documentation to Signal-Android and change the folder structure in Signal-Android
+
+- Troubleshoot `recaptcha`
 
 ### Running the server:
 
