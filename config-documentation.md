@@ -34,18 +34,15 @@
 - In `sample.yml`
   - braintree
 
-[Firebase](#firebase)
-- In `sample.yml`
-  - fcm
-- In `sample-secrets-bundle.yml`
-  - fcm.credentials
-
 [Google Cloud](#google-cloud)
 - In `sample.yml`
   - adminEventLoggingConfiguration
   - gcpAttachments
+  - fcm
+  - recaptcha
 - In `sample-secrets-bundel.yml`
   - gcpAttachments.rsaSigningKey
+  - fcm.credentials
 
 [Redis](#redis-notes)
 - In `Sample.yml`
@@ -104,7 +101,7 @@ Leave untouched:
 
 I believe that you can use Signal's url in `Signal-Android` (untested)
 - In `sample.yml`
-  - recaptcha
+
   - hCaptcha
   - badges
 - In `sample-secrets-bundle.yml`
@@ -348,19 +345,9 @@ appConfig:
 
 - Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
 
-## Firebase
-
-- Go to [Firebase](firebase.google.com) and create a new project
-
-- When prompted to link this project to an existing one, either create a new one or link it to your main project (it's not recommended by Google but, ah well) (also, this might happen after it is done cooking)
-
-- Once it is done cooking, hit the Settings cog in the top left and select `Project Settings` > `Service accounts`
-
-- Select `Java` under `Admin SDK configuration snippet`, then hit `Generate new private key`
-
-- Paste the `.json` into `fcm.credential` inside `sample-secrets-bundle.yml`
-
 ## Google Cloud
+
+### Initial Configuration
 
 1. Create a Google Cloud accont and enter info / payment
 
@@ -399,6 +386,43 @@ appConfig:
    5.2. Select `CREATE SECRET` and enter a secret value matching the format from `gcpAttachments.rsaSigningKey` inside `sample-secrets-bundle.yml`
 
    5.3. Specifically, keep the line breaks and the `-----BEGIN/END PRIVATE KEY-----` (and make sure what is in the Google Cloud Secret and the `rsaSigningKey` match)
+
+### Firebase
+
+- Go to [Firebase](firebase.google.com) and create a new project
+
+- When prompted to link this project to an existing one, either create a new one or link it to your main project (it's not recommended by Google but, ah well) (also, this might happen after it is done cooking)
+
+- Once it is done cooking, hit the Settings cog in the top left and select `Project Settings` > `Service accounts`
+
+- Select `Java` under `Admin SDK configuration snippet`, then hit `Generate new private key`
+
+- Paste the `.json` into `fcm.credential` inside `sample-secrets-bundle.yml`
+
+### ReCAPTCHA
+
+- Go to the hamburger menu > `Security` > `ReCAPTCHA Enterprise`
+
+- Create `CREATE KEY` and select `Website` as the platform type, and enter a website - `localhost` or a real website to use
+
+- Create a new service account with the Roles `Owner` and `ReCAPTCHA Enterprise Agent`
+
+- Select that service account and go to the `KEYS` tab and generate a new `.json`
+
+- Paste the contents of the `.json` into `sample.yml` > `recaptcha` > `credentialConfigurationJson` in this format:
+
+```
+recaptcha:
+  projectPath: projects/example
+  credentialConfigurationJson: |
+    {
+      service account .json contents
+    } # remove this comment that was here
+```
+
+- Update the `projectPath` to `projects/your-project-name`
+
+  - Use the full ID of the project, not just the display name - shown when clicking on the project selector in the top left
 
 ## Redis Notes
 
