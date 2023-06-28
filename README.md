@@ -2,6 +2,7 @@
 
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
+- Currently I am working on the [Post-Surgery](https://github.com/JJTofflemire/Signal-Server/tree/post-surgery) branch
 
 ## Useful Resources
 
