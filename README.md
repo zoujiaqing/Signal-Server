@@ -2,7 +2,14 @@
 
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
-- Currently I am working on the [Post-Surgery](https://github.com/JJTofflemire/Signal-Server/tree/post-surgery) branch
+
+## Branches
+
+- Currently this project is split into two branches: [main](https://github.com/JJTofflemire/Signal-Server/tree/main) and [post-surgery](https://github.com/JJTofflemire/Signal-Server/tree/post-surgery)
+
+  - `main` is for the original Signal-Server v9.81.0 source code and `post-surgery` is for any modifications made to the source code
+
+    - Currently, `post-surgery` has only removed the `zkconfig` dependancy
 
 ## Useful Resources
 

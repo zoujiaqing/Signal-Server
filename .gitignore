@@ -36,3 +36,10 @@ config.yml
 config-secrets-bundle.yml
 .DS*
 secrets.sh
+config-secrets-bundle-surgery.yml
+config-surgery.yml
+surgery-recloner.sh
+surgerystart.sh
+redis_main
+redis_replication
+data
