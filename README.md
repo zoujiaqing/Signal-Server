@@ -11,8 +11,6 @@
 
     - Currently, `post-surgery` has only removed the `zkconfig` dependancy
 
-- For easy switching, use [surgery-server-recloner.sh](surgery-server-recloner.sh) to reclone into the `post-surgery` branch
-
 ## Useful Resources
 
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
