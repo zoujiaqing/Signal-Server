@@ -202,8 +202,8 @@ awsAttachments: # AWS S3 configuration
 
 # Google Cloud storage config - required
 gcpAttachments: # GCP Storage configuration
-  domain: example.com # Service Account email
-  email: user@example.com # Bucket Cloud Console URL
+  domain: example.com # Bucket Cloud Console URL 
+  email: user@example.com # Service Account email
   maxSizeInBytes: 1024
   pathPrefix:
   rsaSigningKey: secret://gcpAttachments.rsaSigningKey # The Secret value you create
