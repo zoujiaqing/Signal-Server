@@ -2,14 +2,17 @@
 
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
+- Currently in a minimum viable state - it starts and runs successfully, but who knows what it can do
 
 ## Branches
 
 - Currently this project is split into two branches: [main](https://github.com/JJTofflemire/Signal-Server/tree/main) and [post-surgery](https://github.com/JJTofflemire/Signal-Server/tree/post-surgery)
 
-  - `main` is for the original Signal-Server v9.81.0 source code and `post-surgery` is for any modifications made to the source code
+  - `main` is for the original Signal-Server v9.81.0 source code (with irrelevant files stripped out) and `post-surgery` is for any modifications made to the source code (while being very barebones)
 
     - Currently, `post-surgery` has only removed the `zkconfig` dependancy
+
+- These branches function identically, so for ease-of-use [main-recloner.sh](main-recloner.sh) and [post-surgery-recloner.sh](post-surgery-recloner.sh) manage switching between branches (and both get started with `quickstart.sh`)
 
 ## Useful Resources
 
@@ -45,15 +48,31 @@ Compile with:
 mvn clean install -DskipTests -Pexclude-spam-filter
 ```
 
-For quick recloning, [here](server-recloner.sh) is a script that moves personal `config.yml`, `config-secrets-bundle.yml`, and `secrets.sh` files out of `Signal-Server` before recloning and rebuilding with `source server-recloner.sh`
+For recloning and recompiling, use either `main-recloner.sh` or `post-surgery-recloner.sh` for each respective branch
 
-- Make sure you move `sever-recloner.sh` one directory up from `Signal-Server`
+- NOTE: If switching to `post-surgery`, clone the main branch and compile with `post-surgery-recloner.sh` (since `main` will receive updates while `post-surgery` is just storage for the pruned and edited Signal-Server)
 
 ## Configuration
 
-Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
+### Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
 
 - Any configuration notes related to these two `.yml` files are located [here](config-documentation.md)
+
+### Removing zkgroup dependancies
+
+- This is the change that was done to `main` to turn it into `post-surgery`
+
+- In [`WhisperServerService.java`](service/src/main/java/org/whispersystems/textsecuregcm/WhisperServerService.java), comment out lines 639, 739-40, 773-777
+
+- Then run the following (make sure to back up all personal config bits)
+
+```
+mvn clean install -Dmaven.test.skip=true -Pexclude-spam-filter
+
+mvn install -Dmaven.test.skip=true -Pexclude-spam-filter
+```
+
+- This surgery is done to remove the `genericZkConfig.serverSecret` dependancy (and probably `zkConfig.serverSecret`) because Signal-Server requires `genericZkConfig` and provides no documentation on it or a way to generate it. It is definitely solvable but not within the timeframe that I have
 
 ## Starting the server
 
@@ -77,13 +96,19 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
   - If `quickstart.sh` can't run the correct server, there is a bare-bones version commented out at the bottom of the script
 
-- By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in the working directory, renamed to `config.yml` and `config-secrets-bundle.yml` to keep personal config files seperated from the sample files
+- By default, `quickstart.sh` looks for `sample.yml` and `sample-secrets-bundle.yml` in the directory `gitignore`, renamed to `config.yml` and `config-secrets-bundle.yml` to keep personal config files seperated from the sample files
 
 - Currently, `quickstart.sh` exports any environmental variables needed by the server so that they don't have to live permanently in `.bashrc`
 
   - If you want to do the same thing, make a `secrets.sh` file with the AWS environmental variables from [config-documentation.md](config-documentation.md#aws-iam-configuration) - [here](sample-secrets.sh) is a `sample-secrets.sh`
-  
+
 - `quickstart.sh` also automatically stops all dependancies when it recieves a keyboard interrupt (Ctrl+C) or when the server crashes
+
+### [surgerystart.sh](surgerystart.sh) in `post-surgery`
+
+- Inside the branch `post-surgery`, a seperate bash script is used to seperate config and startup with or without `zkconfig`
+
+- It works the same way as `quickstart.sh`, but it refers to `docker-compose-surgery.yml`, `config-surgery.yml`, and `config-secrets-bundle-surgery.yml`
 
 ## Connecting the server to an Android app (unfinished)
 
@@ -93,13 +118,11 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 ### Configuring the server:
 
-- Figure out what to put in `genericZkConfig` - is it the same as `zkConfig`?
-
 - Figure out what configuration [appConfig](config-documentation.md#aws-appconfig) wants in its .json file
 
 - Add firebase documentation to Signal-Android and change the folder structure in Signal-Android
 
-- Troubleshoot `recaptcha`
+- Get `redis-cluster` recognizable and usable by Signal-Server
 
 ### Running the server:
 

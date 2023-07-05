@@ -101,7 +101,6 @@ Leave untouched:
 
 I believe that you can use Signal's url in `Signal-Android` (untested)
 - In `sample.yml`
-
   - hCaptcha
   - badges
 - In `sample-secrets-bundle.yml`
@@ -182,7 +181,7 @@ export AWS_SECRET_ACCESS_KEY=secret
 
 - Under `Configuration Profiles and Feature Flags`, hit `CREATE` and choose `Feature Flag`. Enter a name and hit `Freeform configuration profile`
 
-- Select `JSON` as the type of `Feature Flag`
+- Select `YAML` as the type of `Feature Flag`
 
   - Enter the following lines:
 
@@ -478,6 +477,8 @@ unidentifiedDelivery.privateKey: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 ## ZkConfig
 
+- NOTE: you probably (untested) don't have to do this in `post-surgery`
+
 - Generate a `public` and `private` value:
 
 ```
@@ -543,7 +544,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
 - Choose `Federated identity providers` and select `Google` from the options that appear
 
-- Most of the configuration is personal preference, so I went for the least hassle: no MFA, send emails with Cognito, etc
+- Most of the configuration is personal preference, so I went for the least hassle: no MFA, send emails with Cognito whenever possible
 
   - In Step 5, make sure to select `Confidential client` under `Initial app client`
   

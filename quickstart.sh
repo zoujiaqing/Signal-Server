@@ -8,13 +8,16 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
   echo -e "\nStarting Signal-Server using $jar_file\n"
 
   # Export the environmental variables when starting the server instead of keeping them in .bashrc
-  source secrets.sh
+  source personal-config/secrets.sh
 
   # You may have to add or remove sudo here
   docker-compose up -d
 
+  # Sleep for 2 seconds so that the cluster will be reachable by the time Signal-Server attempts to connect
+  sleep 2
+
   # Start the server with the selected JAR file and configuration
-  java -jar -Dsecrets.bundle.filename=config-secrets-bundle.yml "$jar_file" server config.yml
+  java -jar -Dsecrets.bundle.filename=personal-config/config-secrets-bundle.yml "$jar_file" server personal-config/config.yml
 
 else
   echo -e "\nNo valid Signal-Server JAR file found." # Else echo that the server couldn't be found -ChatGPT
@@ -29,14 +32,15 @@ while kill -0 $JAVA_PID > /dev/null 2>&1; do
     sleep 1
 done
 
-# Stop the server and clean up -ChatGPT
-docker-compose down
+echo -e "\nStopped $jar_file\n"
 
-echo -e "\nStopped $jar_file"
+read -p "Do you want to stop docker-compose? (Press Enter to continue type 'n' to exit): " choice
 
-# The script above should always work, but in case it fails here is the bare-bones version:
-#
-#source secrets.sh
-#sudo docker-compose down
-#sudo docker-compose up -d
-#java -jar -Dsecrets.bundle.filename=config-secrets-bundle.yml service/target/TextSecureServer-<VERSION>-<SNAPSHOT/dirty>.jar server config.yml
+if [[ $choice == "n" ]]; then
+  echo -e "\nExiting..."
+else
+  # Stop the server and clean up -ChatGPT
+  docker-compose down
+
+  echo -e "\nStopped docker-compose dependancies"
+fi
