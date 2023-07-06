@@ -31,3 +31,4 @@ deployer.log
 .settings
 .vscode
 personal-config/*
+!personal-config/config

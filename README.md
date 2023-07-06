@@ -58,6 +58,12 @@ Then compile with:
 mvn clean install -DskipTests -Pexclude-spam-filter
 ```
 
+### Recloning
+
+The [recloner.sh](scripts/recloner.sh) bash script moves the folder [personal-config](personal-config) up one level outside of `Signal-Server`, then reclones from this repository
+
+Call it from inside `scripts` with `source recloner.sh`
+
 ### Removing zkgroup dependancies manually
 
 - This removes `zkgroup` (originally called from [libsignal](https://github.com/signalapp/libsignal)) which will let the server start
@@ -74,6 +80,74 @@ mvn clean install -DskipTests -Pexclude-spam-filter
 
 - Any configuration notes related to these two `.yml` files are located [here](docs/config-documentation.md)
 
+### Docker first run
+
+In order to for the redis-cluster to successfully start, it has to start without any modifications to the source [docker-compose.yml](https://github.com/bitnami/containers/blob/main/bitnami/redis-cluster/docker-compose.yml)
+
+This can be done with:
+
+```
+sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
+```
+
+Which will generate the required volumes
+
+
+If you want to verify that the first run has correctly started a redis cluster:
+
+- Start the container (`sudo docker-compose -f docker-compose-first-run.yml up -d`)
+
+- Find the name of a container to check the logs of with `sudo docker ps`
+
+- Run `sudo docker logs <name from before>` and look for a line like:
+
+```
+1:S 06 Jul 2023 22:53:49.430 * Connecting to MASTER 172.27.0.6:6379
+```
+
+- Use that IP and port to connect to the server: `redis-cli -h 172.27.0.6 -p 6379`
+
+- Authenticate yourself with `AUTH bitnami`
+
+- Run `CLUSTER INFO`, and if it started correctly, will output:
+
+```
+172.27.0.6:6379> CLUSTER INFO
+cluster_state:ok
+cluster_slots_assigned:16384
+cluster_slots_ok:16384
+cluster_slots_pfail:0
+cluster_slots_fail:0
+cluster_known_nodes:6
+cluster_size:3
+cluster_current_epoch:6
+cluster_my_epoch:1
+cluster_stats_messages_ping_sent:140
+cluster_stats_messages_pong_sent:134
+cluster_stats_messages_sent:274
+cluster_stats_messages_ping_received:134
+cluster_stats_messages_pong_received:140
+cluster_stats_messages_received:274
+total_cluster_links_buffer_limit_exceeded:0
+```
+
+If you started the modified [docker-compose.yml](docker-compose.yml) first, this test will fail. Run:
+
+```
+docker volume rm signal-server_redis-cluster_data-0
+docker volume rm signal-server_redis-cluster_data-1
+docker volume rm signal-server_redis-cluster_data-2
+docker volume rm signal-server_redis-cluster_data-3
+docker volume rm signal-server_redis-cluster_data-4
+docker volume rm signal-server_redis-cluster_data-5
+```
+
+- Which should erase all volumes created by the dockerized redis-cluster (and erease all data stored on the cluster)
+
+- If those names are wrong, you can find them with `docker volume ls` and paste in the ones starting with `signal-server_`
+
+- Then rerun the first `docker-compose` command
+
 ## Starting the server
 
 ### The easy way
@@ -81,6 +155,8 @@ mvn clean install -DskipTests -Pexclude-spam-filter
 [Make sure you configure `quickstart.sh` first!](docs/config-documentation.md)
 
 ```
+cd scripts
+
 source quickstart.sh
 ```
 
@@ -116,4 +192,10 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 - Confirm that AWS / Google Cloud function as intended
 
+### Extra Credit
+
+- Write scripts for AWS / Google Cloud cli
+
 - Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
+
+- Set up Signal-iOS

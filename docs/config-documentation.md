@@ -438,6 +438,10 @@ recaptcha:
 
     - I removed the password requirements and added ports for the cluster to be reachable from
 
+- For some reason, you need to start Bitnami's dockerized redis-cluster completely vanilla first before starting the modified `docker-compose.yml`
+
+  - Instructions on doing that is back in the [README.md](../README.md#docker-first-run)
+
 ## UnidentifiedDelivery
 
 - Signal-Server wants a certificate in `sample-secrets-bundle.yml` that the server generates:
@@ -605,6 +609,8 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
 - It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.sh` located in `Signal-Server/personal-config`
 
-  - This folder is already `.gitignore`'d and gets perserved between reclones with [`recloner.sh`](scripts/recloner.sh)
+  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`source recloner.sh`](scripts/recloner.sh)
 
 - The script should work out of the box - it should start all dependancies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
+
+  - In case it doesn't function, a barebones version is commented out at the bottom - either run each line or create a new bash script in `Signal-Server`
