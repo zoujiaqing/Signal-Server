@@ -636,7 +636,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
         config.getCdnConfiguration().region());
 
     ServerSecretParams zkSecretParams = new ServerSecretParams(config.getZkConfig().serverSecret().value());
-    GenericServerSecretParams genericZkSecretParams = new GenericServerSecretParams(config.getGenericZkConfig().serverSecret().value());
+    // GenericServerSecretParams genericZkSecretParams = new GenericServerSecretParams(config.getGenericZkConfig().serverSecret().value());
     ServerZkProfileOperations zkProfileOperations = new ServerZkProfileOperations(zkSecretParams);
     ServerZkAuthOperations zkAuthOperations = new ServerZkAuthOperations(zkSecretParams);
     ServerZkReceiptOperations zkReceiptOperations = new ServerZkReceiptOperations(zkSecretParams);
@@ -736,8 +736,8 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
         new ArtController(rateLimiters, artCredentialsGenerator),
         new AttachmentControllerV2(rateLimiters, config.getAwsAttachmentsConfiguration().accessKey().value(), config.getAwsAttachmentsConfiguration().accessSecret().value(), config.getAwsAttachmentsConfiguration().region(), config.getAwsAttachmentsConfiguration().bucket()),
         new AttachmentControllerV3(rateLimiters, config.getGcpAttachmentsConfiguration().domain(), config.getGcpAttachmentsConfiguration().email(), config.getGcpAttachmentsConfiguration().maxSizeInBytes(), config.getGcpAttachmentsConfiguration().pathPrefix(), config.getGcpAttachmentsConfiguration().rsaSigningKey().value()),
-        new CallLinkController(rateLimiters, genericZkSecretParams),
-        new CertificateController(new CertificateGenerator(config.getDeliveryCertificate().certificate().value(), config.getDeliveryCertificate().ecPrivateKey(), config.getDeliveryCertificate().expiresDays()), zkAuthOperations, genericZkSecretParams, clock),
+        // new CallLinkController(rateLimiters, genericZkSecretParams),
+        // new CertificateController(new CertificateGenerator(config.getDeliveryCertificate().certificate().value(), config.getDeliveryCertificate().ecPrivateKey(), config.getDeliveryCertificate().expiresDays()), zkAuthOperations, genericZkSecretParams, clock),
         new ChallengeController(rateLimitChallengeManager),
         new DeviceController(pendingDevicesManager, accountsManager, messagesManager, keys, rateLimiters, config.getMaxDevices()),
         new DirectoryV2Controller(directoryV2CredentialsGenerator),
@@ -770,11 +770,11 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
             pushNotificationManager, registrationCaptchaManager, registrationRecoveryPasswordsManager, rateLimiters,
             accountsManager, clock)
     );
-    if (config.getSubscription() != null && config.getOneTimeDonations() != null) {
-      commonControllers.add(new SubscriptionController(clock, config.getSubscription(), config.getOneTimeDonations(),
-          subscriptionManager, stripeManager, braintreeManager, zkReceiptOperations, issuedReceiptsManager, profileBadgeConverter,
-          resourceBundleLevelTranslator));
-    }
+    //if (config.getSubscription() != null && config.getOneTimeDonations() != null) {
+    //  commonControllers.add(new SubscriptionController(clock, config.getSubscription(), config.getOneTimeDonations(),
+    //      subscriptionManager, stripeManager, braintreeManager, zkReceiptOperations, issuedReceiptsManager, profileBadgeConverter,
+    //      resourceBundleLevelTranslator));
+    //}
 
     for (Object controller : commonControllers) {
       environment.jersey().register(controller);

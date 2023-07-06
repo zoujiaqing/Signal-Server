@@ -14,7 +14,7 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
   docker-compose up -d
 
   # Sleep for 2 seconds so that the cluster will be reachable by the time Signal-Server attempts to connect
-  sleep 2
+  sleep 4
 
   # Start the server with the selected JAR file and configuration
   java -jar -Dsecrets.bundle.filename=personal-config/config-secrets-bundle.yml "$jar_file" server personal-config/config.yml
