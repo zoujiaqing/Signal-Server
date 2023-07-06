@@ -136,23 +136,23 @@ dynamoDbTables:
 
 # Config to connect to the Dockerized Redis-Cluster - you will have to mess with ports and domain (or just use localhost)
 cacheCluster: # Redis server configuration for cache cluster
-  configurationUri: redis://redis.example.com:6379/
+  configurationUri: redis://127.0.0.1:7000
 
 # More Redis config - required
 clientPresenceCluster: # Redis server configuration for client presence cluster
-  configurationUri: redis://redis.example.com:6379/
+  configurationUri: redis://127.0.0.1:7000
 
 # More Redis config - required
 pubsub: # Redis server configuration for pubsub cluster
-  uri: redis://redis.example.com:6379/
+  uri: redis://127.0.0.1:7000
 
 # More Redis config - required
 pushSchedulerCluster: # Redis server configuration for push scheduler cluster
-  configurationUri: redis://redis.example.com:6379/
+  configurationUri: redis://127.0.0.1:7000
 
 # More Redis config - required
 rateLimitersCluster: # Redis server configuration for rate limiters cluster
-  configurationUri: redis://redis.example.com:6379/
+  configurationUri: redis://127.0.0.1:7000
 
 # I have no clue
 directoryV2:
@@ -187,11 +187,11 @@ svr2:
 messageCache: # Redis server configuration for message store cache
   persistDelayMinutes: 1
   cluster:
-    configurationUri: redis://redis.example.com:6379/
+    configurationUri: redis://127.0.0.1:7000
 
 # More Redis config - required
 metricsCluster:
-  configurationUri: redis://redis.example.com:6379/
+  configurationUri: redis://127.0.0.1:7000
 
 # AWS Bucket config - required
 awsAttachments: # AWS S3 configuration
