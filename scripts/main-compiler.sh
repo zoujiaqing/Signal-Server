@@ -2,7 +2,7 @@
 
 cd ..
 
-cp recloner-scripts/intact/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
+cp scripts/intact/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
 
 mvn clean install -DskipTests -Pexclude-spam-filter
 

@@ -2,7 +2,7 @@
 
 cd ..
 
-cp recloner-scripts/post-surgery/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
+cp scripts/post-surgery/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
 
 mvn clean install -DskipTests -Pexclude-spam-filter
 
