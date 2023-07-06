@@ -2,9 +2,7 @@
 
 cd ..
 
-git reset --hard main
-
-cp recloner-scripts/intact/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
+cp recloner-scripts/post-surgery/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
 
 mvn clean install -DskipTests -Pexclude-spam-filter
 
@@ -14,5 +12,5 @@ if [[ $choice == "n" ]]; then
   echo -e "\nExiting..."
 else
   echo -e "\n"
-  source quickstart.sh
+  source scripts/quickstart.sh
 fi

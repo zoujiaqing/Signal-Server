@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ..
+
 # Find the JAR file matching the name pattern -ChatGPT
 jar_file=$(find service/target -name "TextSecureServer*.jar" ! -name "*-tests.jar" | head -n 1)
 
@@ -11,7 +13,12 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
   source personal-config/secrets.sh
 
   # You may have to add or remove sudo here
+
+  cd scripts
+
   docker-compose up -d
+
+  cd ..
 
   # Sleep for 2 seconds so that the cluster will be reachable by the time Signal-Server attempts to connect
   sleep 4
@@ -21,7 +28,9 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
 
 else
   echo -e "\nNo valid Signal-Server JAR file found." # Else echo that the server couldn't be found -ChatGPT
+  cd scripts
   docker-compose down
+  cd ..
 fi
 
 # Get the process ID (PID) of the Java process -ChatGPT
@@ -40,7 +49,11 @@ if [[ $choice == "n" ]]; then
   echo -e "\nExiting..."
 else
   # Stop the server and clean up -ChatGPT
+  cd scripts
+
   docker-compose down
+
+  cd ..
 
   echo -e "\nStopped docker-compose dependancies"
 fi
