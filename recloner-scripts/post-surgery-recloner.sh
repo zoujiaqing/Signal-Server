@@ -2,6 +2,8 @@
 
 cd ..
 
+git checkout post-surgery
+
 git reset --hard post-surgery
 
 cp recloner-scripts/post-surgery/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
