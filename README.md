@@ -102,8 +102,6 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 ## To-Do
 
-### Configuring the server:
-
 ### Running the server:
 
 - Be able to ping the server on `localhost`:
@@ -113,9 +111,3 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 - Confirm that AWS / Google Cloud function as intended
 
 - Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
-
-### Documentation
-
-- Update sample / sample secrets bundle.yml with dummy variables
-
-- Reorganize config-documentation.md

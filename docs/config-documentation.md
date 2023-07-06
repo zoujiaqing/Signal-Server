@@ -133,7 +133,7 @@ In `sample-secrets-bundle.yml`
 
 - For actual APN implementation, [this guide](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_certificate-based_connection_to_apns) might help
 
-- I am using dummy / test values until it becomes a problem
+- I am using dummy / test values until it becomes a problem (already in `documented-sample-secrets-bundle.yml`)
 
 - In `sample-secrets-bundle.yml`, replace the `apn.signingKey` with:
 
@@ -348,6 +348,8 @@ appConfig:
 ## Braintree
 
 - Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
+
+- Done by default
 
 ## Google Cloud
 
