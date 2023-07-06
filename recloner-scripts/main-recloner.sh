@@ -2,8 +2,6 @@
 
 cd ..
 
-git checkout main
-
 git reset --hard main
 
 cp recloner-scripts/intact/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
