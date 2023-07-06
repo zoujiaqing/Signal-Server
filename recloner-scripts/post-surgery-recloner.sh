@@ -1,6 +1,10 @@
 #!/bin/bash
 
-git reset --hard main
+cd ..
+
+git reset --hard post-surgery
+
+cp recloner-scripts/post-surgery/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
 
 mvn clean install -DskipTests -Pexclude-spam-filter
 
