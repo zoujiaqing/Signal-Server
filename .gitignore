@@ -31,6 +31,3 @@ deployer.log
 .settings
 .vscode
 personal-config/*
-!personal-config/documented-sample.yml
-!personal-config/documented-sample-secrets-bundle.yml
-!personal-config/sample-secrets.sh
