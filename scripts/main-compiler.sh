@@ -2,7 +2,8 @@
 
 cd ..
 
-cp scripts/intact/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
+# sudo isn't explicitly required here, but sometimes there are problems without sudo
+sudo cp scripts/intact/WhisperServerService.java service/src/main/java/org/whispersystems/textsecuregcm
 
 mvn clean install -DskipTests -Pexclude-spam-filter
 

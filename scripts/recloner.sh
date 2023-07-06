@@ -2,7 +2,8 @@
 
 cd .. && cd ..
 
-mv Signal-Server/personal-config ./
+# sudo isn't explicitly required here, but sometimes there are problems without sudo
+sudo mv Signal-Server/personal-config ./
 
 rm -rf Signal-Server
 

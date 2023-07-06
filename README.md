@@ -44,6 +44,10 @@ cd Signal-Server/scripts
 source surgery-compiler.sh
 ```
 
+Make sure to compile with `source <script>` so that `cd` and `mvn` function as intended
+
+Using the scripted compilers are recommended to ensure that the server is in the correct configuration (with or without `zkgroup`)
+
 ### Manually
 
 - If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
@@ -59,6 +63,8 @@ mvn clean install -DskipTests -Pexclude-spam-filter
 - This removes `zkgroup` (originally called from [libsignal](https://github.com/signalapp/libsignal)) which will let the server start
 
 - In [`WhisperServerService.java`](service/src/main/java/org/whispersystems/textsecuregcm/WhisperServerService.java), comment out lines 639, 739-40, 773-777
+
+- Alternatively, copy the `WhisperServerService.java` file from either the folder `intact` or `post-surgery` to `service/src/main/java/org/whispersystems/textsecuregcm` to either include or remove `zkgroup`
 
 - This is automated with [surgery-compiler.sh](scripts/surgery-compiler.sh), run it with `source surgery-compiler.sh`
 
