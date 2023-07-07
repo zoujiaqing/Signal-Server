@@ -23,6 +23,7 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
 else
   echo -e "\nNo valid Signal-Server JAR file found." # Else echo that the server couldn't be found -ChatGPT
   sudo docker-compose down
+  sleep 2
   exit
 fi
 
