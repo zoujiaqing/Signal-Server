@@ -25,6 +25,12 @@
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
 - [Dependancies installation notes for Ubuntu / Debian](docs/dependancies.md)
 
+## Docker!
+
+- Signal-Server v9.81.0 has been dockerized!
+
+- This long guide can all be ignored, just follow the [config instructions](docs/config-documentation.md)(including the [docker specific instructions!](docs/config-documentation.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
+
 ## Dependancies
 
 - Java (openjdk)
@@ -186,11 +192,11 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 ### Running the server:
 
-- Be able to ping the server on `localhost`:
-
 - Convert all localhost configs to a real server (using NGINX) that a client could connect to following [this guide](https://github.com/madeindra/signal-setup-guide/tree/master/signal-server-2.92)
 
 - Confirm that AWS / Google Cloud function as intended
+
+- See if you can generate the required Bitnami redis-cluster volumes with `docker blah blah blah` instead of using `docker-compose-first-run.yml`
 
 ### Extra Credit
 

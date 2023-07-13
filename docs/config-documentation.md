@@ -6,7 +6,7 @@
 - [Here](docs/documented-sample.yml) is an example of `sample.yml` with extra comments and some sections filled out
 - [Here](docs/documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments and some sections filled out
 
-## General Config
+## [General Configuration](#general-config)
 
 [Certificate Generation](#certificate-generation)
 - In `sample.yml`
@@ -22,9 +22,12 @@
 
 [Configuring for `quickstart.sh`](#configuring-for-quickstartsh)
 
+[Dockerized Signal-Server setup](#dockerized-signal-server-documentation)
+- Here are all the extra configuration needed to do to make Signal-Server-Docker run. This can be ignored if on Main branch
+
 ## Dependancies
 
-### Required
+### [Required](#dependancies-verbose)
 
 [Apple Push Notifications](#apple-push-notifications-apn)
 - In `sample.yml`
@@ -126,6 +129,116 @@ In `sample-secrets-bundle.yml`
 - artService.userAuthenticationTokenUserIdSecret
 - currentReportingKey.secret
 - currentReportingKey.salt
+
+# General Config
+
+## Certificate Generation
+
+- This section is placed out of alphabetical order because it depends on AWS and Google Cloud (yes it annoys me too)
+
+- `svr2` > `svrCaCertificates`, `storageService` > `storageCaCertificates`, `backupService` > `backupCaCertificates`, and `registrationService` > `registrationCaCertificate` all only look for a valid key of any kind
+
+- Using an example copy-pasted key works fine for all of these sections:
+
+```
+-----BEGIN CERTIFICATE-----
+MIICUTCCAfugAwIBAgIBADANBgkqhkiG9w0BAQQFADBXMQswCQYDVQQGEwJDTjEL
+MAkGA1UECBMCUE4xCzAJBgNVBAcTAkNOMQswCQYDVQQKEwJPTjELMAkGA1UECxMC
+VU4xFDASBgNVBAMTC0hlcm9uZyBZYW5nMB4XDTA1MDcxNTIxMTk0N1oXDTA1MDgx
+NDIxMTk0N1owVzELMAkGA1UEBhMCQ04xCzAJBgNVBAgTAlBOMQswCQYDVQQHEwJD
+TjELMAkGA1UEChMCT04xCzAJBgNVBAsTAlVOMRQwEgYDVQQDEwtIZXJvbmcgWWFu
+ZzBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQCp5hnG7ogBhtlynpOS21cBewKE/B7j
+V14qeyslnr26xZUsSVko36ZnhiaO/zbMOoRcKK9vEcgMtcLFuQTWDl3RAgMBAAGj
+gbEwga4wHQYDVR0OBBYEFFXI70krXeQDxZgbaCQoR4jUDncEMH8GA1UdIwR4MHaA
+FFXI70krXeQDxZgbaCQoR4jUDncEoVukWTBXMQswCQYDVQQGEwJDTjELMAkGA1UE
+CBMCUE4xCzAJBgNVBAcTAkNOMQswCQYDVQQKEwJPTjELMAkGA1UECxMCVU4xFDAS
+BgNVBAMTC0hlcm9uZyBZYW5nggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEE
+BQADQQA/ugzBrjjK9jcWnDVfGHlk3icNRq0oV7Ri32z/+HQX67aRfgZu7KWdI+Ju
+Wm7DCfrPNGVwFWUQOmsPue9rZBgO
+-----END CERTIFICATE-----
+```
+
+- `registrationService` also requires extra configuration with AWS and Google Cloud:
+
+- In AWS, go to `Cognito`
+
+- Select `Create user pool`
+
+- Choose `Federated identity providers` and select `Google` from the options that appear
+
+- Most of the configuration is personal preference, so I went for the least hassle: no MFA, send emails with Cognito whenever possible
+
+  - In Step 5, make sure to select `Confidential client` under `Initial app client`
+  
+- Under the `App integration` tab, find the `Cognito Domain` and paste it into `sample.yml` > `registrationService` > `host` without the `https://`
+
+  - If there isn't a domain already listed there, create one (there should be a button on the right of that section) and name it anything
+  
+- Integrating this Cognito User Pool with Google Cloud (heavily following [this guide](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds))
+
+  - Go to hamburger menu > `IAM and Admin` > `Workload Identity Federation` and hit `CREATE POOL`
+  
+  - Select `AWS` as the pool's provider
+  
+  - For `Provider ID`: go to AWS > `Cognito` > the created User Pool > `App integration` > scroll to the bottom to the `App clients and analytics` section and copy the `Client ID`
+  
+  - For `AWS account ID`: click on your name in the top right, and the dropdown will have your account ID then create the pool
+  
+  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Admin` and `IAM Workload Identity Pool Admin`
+  
+  - Back in `Workload Identity Federation` > the created pool, hit `GRANT ACCESS` in the top middle-ish, and select the new service account that was just created
+  
+  - On the right, select `CONNECTED SERVICE ACCOUNTS` and hit `Download` under `Client Library Config`
+  
+    - Open the `.json` and make sure that it looks something like this:
+
+```
+{
+  "type": "external_account",
+  "audience": "//iam.googleapis.com/projects/<example_url>",
+  "subject_token_type": "gibberish:gibberish",
+  "service_account_impersonation_url": "https://iamcredentials.googleapis.com/<example_url>",
+  "token_url": "https://sts.googleapis.com/<example_url>",
+  "credential_source": {
+    "environment_id": "aws1",
+    "region_url": "http://169.254.169.254/<example_url>",
+    "url": "http://169.254.169.254/<example_url>",
+    "regional_cred_verification_url": "https://sts.{region}.amazonaws.com<example-url>"
+  }
+}
+```
+
+  - If everything looks right, paste the `.json` into `sample.yml` > `registrationService` > `credentialConfigurationJson` and possibly also `secondaryCredentialConfigurationJson`
+
+## Configuring for `quickstart.sh`
+
+- `quickstart.sh` is located in `Signal-Server/scripts` and is called with `source quickstart.sh`
+
+- It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.sh` located in `Signal-Server/personal-config`
+
+  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`source recloner.sh`](scripts/recloner.sh)
+
+- The script should work out of the box - it should start all dependancies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
+
+  - In case it doesn't function, a barebones version is commented out at the bottom - either run each line or create a new bash script in `Signal-Server`
+
+## Dockerized Signal-Server Documentation
+
+Update all redis sections in `config.yml` to:
+
+```
+  configurationUri: redis://redis-node-5:6379
+```
+
+Which will tell Signal-Server to look for the redis-cluster in a docker-network
+
+Your AWS environmental variables are passed in as a `secrets.env` instead of as a script. You can use [sample-secrets.env](sample-secrets.env) as a template, and put it in `personal-config`, like with `secrets.sh`
+
+- `secrets.env` will get called by the `docker-compose.yml` file during startup to avoid the need to hardcode environmental variables
+
+The `personal-config` folder is functionally the same as in the Main branch, and gets mounted at startup
+
+- `personal-config` needs a completed `config.yml`, `config-secrets-bundle`, and `secrets.env` in order for the server to start properly (assuming correct configuration)
 
 # Dependancies (verbose)
 
@@ -522,95 +635,3 @@ zkConfig.serverSecret: the even longer Private: string
 
 genericZkConfig.serverSecret: I'm not sure what goes here
 ```
-
-# General Config
-
-## Certificate Generation
-
-- This section is placed out of alphabetical order because it depends on AWS and Google Cloud (yes it annoys me too)
-
-- `svr2` > `svrCaCertificates`, `storageService` > `storageCaCertificates`, `backupService` > `backupCaCertificates`, and `registrationService` > `registrationCaCertificate` all only look for a valid key of any kind
-
-- Using an example copy-pasted key works fine for all of these sections:
-
-```
------BEGIN CERTIFICATE-----
-MIICUTCCAfugAwIBAgIBADANBgkqhkiG9w0BAQQFADBXMQswCQYDVQQGEwJDTjEL
-MAkGA1UECBMCUE4xCzAJBgNVBAcTAkNOMQswCQYDVQQKEwJPTjELMAkGA1UECxMC
-VU4xFDASBgNVBAMTC0hlcm9uZyBZYW5nMB4XDTA1MDcxNTIxMTk0N1oXDTA1MDgx
-NDIxMTk0N1owVzELMAkGA1UEBhMCQ04xCzAJBgNVBAgTAlBOMQswCQYDVQQHEwJD
-TjELMAkGA1UEChMCT04xCzAJBgNVBAsTAlVOMRQwEgYDVQQDEwtIZXJvbmcgWWFu
-ZzBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQCp5hnG7ogBhtlynpOS21cBewKE/B7j
-V14qeyslnr26xZUsSVko36ZnhiaO/zbMOoRcKK9vEcgMtcLFuQTWDl3RAgMBAAGj
-gbEwga4wHQYDVR0OBBYEFFXI70krXeQDxZgbaCQoR4jUDncEMH8GA1UdIwR4MHaA
-FFXI70krXeQDxZgbaCQoR4jUDncEoVukWTBXMQswCQYDVQQGEwJDTjELMAkGA1UE
-CBMCUE4xCzAJBgNVBAcTAkNOMQswCQYDVQQKEwJPTjELMAkGA1UECxMCVU4xFDAS
-BgNVBAMTC0hlcm9uZyBZYW5nggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEE
-BQADQQA/ugzBrjjK9jcWnDVfGHlk3icNRq0oV7Ri32z/+HQX67aRfgZu7KWdI+Ju
-Wm7DCfrPNGVwFWUQOmsPue9rZBgO
------END CERTIFICATE-----
-```
-
-- `registrationService` also requires extra configuration with AWS and Google Cloud:
-
-- In AWS, go to `Cognito`
-
-- Select `Create user pool`
-
-- Choose `Federated identity providers` and select `Google` from the options that appear
-
-- Most of the configuration is personal preference, so I went for the least hassle: no MFA, send emails with Cognito whenever possible
-
-  - In Step 5, make sure to select `Confidential client` under `Initial app client`
-  
-- Under the `App integration` tab, find the `Cognito Domain` and paste it into `sample.yml` > `registrationService` > `host` without the `https://`
-
-  - If there isn't a domain already listed there, create one (there should be a button on the right of that section) and name it anything
-  
-- Integrating this Cognito User Pool with Google Cloud (heavily following [this guide](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds))
-
-  - Go to hamburger menu > `IAM and Admin` > `Workload Identity Federation` and hit `CREATE POOL`
-  
-  - Select `AWS` as the pool's provider
-  
-  - For `Provider ID`: go to AWS > `Cognito` > the created User Pool > `App integration` > scroll to the bottom to the `App clients and analytics` section and copy the `Client ID`
-  
-  - For `AWS account ID`: click on your name in the top right, and the dropdown will have your account ID then create the pool
-  
-  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Admin` and `IAM Workload Identity Pool Admin`
-  
-  - Back in `Workload Identity Federation` > the created pool, hit `GRANT ACCESS` in the top middle-ish, and select the new service account that was just created
-  
-  - On the right, select `CONNECTED SERVICE ACCOUNTS` and hit `Download` under `Client Library Config`
-  
-    - Open the `.json` and make sure that it looks something like this:
-
-```
-{
-  "type": "external_account",
-  "audience": "//iam.googleapis.com/projects/<example_url>",
-  "subject_token_type": "gibberish:gibberish",
-  "service_account_impersonation_url": "https://iamcredentials.googleapis.com/<example_url>",
-  "token_url": "https://sts.googleapis.com/<example_url>",
-  "credential_source": {
-    "environment_id": "aws1",
-    "region_url": "http://169.254.169.254/<example_url>",
-    "url": "http://169.254.169.254/<example_url>",
-    "regional_cred_verification_url": "https://sts.{region}.amazonaws.com<example-url>"
-  }
-}
-```
-
-  - If everything looks right, paste the `.json` into `sample.yml` > `registrationService` > `credentialConfigurationJson` and possibly also `secondaryCredentialConfigurationJson`
-
-## Configuring for `quickstart.sh`
-
-- `quickstart.sh` is located in `Signal-Server/scripts` and is called with `source quickstart.sh`
-
-- It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.sh` located in `Signal-Server/personal-config`
-
-  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`source recloner.sh`](scripts/recloner.sh)
-
-- The script should work out of the box - it should start all dependancies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
-
-  - In case it doesn't function, a barebones version is commented out at the bottom - either run each line or create a new bash script in `Signal-Server`
