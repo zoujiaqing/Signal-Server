@@ -134,8 +134,6 @@ In `sample-secrets-bundle.yml`
 
 ## Certificate Generation
 
-- This section is placed out of alphabetical order because it depends on AWS and Google Cloud (yes it annoys me too)
-
 - `svr2` > `svrCaCertificates`, `storageService` > `storageCaCertificates`, `backupService` > `backupCaCertificates`, and `registrationService` > `registrationCaCertificate` all only look for a valid key of any kind
 
 - Using an example copy-pasted key works fine for all of these sections:

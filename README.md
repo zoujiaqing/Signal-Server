@@ -198,6 +198,8 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 - See if you can generate the required Bitnami redis-cluster volumes with `docker blah blah blah` instead of using `docker-compose-first-run.yml`
 
+- Set up spam filter
+
 ### Extra Credit
 
 - Write scripts for AWS / Google Cloud cli
