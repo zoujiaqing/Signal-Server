@@ -10,9 +10,9 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
   echo -e "\nStarting Signal-Server using $jar_file\n"
 
   # Export the environmental variables when starting the server instead of keeping them in .bashrc
-  source personal-config/secrets.sh
+  source personal-config/secrets.env
 
-  sudo docker-compose up -d
+  sudo docker compose up -d
 
   # Sleep so that the cluster will be reachable by the time Signal-Server attempts to connect
   sleep 4
@@ -22,7 +22,7 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
 
 else
   echo -e "\nNo valid Signal-Server JAR file found." # Else echo that the server couldn't be found -ChatGPT
-  sudo docker-compose down
+  sudo docker compose down
   sleep 2
   exit
 fi
@@ -42,7 +42,7 @@ read -p "Do you want to stop docker-compose.yml? (Press Enter to continue type '
 if [[ $choice == "n" ]]; then
   echo -e "\nExiting..."
 else
-  sudo docker-compose down
+  sudo docker compose down
   echo -e "\nStopped docker-compose dependancies"
 fi
 

@@ -32,3 +32,4 @@ deployer.log
 .vscode
 personal-config/*
 !personal-config/config
+.DS_Store

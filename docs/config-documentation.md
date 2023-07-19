@@ -1,10 +1,15 @@
 # Config Documentation
 
 - This is documentation for filling out `sample.yml` and `sample-secrets-bundle.yml` inside `/service/config/`
+
   - To create a config file that starts a usable Signal-Server, follow all of [General Config](#general-config) and [Required Dependancies](#required)
+
+  - Unfortunately, properly documenting every dependancy necessary has resulted in very unintuitive documentation. For the least painful time, follow all the [Required Dependancies Instructions](#required) before starting on [General Configuration](#general-configuration), because sections there are more involved and require pre-configured AWS / Google Cloud instances
 
 - [Here](docs/documented-sample.yml) is an example of `sample.yml` with extra comments and some sections filled out
 - [Here](docs/documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments and some sections filled out
+- [Here](sample-secrets.env) is an example of a file that manages your environmental variables
+- [Here](sample-secrets.md) is a sample file to store any other sensitive Signal-Server keys / data
 
 ## [General Configuration](#general-config)
 
@@ -117,7 +122,7 @@ I believe that you can use Signal's url in `Signal-Android` (untested)
 In `sample.yml`
 
 - DirectoryV2
-- remoteConfig  
+- remoteConfig
 - artService
 
 In `sample-secrets-bundle.yml`
@@ -212,13 +217,15 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
 - `quickstart.sh` is located in `Signal-Server/scripts` and is called with `source quickstart.sh`
 
-- It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.sh` located in `Signal-Server/personal-config`
+- It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.env` located in `Signal-Server/personal-config`
 
   - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`source recloner.sh`](scripts/recloner.sh)
 
 - The script should work out of the box - it should start all dependancies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
 
   - In case it doesn't function, a barebones version is commented out at the bottom - either run each line or create a new bash script in `Signal-Server`
+
+  - Note: `quickstart.sh` was written in bash, and most won't necessarily work somehwere else (I know it doesn't work in zsh, but haven't tried fish etc)
 
 ## Dockerized Signal-Server Documentation
 
@@ -229,10 +236,6 @@ Update all redis sections in `config.yml` to:
 ```
 
 Which will tell Signal-Server to look for the redis-cluster in a docker-network
-
-Your AWS environmental variables are passed in as a `secrets.env` instead of as a script. You can use [sample-secrets.env](sample-secrets.env) as a template, and put it in `personal-config`, like with `secrets.sh`
-
-- `secrets.env` will get called by the `docker-compose.yml` file during startup to avoid the need to hardcode environmental variables
 
 The `personal-config` folder is functionally the same as in the Main branch, and gets mounted at startup
 
@@ -274,22 +277,8 @@ openssl pkcs12 -in keystore.p12 -nodes -nocerts -out ec_private_key.pem
 - Go to IAM and create a user with full access (this is definitely not entirely safe but hey, it gets the job done)
   
 - Copy the access key and access secret, and paste them into `awsAttachments.accessKey` and `awsAttachments.accessSecret`, and `cdn.accessKey` and `cdn.accessSecret` in [sample-secrets-bundle](/service/config/sample-secrets-bundle.yml)
-  
+
 - If you give the IAM user full access, you can reuse the same access key and secret for both buckets
-
-### AWS Environmental Variables
-
-- Specify AWS dependancies with `sudo nano ~/.bashrc`, then add:
-
-```
-export AWS_REGION=your-region
-export AWS_ACCESS_KEY_ID=key
-export AWS_SECRET_ACCESS_KEY=secret
-```
-
-- Don't forget to run `. ~/.bashrc`!
-
-- Instead of setting these environmental variables in `.bashrc`, you can create a `secrets.sh` file with the same three lines that `quickstart.sh` calls when starting Signal-Server
 
 ### AWS appConfig
 
@@ -456,6 +445,34 @@ appConfig:
   - Subscriptions
   - VerificationSessions
 
+### AWS Environmental Variables
+
+Signal-Server looks at your environmental variables for some AWS credentials
+
+- You can either set these in your `~/.bashrc` or by renaming and filling out [sample-secrets.env](sample-secrets.env)
+
+Going from top to bottom:
+
+`AWS_REGION`
+
+Most self-explanitory: whatever region you use for AWS is what you set this to (i.e. `us-west-1`)
+
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+
+The same access key and secret from [AWS IAM Configuration](#aws-iam-configuration):
+
+- Go to `IAM` > `Users` > your user > `Security Credentials` > `Create access key` and copy/paste the ID and key into the respective environmental variable
+
+`AWS_WEB_IDENTITY_TOKEN_FILE`
+
+a
+
+`AWS_ROLE_ARN`
+
+In the same place as `AWS_ACCESS_KEY_ID`, copy the `ARN` and paste it into `AWS_ROLE_ARN`
+
+- It should look something like: `arn:aws:iam::11111111111:user/your-user`
+
 ## Braintree
 
 - Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`
@@ -581,7 +598,7 @@ Certificate: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 Private key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
-- I recommend keeping all the outputs somewhere - I put them, commented out, in [`secrets.sh`](sample-secrets.sh)
+- I recommend keeping all the outputs somewhere - for example, [sample-secrets.md](sample-secrets.md)
 
 - Then fill out `unidentifiedDelivery` in `sample.yml`:
 
@@ -616,7 +633,7 @@ Public: a really long string
 Private: an even longer string
 ```
 
-- I (again) recommend putting these values into [`secrets.sh`](sample-secrets.sh)
+- I (again) recommend putting these values into [`secrets.md`](sample-secrets.md)
 
 - Put the output into `zkConfig` in `sample.yml`
 

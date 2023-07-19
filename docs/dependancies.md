@@ -7,7 +7,7 @@
 
 ## Instructions
 
-1. Make sure everything is up-to-date with `sudo apt update` and `sudo apt upgrade`
+1. Make sure everything is up-to-date with `sudo apt update && sudo apt upgrade`
 
 2. Install the latest version of Java
 

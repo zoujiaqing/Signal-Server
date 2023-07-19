@@ -12,7 +12,8 @@
 - [Documentation on filling out a sample.yml](docs/config-documentation.md)
 - [A `sample.yml` file with added short-hand comments](docs/documented-sample.yml)
 - [A `sample-secrets-bundle.yml` with added comments](docs/documented-sample-secrets-bundle.yml)
-- [A sample `secrets.sh` script to use with `quickstart.sh`](docs/sample-secrets.sh)
+- [A sample `secrets.env` script to use with `quickstart.sh`](docs/sample-secrets.env)
+- [A sample `secrets.md` to store any other important keys/info](docs/sample-secrets.md)
 
 ### Scripts
 
@@ -191,20 +192,8 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 ## To-Do
 
-### Running the server:
+- Moved to [Signal-Server Docker](https://github.com/JJTofflemire/Signal-Server/tree/docker#to-do) except for documentation To-Do's because all practical implementation work will now be done from the docker branch
 
-- Convert all localhost configs to a real server (using NGINX) that a client could connect to following [this guide](https://github.com/madeindra/signal-setup-guide/tree/master/signal-server-2.92)
+### Documentation
 
-- Confirm that AWS / Google Cloud function as intended
-
-- See if you can generate the required Bitnami redis-cluster volumes with `docker blah blah blah` instead of using `docker-compose-first-run.yml`
-
-- Set up spam filter
-
-### Extra Credit
-
-- Write scripts for AWS / Google Cloud cli
-
-- Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
-
-- Set up Signal-iOS
+- Finish [AWS Environmental Variables](docs/config-documentation.md#aws-environmental-variables)
