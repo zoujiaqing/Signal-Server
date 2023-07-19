@@ -3,6 +3,7 @@
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
 - Currently in a minimum viable state - it starts and runs successfully, but untested
+- Has been [dockerized!](#docker)
 
 ## Useful Resources
 
