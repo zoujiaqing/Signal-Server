@@ -197,3 +197,5 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 ### Documentation
 
 - Finish [AWS Environmental Variables](docs/config-documentation.md#aws-environmental-variables)
+
+- Revisit [AWS appConfig docs](docs/config-documentation.md#aws-appconfig) and clean up the AWS appConfig cloud input

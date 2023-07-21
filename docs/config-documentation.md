@@ -187,7 +187,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
   
   - For `AWS account ID`: click on your name in the top right, and the dropdown will have your account ID then create the pool
   
-  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Admin` and `IAM Workload Identity Pool Admin`
+  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Owner` and `IAM Workload Identity Pool Admin`
   
   - Back in `Workload Identity Federation` > the created pool, hit `GRANT ACCESS` in the top middle-ish, and select the new service account that was just created
   
@@ -465,7 +465,39 @@ The same access key and secret from [AWS IAM Configuration](#aws-iam-configurati
 
 `AWS_WEB_IDENTITY_TOKEN_FILE`
 
-a
+Signal-Server uses the AWS SDK in addition to looking for IAM credentials. Despite this, you can resuse the same credentials and put then in a `personal-config/credentials` ([here](../docs/sample-credentials) is a sample one), and generate a `aws_session_token` with:
+
+```
+aws sts assume-role --role-arn <arn-of-your-IAM-user> --role-session-name <session-name>
+```
+
+(requires `aws-cli-v2` for the moment)
+
+You won't have sufficient permissions to run this command, so go to `IAM` > `Users` > `your-user` > `Permissions` tab > `Add permissions` > `Create inline policy`, select `JSON` and paste this in:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "ARN_OF_THE_IAM_ROLE"
+        }
+    ]
+}
+```
+
+UNFINISHED: this doesn't contain sufficient permissions still, and the command will still fail
+
+Here is what your `credentials` file should look like:
+
+```
+[default]
+aws_access_key_id=AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+aws_session_token=IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZVERYLONGSTRINGEXAMPLE
+```
 
 `AWS_ROLE_ARN`
 
@@ -550,8 +582,9 @@ recaptcha:
   projectPath: projects/example
   credentialConfigurationJson: |
     {
-      service account .json contents
+      service account .json contents, seperated by commas at the end of each line (except the last line)
     } # remove this comment that was here
+  secondaryCredentialConfigurationJson: "{a}" # make sure there is no space between the "}" and this line (also remove this comment)
 ```
 
 - Update the `projectPath` to `projects/your-project-name`
