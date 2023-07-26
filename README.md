@@ -194,6 +194,10 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 - Moved to [Signal-Server Docker](https://github.com/JJTofflemire/Signal-Server/tree/docker#to-do) except for documentation To-Do's because all practical implementation work will now be done from the docker branch
 
+- I lied! Get a working EC2 instance running and see if it fixes AWS issues
+
+  - Add relavent documentation
+
 ### Documentation
 
 - Finish [AWS Environmental Variables](docs/config-documentation.md#aws-environmental-variables)
