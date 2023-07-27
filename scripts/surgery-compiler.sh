@@ -13,5 +13,6 @@ if [[ $choice == "n" ]]; then
   echo -e "\nExiting..."
 else
   echo -e "\n"
-  source scripts/quickstart.sh
+  cd scripts
+  source quickstart.sh
 fi
