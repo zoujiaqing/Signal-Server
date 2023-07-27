@@ -1,9 +1,13 @@
 #!/bin/bash
 
-cd .. && cd ..
+# Get the current directory path
+current_directory=$(pwd)
+
+# Move up two levels to the parent directory
+cd ..
 
 # sudo isn't explicitly required here, but sometimes there are problems without sudo
-sudo mv Signal-Server/personal-config ./
+sudo mv "$current_directory/Signal-Server/personal-config" ./
 
 sudo rm -rf Signal-Server
 
