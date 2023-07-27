@@ -17,6 +17,8 @@ git clone https://github.com/JJTofflemire/Signal-Server.git
 
 sudo mv Signal-Server "$current_directory"
 
+sudo rm -rf "$current_directory"/personal-config
+
 sudo mv personal-config "$current_directory"
 
 cd "$current_directory"
