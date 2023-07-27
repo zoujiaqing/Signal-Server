@@ -195,7 +195,21 @@ Start the server with:
 java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml service/target/TextSecureServer-9.81.0.jar server service/config/sample.yml
 ```
 
-## Connecting the server to an Android app (unfinished)
+## Running the server
+
+To ping the server, try these commands:
+
+```
+curl http://127.0.0.1:7000/v1/accounts/config
+curl http://127.0.0.1:7000/v1/accounts/whoami
+curl http://127.0.0.1:7000/v1/test/hello
+curl -X POST http://127.0.0.1:7000/v1/registration
+curl -X POST http://127.0.0.1:7000/v1/session
+```
+
+When running Signal-Server in a Docker container, replace port `7000` with port `7006`
+
+### Connecting the server to an Android app (unfinished)
 
 - Current documentation on getting the Android app running and connected to this server is [here](https://github.com/JJTofflemire/Signal-Android)
 

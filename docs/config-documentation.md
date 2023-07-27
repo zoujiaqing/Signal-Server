@@ -445,6 +445,18 @@ appConfig:
   - Subscriptions
   - VerificationSessions
 
+### AWS CloudWatch
+
+AWS loves to nickel and dime you for everything you got, and making all the `DynamoDB` tables will generate tons of alarms in `CloudWatch`
+
+To minimize charges (though you will probably still need to pay ~$1 USD a month)
+
+- Go to `CloudWatch` > `Alarms` dropdown > `All alarms`
+
+- Select all the alarms (checkbox on the top selects them all) and hit `Actions` > `Delete`
+
+- Make sure to check out `Billing` and `CloudWatch` from time to time to make sure that extra charges don't crop up
+
 ### AWS Environmental Variables
 
 Signal-Server looks at your environmental variables for some AWS credentials
