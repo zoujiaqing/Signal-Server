@@ -35,10 +35,13 @@
 
 ## Dependancies
 
+Required:
 - Java (openjdk)
+- Docker and Docker-Compose
+
+Optional:
 - Maven (v3.8.6 or newer)
   - If on Debian, you may need to [manually install a newer version](docs/dependancies.md)
-- Docker and Docker-Compose
 
 ## Compilation
 
@@ -61,6 +64,12 @@ Using the scripted compilers are recommended to ensure that the server is in the
 - If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
 
 Then compile with:
+
+```
+./mvnw clean install -DskipTests -Pexclude-spam-filter
+```
+
+Which uses the maven build script that comes bundled with Signal-Server. You can also install your own instance of maven and build using that:
 
 ```
 mvn clean install -DskipTests -Pexclude-spam-filter
