@@ -226,3 +226,5 @@ When running Signal-Server in a Docker container, replace port `7000` with port 
 - Finish [AWS Environmental Variables](docs/config-documentation.md#aws-environmental-variables)
 
 - Revisit [AWS appConfig docs](docs/config-documentation.md#aws-appconfig) and clean up the AWS appConfig cloud input
+
+- Update documentation on [scripts](scripts)

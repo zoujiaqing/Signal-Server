@@ -4,21 +4,21 @@
 cd ..
 
 # Get the current directory path
-current_directory=$(pwd)
+folder=$(pwd)
 
 cd ..
 
 # sudo isn't explicitly required here, but sometimes there are problems without sudo
-sudo mv "$current_directory/personal-config" ./
+sudo mv "$folder/personal-config" ./
 
-sudo rm -rf "$current_directory"
+sudo rm -rf "$folder"
 
 git clone https://github.com/JJTofflemire/Signal-Server.git
 
-sudo mv Signal-Server "$current_directory"
+sudo mv Signal-Server "$folder"
 
-sudo rm -rf "$current_directory"/personal-config
+sudo rm -rf "$folder"/personal-config
 
-sudo mv personal-config "$current_directory"
+sudo mv personal-config "$folder"
 
-cd "$current_directory"
+cd "$folder"
