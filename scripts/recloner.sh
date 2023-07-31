@@ -1,14 +1,16 @@
 #!/bin/bash
+# this script is useful for when the server fails to compile, as it won't sucessfully recompile after a single failed compilation
 
-# Move up two levels to the parent directory
+
+# cd back to the working directory
 cd ..
 
-# Get the current directory path
+# get the path of the working directory
 folder=$(pwd)
 
+# move outside the working directory to reclone from
 cd ..
 
-# sudo isn't explicitly required here, but sometimes there are problems without sudo
 sudo mv "$folder/personal-config" ./
 
 sudo rm -rf "$folder"

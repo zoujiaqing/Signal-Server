@@ -2,7 +2,7 @@
 
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
-- Currently in a minimum viable state - it starts and runs successfully, but untested
+- Currently in a minimum viable state - it starts and runs successfully, but unresponsive
 - Has been [dockerized!](#docker)
 
 ## Useful Resources
@@ -10,22 +10,47 @@
 ### Config Docs
 
 - [Documentation on filling out a sample.yml](docs/config-documentation.md)
-- [A `sample.yml` file with added short-hand comments](docs/documented-sample.yml)
-- [A `sample-secrets-bundle.yml` with added comments](docs/documented-sample-secrets-bundle.yml)
-- [A sample `secrets.env` script to use with `quickstart.sh`](docs/sample-secrets.env)
-- [A sample `secrets.md` to store any other important keys/info](docs/sample-secrets.md)
+  - [A `sample.yml` file with added short-hand comments](docs/documented-sample.yml)
+  - [A `sample-secrets-bundle.yml` with added comments](docs/documented-sample-secrets-bundle.yml)
+  - [A sample `secrets.env` script to use with `quickstart.sh`](docs/sample-secrets.env)
+  - [A sample `secrets.md` to store any other important keys/info](docs/sample-secrets.md)
 
 ### Scripts
 
-- [A script to recompile Signal-Server from JJTofflemire/Signal-Server](scripts/main-compiler.sh)
-- [A script to remove `zkgroup` dependancies and recompile](scripts/surgery-compiler.sh)
-- [A recloner script (run with `source recloner.sh`)](scripts/recloner.sh)
+- [A script to compile Signal-Server from JJTofflemire/Signal-Server](scripts/main-compiler.sh) as well as [a script to remove the `zkgroup` dependancies and compile](scripts/surgery-compiler.sh)
+- [A recloner script that preserves the `personal-config` folder](scripts/recloner.sh)
 - [A script to automate starting the server](scripts/quickstart.sh)
+- [A script to reset your docker installation if you mess it up](scripts/docker-compose-first-run.sh)
+
+- Note: all scripts in this repo should be ran as `source script.sh` from the `scripts` folder if you have a `bash` shell
+  - If you are using `zsh`, call them with `./script.sh` from the `scripts` folder instead (running with `source` overrides the bash shebang on the first line of the scripts)
+  - If you are not using `bash` or `zsh`, good luck soldier
 
 ### Misc
 
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
 - [Dependancies installation notes for Ubuntu / Debian](docs/dependancies.md)
+
+
+## State of the Server
+
+**On Bare Metal**
+- After [fully configuring the server](docs/config-documentation.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
+  - The server starts but is unresponsive to probes via `curl`
+  - Throws errors related to AWS credentials
+
+**Dockerized**
+- After [fully configuring the server](docs/config-documentation.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
+  - The server starts but is unresponsive to probes via `curl`
+  - Throws errors related to AWS credentials
+
+**EC2**
+- Identical deployment to Bare Metal, just `scp` all config files in
+  - The server starts but is unresponsive to probes via `curl`
+  - Throws different errors related to AWS credentials
+    - These errors are specific to an EC2 instance trying to communicate with the rest of AWS
+
+- EC2 may be required to make AWS happy (else editing the source code might be necessary)
 
 ## Docker!
 
@@ -36,11 +61,11 @@
 ## Dependancies
 
 Required:
-- Java (openjdk)
-- Docker and Docker-Compose
+- `java` (openjdk)
+- `docker` and `docker-dompose`
 
 Optional:
-- Maven (v3.8.6 or newer)
+- `maven` (v3.8.6 or newer)
   - If on Debian, you may need to [manually install a newer version](docs/dependancies.md)
 
 ## Compilation
@@ -148,7 +173,13 @@ cluster_stats_messages_received:274
 total_cluster_links_buffer_limit_exceeded:0
 ```
 
-If you started the modified [docker-compose.yml](docker-compose.yml) first, this test will fail. Run:
+If you started the modified [docker-compose.yml](docker-compose.yml) before your first run, this test will fail. Run this script:
+
+```
+source docker-compose-first-run.sh
+```
+
+Or remove the volumes manually with a string of commands like this (this assumes you haven't renamed `Signal-Server`):
 
 ```
 docker volume rm signal-server_redis-cluster_data-0
@@ -161,7 +192,7 @@ docker volume rm signal-server_redis-cluster_data-5
 
 - Which should erase all volumes created by the dockerized redis-cluster (and erease all data stored on the cluster)
 
-- If those names are wrong, you can find them with `docker volume ls` and paste in the ones starting with `signal-server_`
+- If those names are wrong, you can find them with `docker volume ls`
 
 - Then rerun the first `docker-compose` command
 
