@@ -517,7 +517,13 @@ In the same place as `AWS_ACCESS_KEY_ID`, copy the `ARN` and paste it into `AWS_
 
 - It should look something like: `arn:aws:iam::11111111111:user/your-user`
 
+**EC2 Environmental Variables**
+
+
+
 ### AWS EC2
+
+**Creating an EC2 Instance**
 
 Note: this section is only necessary if you are implementing Signal-Server in an EC2 instance. 
 
@@ -533,10 +539,22 @@ Go to `AWS` > `EC2` > `Launch instance` in a panel in the middle of the page
 
 - You can increase your default storage if you want, up to 30gb is free
 
+**Creating an Elastic IP for the EC2 Instance**
+
+In the left-hand set of dropdowns, select `Elastic IPs` under the `Network & Security` dropdown
+
+Hit `Allocate Elastic IP address`, then hit `Allocate` (the default settings are fine)
+
+- Now there will either be a green banner to allocate the Elastic IP, or you can select `Actions` > `Associate Elastic IP address`
+
+- Then, select the newly created EC2 instance from the dropdown and hit `Associate`
+
+**Interacting with the EC2 Instance**
+
 `ssh` into your EC2 instance:
 
 ```
-ssh -i "path/to/key.pem" admin@url-to-aws.com
+ssh -i "path/to/key.pem" admin@elastic-ip
 ```
 
 And do a fresh installation of Signal (install `git`, `java`, `docker`, and `docker-compose`)
@@ -544,10 +562,16 @@ And do a fresh installation of Signal (install `git`, `java`, `docker`, and `doc
 To copy in your configured `personal-config`:
 
 ```
-scp -i "path/to/key.pem" -r personal-config admin@url-to-aws.com:/home/admin/Signal-Server
+scp -i "path/to/key.pem" -r personal-config admin@elastic-ip:/home/admin/Signal-Server
 ```
 
-Or if you will be actively interacting with these files, you can instead use `sshfs` to mount the EC2's `Signal-Server/personal-config` to the local machine
+Or if you will be actively interacting with these files, you can instead use `sshfs` to mount the EC2's `Signal-Server/personal-config` to the local machine:
+
+```
+sshfs -o IdentityFile="$HOME/full/path/to/key.pem" admin@elastic-ip:/home/admin/Work/Signal-Server/personal-config ./personal-config
+```
+
+- Make sure that the local `personal-config` folder already exists
 
 Then run with `quickstart.sh` as always
 
