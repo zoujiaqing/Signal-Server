@@ -517,6 +517,40 @@ In the same place as `AWS_ACCESS_KEY_ID`, copy the `ARN` and paste it into `AWS_
 
 - It should look something like: `arn:aws:iam::11111111111:user/your-user`
 
+### AWS EC2
+
+Note: this section is only necessary if you are implementing Signal-Server in an EC2 instance. 
+
+Go to `AWS` > `EC2` > `Launch instance` in a panel in the middle of the page
+
+- For ease of deployment, choose whatever distro is the most comfortable, though Ubuntu / Debian has already been throroughly documented here
+
+- Under `Instance type`, leave it as `t2.micro` unless you are willing to pay for uptime on your instance
+
+  - A single `t2.micro` running 24/7 is free, but anything more will start charging you a couple of cents per hour
+
+- Generate a keypair and save the `.pem` for ssh'ing into the instance
+
+- You can increase your default storage if you want, up to 30gb is free
+
+`ssh` into your EC2 instance:
+
+```
+ssh -i "path/to/key.pem" admin@url-to-aws.com
+```
+
+And do a fresh installation of Signal (install `git`, `java`, `docker`, and `docker-compose`)
+
+To copy in your configured `personal-config`:
+
+```
+scp -i "path/to/key.pem" -r personal-config admin@url-to-aws.com:/home/admin/Signal-Server
+```
+
+Or if you will be actively interacting with these files, you can instead use `sshfs` to mount the EC2's `Signal-Server/personal-config` to the local machine
+
+Then run with `quickstart.sh` as always
+
 ## Braintree
 
 - Set the `envrionment` for `braintree` in `sample.yml` to `sandbox`

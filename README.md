@@ -3,7 +3,6 @@
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
 - Currently in a minimum viable state - it starts and runs successfully, but unresponsive
-- Has been [dockerized!](#docker)
 
 ## Useful Resources
 
@@ -49,6 +48,7 @@
   - The server starts but is unresponsive to probes via `curl`
   - Throws different errors related to AWS credentials
     - These errors are specific to an EC2 instance trying to communicate with the rest of AWS
+  - Check out the current progress of EC2 / any new discoveries [here](docs/config-documentation.md#aws-ec2)
 
 - EC2 may be required to make AWS happy (else editing the source code might be necessary)
 
@@ -61,6 +61,7 @@
 ## Dependancies
 
 Required:
+- `git`
 - `java` (openjdk)
 - `docker` and `docker-dompose`
 
@@ -80,7 +81,7 @@ cd Signal-Server/scripts
 source surgery-compiler.sh
 ```
 
-Make sure to compile with `source <script>` so that `cd` and `mvn` function as intended
+Make sure to compile with `source <script>` so that `cd` and `mvn` function as intended (or with `./` or `bash` if you aren't on bash)
 
 Using the scripted compilers are recommended to ensure that the server is in the correct configuration (with or without `zkgroup`)
 
@@ -99,12 +100,6 @@ Which uses the maven build script that comes bundled with Signal-Server. You can
 ```
 mvn clean install -DskipTests -Pexclude-spam-filter
 ```
-
-### Recloning
-
-The [recloner.sh](scripts/recloner.sh) bash script moves the folder [personal-config](personal-config) up one level outside of `Signal-Server`, then reclones from this repository
-
-Call it from inside `scripts` with `source recloner.sh`
 
 ### Removing zkgroup dependancies manually
 
@@ -240,17 +235,30 @@ curl -X POST http://127.0.0.1:7000/v1/session
 
 When running Signal-Server in a Docker container, replace port `7000` with port `7006`
 
+### Recloning
+
+The [recloner.sh](scripts/recloner.sh) bash script moves the folder [personal-config](personal-config) up one level outside of `Signal-Server`, then reclones from this repository
+
+Call it from inside `scripts` with `source recloner.sh`
+
 ### Connecting the server to an Android app (unfinished)
 
 - Current documentation on getting the Android app running and connected to this server is [here](https://github.com/JJTofflemire/Signal-Android)
 
 ## To-Do
 
-- Moved to [Signal-Server Docker](https://github.com/JJTofflemire/Signal-Server/tree/docker#to-do) except for documentation To-Do's because all practical implementation work will now be done from the docker branch
+### General
 
-- I lied! Get a working EC2 instance running and see if it fixes AWS issues
+- Configure an EC2 instance and see if it fixes AWS issues
 
   - Add relavent documentation
+
+### Running the server
+
+- Convert all localhost configs to a real server (using NGINX) that a client could connect to following [this guide](https://github.com/madeindra/signal-setup-guide/tree/master/signal-server-2.92)
+  - Could all be handled by AWS between an S3 bucket and an EC2 instance
+
+- Confirm that AWS / Google Cloud function as intended
 
 ### Documentation
 
@@ -258,4 +266,12 @@ When running Signal-Server in a Docker container, replace port `7000` with port 
 
 - Revisit [AWS appConfig docs](docs/config-documentation.md#aws-appconfig) and clean up the AWS appConfig cloud input
 
-- Update documentation on [scripts](scripts)
+- Keep filling out [EC2 docs](docs/config-documentation.md#aws-ec2)
+
+### Extra Credit
+
+- Write scripts for AWS / Google Cloud cli
+
+- Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
+
+- Set up Signal-iOS and Signal-Desktop
