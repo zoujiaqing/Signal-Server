@@ -23,4 +23,4 @@ sudo rm -rf "$folder"/personal-config
 
 sudo mv personal-config "$folder"
 
-cd "$folder"
+cd "$folder"/scripts

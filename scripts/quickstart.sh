@@ -27,6 +27,7 @@ if [[ -n "$jar_file" && -f "$jar_file" ]]; then
 else
   echo -e "\nNo valid Signal-Server JAR file found." # Else echo that the server couldn't be found -ChatGPT
   sudo docker-compose down
+  cd scripts
   sleep 2
   exit
 fi
@@ -47,6 +48,7 @@ if [[ $choice == "n" ]]; then
   echo -e "\nExiting..."
 else
   sudo docker-compose down
+  cd scripts
   echo -e "\nStopped docker-compose dependancies"
 fi
 

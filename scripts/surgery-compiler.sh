@@ -8,3 +8,5 @@ sudo cp scripts/post-surgery/WhisperServerService.java service/src/main/java/org
 
 # source is used here as a redundancy to make sure maven runs correctly
 source mvnw clean install -DskipTests -Pexclude-spam-filter
+
+cd scripts

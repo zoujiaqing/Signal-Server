@@ -13,3 +13,5 @@ sudo docker volume rm -f "$folder"_redis-cluster_data-4
 sudo docker volume rm -f "$folder"_redis-cluster_data-5
 
 sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
+
+cd scripts

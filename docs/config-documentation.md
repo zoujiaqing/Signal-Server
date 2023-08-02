@@ -513,13 +513,11 @@ aws_session_token=IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3
 
 `AWS_ROLE_ARN`
 
-In the same place as `AWS_ACCESS_KEY_ID`, copy the `ARN` and paste it into `AWS_ROLE_ARN`
+This section is blatantly based on [this AWS doc](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html)
 
-- It should look something like: `arn:aws:iam::11111111111:user/your-user`
+`AWS_WEB_IDENTITY_TOKEN_FILE`
 
-**EC2 Environmental Variables**
-
-
+Tried to add permissions and trust policies to the IAM and the role, but sts:assumeRole still fails
 
 ### AWS EC2
 
@@ -574,6 +572,15 @@ sshfs -o IdentityFile="$HOME/full/path/to/key.pem" admin@elastic-ip:/home/admin/
 - Make sure that the local `personal-config` folder already exists
 
 Then run with `quickstart.sh` as always
+
+**General EC2 Notes**
+
+You may need to change `secrets.env` back to `secrets.sh`, and re-add `export`:
+
+```
+export AWS_REGION=asdf
+etc
+```
 
 ## Braintree
 
