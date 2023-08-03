@@ -475,51 +475,9 @@ The same access key and secret from [AWS IAM Configuration](#aws-iam-configurati
 
 - Go to `IAM` > `Users` > your user > `Security Credentials` > `Create access key` and copy/paste the ID and key into the respective environmental variable
 
-`AWS_WEB_IDENTITY_TOKEN_FILE`
-
-Signal-Server uses the AWS SDK in addition to looking for IAM credentials. Despite this, you can resuse the same credentials and put then in a `personal-config/credentials` ([here](../docs/sample-credentials) is a sample one), and generate a `aws_session_token` with:
-
-```
-aws sts assume-role --role-arn <arn-of-your-IAM-user> --role-session-name <session-name>
-```
-
-(requires `aws-cli-v2` for the moment)
-
-You won't have sufficient permissions to run this command, so go to `IAM` > `Users` > `your-user` > `Permissions` tab > `Add permissions` > `Create inline policy`, select `JSON` and paste this in:
-
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "sts:AssumeRole",
-            "Resource": "ARN_OF_THE_IAM_ROLE"
-        }
-    ]
-}
-```
-
-UNFINISHED: this doesn't contain sufficient permissions still, and the command will still fail
-
-Here is what your `credentials` file should look like:
-
-```
-[default]
-aws_access_key_id=AKIAIOSFODNN7EXAMPLE
-aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-aws_session_token=IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZ2luX2IQoJb3JpZVERYLONGSTRINGEXAMPLE
-```
-
-`AWS_ROLE_ARN`
-
-This section is blatantly based on [this AWS doc](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html)
-
-`AWS_WEB_IDENTITY_TOKEN_FILE`
-
-Tried to add permissions and trust policies to the IAM and the role, but sts:assumeRole still fails
-
 ### AWS EC2
+
+- All the EC2 documentation is based heavily off of [this](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html#roles-usingrole-ec2instance-permissions) and [this](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_iam-ec2.html#troubleshoot_iam-ec2_no-keys) from the AWS documentation. If you have issues, the answer might be in one of those as well
 
 **Creating an EC2 Instance**
 
@@ -547,6 +505,21 @@ Hit `Allocate Elastic IP address`, then hit `Allocate` (the default settings are
 
 - Then, select the newly created EC2 instance from the dropdown and hit `Associate`
 
+Note: If you stop your EC2 instance, you will get charged for the Elastic IP even if it is still associated with the EC2 instance
+
+- You could also use this script which finds an instance's public IP address with `aws-cli-v2`:
+
+```
+#!/bin/bash
+INSTANCE_ID="your-ec2-id"
+INSTANCE_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+if [[ -n "$INSTANCE_IP" ]]; then
+    ssh -i "path/to/your/key.pem" user@"$INSTANCE_IP"
+else
+    echo "This instance probably isn't started yet."
+fi
+```
+
 **Interacting with the EC2 Instance**
 
 `ssh` into your EC2 instance:
@@ -555,9 +528,7 @@ Hit `Allocate Elastic IP address`, then hit `Allocate` (the default settings are
 ssh -i "path/to/key.pem" admin@elastic-ip
 ```
 
-And do a fresh installation of Signal (install `git`, `java`, `docker`, and `docker-compose`)
-
-To copy in your configured `personal-config`:
+When you need to copy in your configured `personal-config`:
 
 ```
 scp -i "path/to/key.pem" -r personal-config admin@elastic-ip:/home/admin/Signal-Server
@@ -571,16 +542,123 @@ sshfs -o IdentityFile="$HOME/full/path/to/key.pem" admin@elastic-ip:/home/admin/
 
 - Make sure that the local `personal-config` folder already exists
 
-Then run with `quickstart.sh` as always
 
-**General EC2 Notes**
+**Installing Signal-Server**
 
-You may need to change `secrets.env` back to `secrets.sh`, and re-add `export`:
+Installing is the same as ever. Install your dependancies (`git`, `java`, `docker`, and `docker-compose`). Run these for the very lazy (assuming you are using Debian-based because I don't like Amazon Linux):
+
+```
+sudo apt update && sudo apt upgrade -y && sudo apt install -y git openjdk-19-jre-headless docker docker-compose
+
+git clone https://github.com/JJTofflemire/Signal-Server.git && cd Signal-Server/scripts && bash surgery-compiler.sh && bash docker-compose-first-run.sh
+```
+
+`scp` in your `personal-config` folder, then run with `bash quickstart.sh`
+
+- Make sure your redis configuration is set to `127.0.0.1:7000` and not the docker branch's `redis-node-5:6379`
+
+If when running the server you get errors about needing to set environmental variables that you already set in `sercrets.env`, you may need to change `secrets.env` to `secrets.sh`, and add `export`:
 
 ```
 export AWS_REGION=asdf
 etc
 ```
+
+Then edit your `scripts/quickstart.sh` to call the `.sh` instead of the `.env`
+
+**Configuring the EC2 Instance**
+
+The EC2 instance wants to assume an IAM role to access all the required AWS functions
+
+Head over to `IAM` > `Roles` > `Create role` > choose `AWS service`, and select `EC2` as the `Use case`
+
+Add the `AdministratorAccess` policy, then hit `Create policy` > `JSON` and paste this in:
+
+
+```
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "Statement1",
+			"Effect": "Allow",
+			"Action": [
+				"*"
+			],
+			"Resource": [
+				"*"
+			]
+		}
+	]
+}
+```
+
+- Note: this is way too open, but I am leaving the policy this permissive until I know what the server needs and doesn't need to access
+
+Finish creating the role, then go to `Roles` > `your-new-ec2-role` > `Trust relationships` tab and take a peek at the `Trusted entities`. It should look like this, but change it if it doesn't:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+Head back to `EC2` > `Instances` > your instance > `Actions` dropdown > `Security` > `Modify IAM role` > select the newly created IAM role
+
+Now you need to open port 8080, where the server hosts by default. Go to `EC2` > `Instances` > your instance > `Security` tab > the linked security group (probably ends with `launch-wizard` or similar) > `Edit inbound rules`
+
+- Add a rule, select `Custom TCP` from the dropdown, and enter `8080` in the port range column and `Andywhere-IPv4` in the Source column
+
+You're done! You can test it to make sure everything is configured correctly a couple of ways:
+
+- You can probe the instance to verify that it is properly assuming your role:
+
+- SSH into your instance and enter this: `curl http://169.254.169.254/latest/meta-data/iam`
+
+- Which should return (similar to `ls`ing):
+
+```
+info
+security-credentials
+```
+
+- Go into the `security-credentials` 'folder' and `curl` what role is assigned to the instance. Then `curl` that role to make sure it is assumed properly 
+
+```
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/name-of-role
+```
+
+- `curl`ing the role will return this if it is working properly:
+
+```
+{
+  "Code" : "Success",
+  "LastUpdated" : "2023-08-03T20:43:27Z",
+  "Type" : "AWS-HMAC",
+  "AccessKeyId" : "key",
+  "SecretAccessKey" : "key-secret",
+  "Token" : "a-very-long-token",
+  "Expiration" : "2023-08-04T02:51:32Z"
+}
+```
+
+- Run the server and probe it from your host machine:
+
+```
+curl http://elastic-ip:8080/v1/accounts/whoami
+```
+
+- Which should return `Credentials are required to access this resource.` if everything went according to plan. If you enter this in a web browser, you will be greeted with an http login prompt
 
 ## Braintree
 

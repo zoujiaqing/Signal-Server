@@ -28,46 +28,36 @@
 ### Misc
 
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
-- [Dependancies installation notes for Ubuntu / Debian](docs/dependancies.md)
 
+## Docker!
+
+This Signal-Server fork has been dockerized! Note: the docker container currently hasn't been updated to be able to assume AWS roles, so it is currently deprecated in favor of running in EC2. There are docker images that can do this, but they have not been implemented yet
+
+- To install, follow the [config instructions](docs/config-documentation.md)(including the [docker specific instructions!](docs/config-documentation.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
 
 ## State of the Server
 
-**On Bare Metal**
-- After [fully configuring the server](docs/config-documentation.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
-  - The server starts but is unresponsive to probes via `curl`
-  - Throws errors related to AWS credentials
-
-**Dockerized**
+**On Bare Metal and Dockerized**
 - After [fully configuring the server](docs/config-documentation.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
   - The server starts but is unresponsive to probes via `curl`
   - Throws errors related to AWS credentials
 
 **EC2**
 - Identical deployment to Bare Metal, just `scp` all config files in
-  - The server starts but is unresponsive to probes via `curl`
-  - Throws different errors related to AWS credentials
-    - These errors are specific to an EC2 instance trying to communicate with the rest of AWS
-  - Check out the current progress of EC2 / any new discoveries [here](docs/config-documentation.md#aws-ec2)
-
-- EC2 may be required to make AWS happy (else editing the source code might be necessary)
-
-## Docker!
-
-- Signal-Server v9.81.0 has been dockerized!
-
-- This long guide can all be ignored, just follow the [config instructions](docs/config-documentation.md)(including the [docker specific instructions!](docs/config-documentation.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
+  - The server responds with `{"code":404,"message":"HTTP 404 Not Found"}` to probes via `curl`
+  - Runs with no errors
 
 ## Dependancies
 
 Required:
 - `git`
-- `java` (openjdk)
-- `docker` and `docker-dompose`
+- `java`
+- `docker`
+- `docker-dompose`
 
 Optional:
 - `maven` (v3.8.6 or newer)
-  - If on Debian, you may need to [manually install a newer version](docs/dependancies.md)
+  - If on Debian, you may need to manually install a newer version
 
 ## Compilation
 
@@ -226,14 +216,14 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 To ping the server, try these commands:
 
 ```
-curl http://127.0.0.1:7000/v1/accounts/config
-curl http://127.0.0.1:7000/v1/accounts/whoami
-curl http://127.0.0.1:7000/v1/test/hello
-curl -X POST http://127.0.0.1:7000/v1/registration
-curl -X POST http://127.0.0.1:7000/v1/session
+curl http://127.0.0.1:8080/v1/accounts/config
+curl http://127.0.0.1:8080/v1/accounts/whoami
+curl http://127.0.0.1:8080/v1/test/hello
+curl -X POST http://127.0.0.1:8080/v1/registration
+curl -X POST http://127.0.0.1:8080/v1/session
 ```
 
-When running Signal-Server in a Docker container, replace port `7000` with port `7006`
+When running Signal-Server in a Docker container, replace port `8080` with port `7006`
 
 ### Recloning
 
@@ -249,24 +239,15 @@ Call it from inside `scripts` with `source recloner.sh`
 
 ### General
 
-- Configure an EC2 instance and see if it fixes AWS issues
-
-  - Add relavent documentation
-
 ### Running the server
 
-- Convert all localhost configs to a real server (using NGINX) that a client could connect to following [this guide](https://github.com/madeindra/signal-setup-guide/tree/master/signal-server-2.92)
-  - Could all be handled by AWS between an S3 bucket and an EC2 instance
+- Get the server running on an `https` certified domain. This will probably fix many errors related to probing / connecting to the server
 
-- Confirm that AWS / Google Cloud function as intended
+- Make EC2 role and policy narrower
 
 ### Documentation
 
-- Finish [AWS Environmental Variables](docs/config-documentation.md#aws-environmental-variables)
-
 - Revisit [AWS appConfig docs](docs/config-documentation.md#aws-appconfig) and clean up the AWS appConfig cloud input
-
-- Keep filling out [EC2 docs](docs/config-documentation.md#aws-ec2)
 
 ### Extra Credit
 
@@ -275,3 +256,5 @@ Call it from inside `scripts` with `source recloner.sh`
 - Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
 
 - Set up Signal-iOS and Signal-Desktop
+
+- Change docker containers to one that can assume EC2 roles, like [this one](https://github.com/swipely/iam-docker) or [this one](https://github.com/billtrust/iam-docker-run)
