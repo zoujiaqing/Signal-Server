@@ -8,7 +8,7 @@
 
 ### Config Docs
 
-- [Documentation on filling out a sample.yml](docs/config-documentation.md)
+- [Documentation on filling out a sample.yml](docs/signal-server-configuration.md)
   - [A `sample.yml` file with added short-hand comments](docs/documented-sample.yml)
   - [A `sample-secrets-bundle.yml` with added comments](docs/documented-sample-secrets-bundle.yml)
   - [A sample `secrets.env` script to use with `quickstart.sh`](docs/sample-secrets.env)
@@ -33,12 +33,12 @@
 
 This Signal-Server fork has been dockerized! Note: the docker container currently hasn't been updated to be able to assume AWS roles, so it is currently deprecated in favor of running in EC2. There are docker images that can do this, but they have not been implemented yet
 
-- To install, follow the [config instructions](docs/config-documentation.md)(including the [docker specific instructions!](docs/config-documentation.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
+- To install, follow the [config instructions](docs/si .signal-server-configuration.md)(including the [docker specific instructions!](docs/signal-server-configuration.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
 
 ## State of the Server
 
 **On Bare Metal and Dockerized**
-- After [fully configuring the server](docs/config-documentation.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
+- After [fully configuring the server](docs/si .signal-server-configuration.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
   - The server starts but is unresponsive to probes via `curl`
   - Throws errors related to AWS credentials
 
@@ -105,20 +105,29 @@ mvn clean install -DskipTests -Pexclude-spam-filter
 
 ### Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
 
-- Any configuration notes related to these two `.yml` files are located [here](docs/config-documentation.md)
+- Any configuration notes related to these two `.yml` files are located [here](docs/si .signal-server-configuration.md)
+
+### Other self-hosted services
+
+- Signal-Server is the brains of the whole Signal operation, but there are a handful of smaller self-hosted pieces on the Signalapp Github that need to be started and configured independantly. Check out [this disambiguation doc](docs/self-hosted-dependancies.md) to get started on these, and to find out what you will need
 
 ### Docker first run
 
 In order to for the redis-cluster to successfully start, it has to start without any modifications to the source [docker-compose.yml](https://github.com/bitnami/containers/blob/main/bitnami/redis-cluster/docker-compose.yml)
 
-This can be done with:
+**The easy way**
+
+This can be done with `bash docker-compose-first-run.sh` inside the `scripts` folder
+
+- Note: this script automatically deletes any currently existing volumes, since the unmodified `docker-compose-first-run.yml` would re-use the incorrect ones
+
+**Manually**
+
+Or you can download the file from [here](https://github.com/bitnami/containers/blob/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml), rename it to `docker-compose-first-run.yml`, place it next to the existing `docker-compose.yml` here and run it with:
 
 ```
 sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
 ```
-
-Which will generate the required volumes
-
 
 If you want to verify that the first run has correctly started a redis cluster:
 
@@ -144,27 +153,10 @@ cluster_state:ok
 cluster_slots_assigned:16384
 cluster_slots_ok:16384
 cluster_slots_pfail:0
-cluster_slots_fail:0
-cluster_known_nodes:6
-cluster_size:3
-cluster_current_epoch:6
-cluster_my_epoch:1
-cluster_stats_messages_ping_sent:140
-cluster_stats_messages_pong_sent:134
-cluster_stats_messages_sent:274
-cluster_stats_messages_ping_received:134
-cluster_stats_messages_pong_received:140
-cluster_stats_messages_received:274
-total_cluster_links_buffer_limit_exceeded:0
+etc
 ```
 
-If you started the modified [docker-compose.yml](docker-compose.yml) before your first run, this test will fail. Run this script:
-
-```
-source docker-compose-first-run.sh
-```
-
-Or remove the volumes manually with a string of commands like this (this assumes you haven't renamed `Signal-Server`):
+If you started the modified [docker-compose.yml](docker-compose.yml) before your first run, this test will fail. You can fix it with the `docker-compose-first-run.sh` or manually:
 
 ```
 docker volume rm signal-server_redis-cluster_data-0
@@ -175,17 +167,17 @@ docker volume rm signal-server_redis-cluster_data-4
 docker volume rm signal-server_redis-cluster_data-5
 ```
 
-- Which should erase all volumes created by the dockerized redis-cluster (and erease all data stored on the cluster)
+Which assumes that you are in a folder named `Signal-Server`
 
-- If those names are wrong, you can find them with `docker volume ls`
+Which should erase all volumes created by the dockerized redis-cluster (and erease all data stored on the cluster)
 
-- Then rerun the first `docker-compose` command
+- Then rerun the first manual generation command
 
 ## Starting the server
 
 ### The easy way
 
-[Make sure you configure `quickstart.sh` first!](docs/config-documentation.md)
+[Make sure you configure `quickstart.sh` first!](docs/si .signal-server-configuration.md)
 
 ```
 cd scripts
@@ -239,15 +231,21 @@ Call it from inside `scripts` with `source recloner.sh`
 
 ### General
 
-### Running the server
-
 - Get the server running on an `https` certified domain. This will probably fix many errors related to probing / connecting to the server
+
+  - Set up a new NGINX repo and configure NGINX `docker-compose`
+
+- Set up [RegistrationService](https://github.com/signalapp/registration-service), which will require either annother EC2 instance or a docker container that can assume IAM roles
+
+  - Change docker containers to one that can assume EC2 roles, like [this one](https://github.com/swipely/iam-docker) or [this one](https://github.com/billtrust/iam-docker-run)
+
+### Running the server
 
 - Make EC2 role and policy narrower
 
 ### Documentation
 
-- Revisit [AWS appConfig docs](docs/config-documentation.md#aws-appconfig) and clean up the AWS appConfig cloud input
+- Revisit [AWS appConfig docs](docs/si .signal-server-configuration.md#aws-appconfig) and clean up the AWS appConfig cloud input
 
 ### Extra Credit
 
@@ -256,5 +254,3 @@ Call it from inside `scripts` with `source recloner.sh`
 - Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
 
 - Set up Signal-iOS and Signal-Desktop
-
-- Change docker containers to one that can assume EC2 roles, like [this one](https://github.com/swipely/iam-docker) or [this one](https://github.com/billtrust/iam-docker-run)
