@@ -1,5 +1,7 @@
 # Signal-Server Full Installation Guide
 
+- [Roadmap! New readers probably start here](https://github.com/JJTofflemire/Signal-Docker)
+
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
 - Currently in a minimum viable state - it starts and runs successfully, but unresponsive
@@ -34,18 +36,6 @@
 This Signal-Server fork has been dockerized! Note: the docker container currently hasn't been updated to be able to assume AWS roles, so it is currently deprecated in favor of running in EC2. There are docker images that can do this, but they have not been implemented yet
 
 - To install, follow the [config instructions](docs/si .signal-server-configuration.md)(including the [docker specific instructions!](docs/signal-server-configuration.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
-
-## State of the Server
-
-**On Bare Metal and Dockerized**
-- After [fully configuring the server](docs/si .signal-server-configuration.md), filling out [`secrets.env`](docs/sample-secrets.env), and configuring docker, the server starts but is unresponsive
-  - The server starts but is unresponsive to probes via `curl`
-  - Throws errors related to AWS credentials
-
-**EC2**
-- Identical deployment to Bare Metal, just `scp` all config files in
-  - The server responds with `{"code":404,"message":"HTTP 404 Not Found"}` to probes via `curl`
-  - Runs with no errors
 
 ## Dependancies
 
