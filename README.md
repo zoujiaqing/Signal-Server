@@ -221,13 +221,15 @@ Call it from inside `scripts` with `source recloner.sh`
 
 ### General
 
-- Get the server running on an `https` certified domain. This will probably fix many errors related to probing / connecting to the server
+- Find a command to add a phone to the "registered" section in Signal-Server
 
-  - Set up a new NGINX repo and configure NGINX `docker-compose`
+- Figure out how to generate certificates for `generic zkconfig` (possibly in libsignal?)
 
-- Set up [RegistrationService](https://github.com/signalapp/registration-service), which will require either annother EC2 instance or a docker container that can assume IAM roles
+- Add new sections to the compiler script that automatically grabs the server.jar, dumps the output of `unidentifiedelivery` and `zkgroups` into a `.txt`, and moves everything into a dedicated folder (that can be re-used everywhere)
 
-  - Change docker containers to one that can assume EC2 roles, like [this one](https://github.com/swipely/iam-docker) or [this one](https://github.com/billtrust/iam-docker-run)
+  - This is most likely neccessary because the app / registration-service will ask for your server's specific output of those commands
+
+- Set up [registration-service](https://github.com/signalapp/registration-service), which will require either annother EC2 instance or a docker container that can assume IAM roles
 
 ### Running the server
 
