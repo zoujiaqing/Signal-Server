@@ -31,12 +31,6 @@
 
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
 
-## Docker!
-
-This Signal-Server fork has been dockerized! Note: the docker container currently hasn't been updated to be able to assume AWS roles, so it is currently deprecated in favor of running in EC2. There are docker images that can do this, but they have not been implemented yet
-
-- To install, follow the [config instructions](docs/si .signal-server-configuration.md)(including the [docker specific instructions!](docs/signal-server-configuration.md#dockerized-signal-server-documentation)) then follow the [Docker fork's](https://github.com/JJTofflemire/Signal-Server/tree/docker) instructions on getting set up
-
 ## Dependancies
 
 Required:
@@ -229,7 +223,7 @@ Call it from inside `scripts` with `source recloner.sh`
 
   - This is most likely neccessary because the app / registration-service will ask for your server's specific output of those commands
 
-- Set up [registration-service](https://github.com/signalapp/registration-service), which will require either annother EC2 instance or a docker container that can assume IAM roles
+- Set up [registration-service](https://github.com/signalapp/registration-service), which will require either another EC2 instance or a docker container that can assume IAM roles
 
 ### Running the server
 
