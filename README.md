@@ -29,6 +29,7 @@
 
 ### Misc
 
+- [An old Signal-Server.wiki that Signalapp has since taken down](docs/signal-server-wiki-api-protocol.md)
 - [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
 
 ## Dependancies
