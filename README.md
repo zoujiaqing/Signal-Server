@@ -225,6 +225,12 @@ Call it from inside `scripts` with `source recloner.sh`
 
 - Set up [registration-service](https://github.com/signalapp/registration-service), which will require either another EC2 instance or a docker container that can assume IAM roles
 
+- Move redis-cluster docker notes into Signal-Docker and just link to that README.md
+
+- Add a Docker folder here with all the Docker dependancies, and add nginx (and later registration-service)
+
+  - Maybe add a part of quickstart that looks for flags, ex: `bash quickstart.sh redis-cluster nginx-certbot registration-service`
+
 ### Running the server
 
 - Make EC2 role and policy narrower
