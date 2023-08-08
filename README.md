@@ -1,36 +1,8 @@
 # Signal-Server Full Installation Guide
 
 - [Roadmap! New readers probably start here](https://github.com/JJTofflemire/Signal-Docker)
-
 - Written for Signal-Server v9.81.0
 - Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
-- Currently in a minimum viable state - it starts and runs successfully, but unresponsive
-
-## Useful Resources
-
-### Config Docs
-
-- [Documentation on filling out a sample.yml](docs/signal-server-configuration.md)
-  - [A `sample.yml` file with added short-hand comments](docs/documented-sample.yml)
-  - [A `sample-secrets-bundle.yml` with added comments](docs/documented-sample-secrets-bundle.yml)
-  - [A sample `secrets.env` script to use with `quickstart.sh`](docs/sample-secrets.env)
-  - [A sample `secrets.md` to store any other important keys/info](docs/sample-secrets.md)
-
-### Scripts
-
-- [A script to compile Signal-Server from JJTofflemire/Signal-Server](scripts/main-compiler.sh) as well as [a script to remove the `zkgroup` dependancies and compile](scripts/surgery-compiler.sh)
-- [A recloner script that preserves the `personal-config` folder](scripts/recloner.sh)
-- [A script to automate starting the server](scripts/quickstart.sh)
-- [A script to reset your docker installation if you mess it up](scripts/docker-compose-first-run.sh)
-
-- Note: all scripts in this repo should be ran as `source script.sh` from the `scripts` folder if you have a `bash` shell
-  - If you are using `zsh`, call them with `./script.sh` from the `scripts` folder instead (running with `source` overrides the bash shebang on the first line of the scripts)
-  - If you are not using `bash` or `zsh`, good luck soldier
-
-### Misc
-
-- [An old Signal-Server.wiki that Signalapp has since taken down](docs/signal-server-wiki-api-protocol.md)
-- [The Signal-Android repo with instructions on how to connect it to this server](https://github.com/JJTofflemire/Signal-Android)
 
 ## Dependancies
 
@@ -53,10 +25,10 @@ git clone https://github.com/JJTofflemire/Signal-Server.git
 
 cd Signal-Server/scripts
 
-source surgery-compiler.sh
+bash surgery-compiler.sh
 ```
 
-Make sure to compile with `source <script>` so that `cd` and `mvn` function as intended (or with `./` or `bash` if you aren't on bash)
+Make sure to compile with `bash <script>` so that `cd` and `mvn` function as intended (or with `./` or `bash` if you aren't on bash)
 
 Using the scripted compilers are recommended to ensure that the server is in the correct configuration (with or without `zkgroup`)
 
@@ -84,17 +56,13 @@ mvn clean install -DskipTests -Pexclude-spam-filter
 
 - Alternatively, copy the `WhisperServerService.java` file from either the folder `intact` or `post-surgery` to `service/src/main/java/org/whispersystems/textsecuregcm` to either include or remove `zkgroup`
 
-- This is automated with [surgery-compiler.sh](scripts/surgery-compiler.sh), run it with `source surgery-compiler.sh`
+- This is automated with [surgery-compiler.sh](scripts/surgery-compiler.sh), run it with `bash surgery-compiler.sh`
 
 ## Configuration
 
 ### Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
 
 - Any configuration notes related to these two `.yml` files are located [here](docs/si .signal-server-configuration.md)
-
-### Other self-hosted services
-
-- Signal-Server is the brains of the whole Signal operation, but there are a handful of smaller self-hosted pieces on the Signalapp Github that need to be started and configured independantly. Check out [this disambiguation doc](docs/self-hosted-dependancies.md) to get started on these, and to find out what you will need
 
 ### Docker first run
 
@@ -108,66 +76,18 @@ This can be done with `bash docker-compose-first-run.sh` inside the `scripts` fo
 
 **Manually**
 
-Or you can download the file from [here](https://github.com/bitnami/containers/blob/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml), rename it to `docker-compose-first-run.yml`, place it next to the existing `docker-compose.yml` here and run it with:
-
-```
-sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
-```
-
-If you want to verify that the first run has correctly started a redis cluster:
-
-- Start the container (`sudo docker-compose -f docker-compose-first-run.yml up -d`)
-
-- Find the name of a container to check the logs of with `sudo docker ps`
-
-- Run `sudo docker logs <name from before>` and look for a line like:
-
-```
-1:S 06 Jul 2023 22:53:49.430 * Connecting to MASTER 172.27.0.6:6379
-```
-
-- Use that IP and port to connect to the server: `redis-cli -h 172.27.0.6 -p 6379`
-
-- Authenticate yourself with `AUTH bitnami`
-
-- Run `CLUSTER INFO`, and if it started correctly, will output:
-
-```
-172.27.0.6:6379> CLUSTER INFO
-cluster_state:ok
-cluster_slots_assigned:16384
-cluster_slots_ok:16384
-cluster_slots_pfail:0
-etc
-```
-
-If you started the modified [docker-compose.yml](docker-compose.yml) before your first run, this test will fail. You can fix it with the `docker-compose-first-run.sh` or manually:
-
-```
-docker volume rm signal-server_redis-cluster_data-0
-docker volume rm signal-server_redis-cluster_data-1
-docker volume rm signal-server_redis-cluster_data-2
-docker volume rm signal-server_redis-cluster_data-3
-docker volume rm signal-server_redis-cluster_data-4
-docker volume rm signal-server_redis-cluster_data-5
-```
-
-Which assumes that you are in a folder named `Signal-Server`
-
-Which should erase all volumes created by the dockerized redis-cluster (and erease all data stored on the cluster)
-
-- Then rerun the first manual generation command
+Check out [this README in Signal-Docker](https://github.com/JJTofflemire/Signal-Docker/tree/main/redis-cluster)
 
 ## Starting the server
 
 ### The easy way
 
-[Make sure you configure `quickstart.sh` first!](docs/si .signal-server-configuration.md)
+[Make sure you configure `quickstart.sh` first!](docs/signal-server-configuration.md#configuring-for-quickstartsh)
 
 ```
 cd scripts
 
-source quickstart.sh
+bash quickstart.sh
 ```
 
 ### Manually
@@ -206,7 +126,7 @@ When running Signal-Server in a Docker container, replace port `8080` with port 
 
 The [recloner.sh](scripts/recloner.sh) bash script moves the folder [personal-config](personal-config) up one level outside of `Signal-Server`, then reclones from this repository
 
-Call it from inside `scripts` with `source recloner.sh`
+Call it from inside `scripts` with `bash recloner.sh`
 
 ### Connecting the server to an Android app (unfinished)
 
@@ -231,6 +151,10 @@ Call it from inside `scripts` with `source recloner.sh`
 - Add a Docker folder here with all the Docker dependancies, and add nginx (and later registration-service)
 
   - Maybe add a part of quickstart that looks for flags, ex: `bash quickstart.sh redis-cluster nginx-certbot registration-service`
+  
+  - The `signal-server.jar` along with `personal-config` could all be thrown into a `target`esque folder for easy reproducible builds (i.e.: build on one machine and have identical deployment in EC2 or elsewhere)
+  
+- Remove `Useful Resources` and put READMEs into `docs` and `scripts`
 
 ### Running the server
 

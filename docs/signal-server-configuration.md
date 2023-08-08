@@ -215,11 +215,11 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
 ## Configuring for `quickstart.sh`
 
-- `quickstart.sh` is located in `Signal-Server/scripts` and is called with `source quickstart.sh`
+- `quickstart.sh` is located in `Signal-Server/scripts` and is called with `bash quickstart.sh`
 
 - It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.env` located in `Signal-Server/personal-config`
 
-  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`source recloner.sh`](scripts/recloner.sh)
+  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`bash recloner.sh`](scripts/recloner.sh)
 
 - The script should work out of the box - it should start all dependancies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
 
