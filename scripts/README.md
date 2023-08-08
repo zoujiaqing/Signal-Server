@@ -1,4 +1,4 @@
-# Signal-Server Scripts Documentation
+# Signal-Server Scripts Table of Contents
 
 ## Folders
 

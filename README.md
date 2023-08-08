@@ -136,25 +136,13 @@ Call it from inside `scripts` with `bash recloner.sh`
 
 ### General
 
-- Find a command to add a phone to the "registered" section in Signal-Server
-
 - Figure out how to generate certificates for `generic zkconfig` (possibly in libsignal?)
 
 - Add new sections to the compiler script that automatically grabs the server.jar, dumps the output of `unidentifiedelivery` and `zkgroups` into a `.txt`, and moves everything into a dedicated folder (that can be re-used everywhere)
 
   - This is most likely neccessary because the app / registration-service will ask for your server's specific output of those commands
-
-- Set up [registration-service](https://github.com/signalapp/registration-service), which will require either another EC2 instance or a docker container that can assume IAM roles
-
-- Move redis-cluster docker notes into Signal-Docker and just link to that README.md
-
-- Add a Docker folder here with all the Docker dependancies, and add nginx (and later registration-service)
-
-  - Maybe add a part of quickstart that looks for flags, ex: `bash quickstart.sh redis-cluster nginx-certbot registration-service`
   
   - The `signal-server.jar` along with `personal-config` could all be thrown into a `target`esque folder for easy reproducible builds (i.e.: build on one machine and have identical deployment in EC2 or elsewhere)
-  
-- Remove `Useful Resources` and put READMEs into `docs` and `scripts`
 
 ### Running the server
 
@@ -162,7 +150,7 @@ Call it from inside `scripts` with `bash recloner.sh`
 
 ### Documentation
 
-- Revisit [AWS appConfig docs](docs/si .signal-server-configuration.md#aws-appconfig) and clean up the AWS appConfig cloud input
+- Revisit [AWS appConfig docs](docs/signal-server-configuration.md#aws-appconfig) and clean up the AWS appConfig cloud input
 
 ### Extra Credit
 
