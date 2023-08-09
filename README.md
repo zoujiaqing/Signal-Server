@@ -16,6 +16,14 @@ Optional:
 - `maven` (v3.8.6 or newer)
   - If on Debian, you may need to manually install a newer version
 
+## Pre-Compilation
+
+Signal-Server needs to be ran in an AWS EC2 instance for it to function. You can either do this now or configure everything locally and `scp` all your files into the instance
+
+- Create an account with AWS, then follow [this section (don't worry, you don't have to do the rest of that until later)](docs/signal-server-configuration.md#aws-ec2)
+
+- It doesn't really matter when you transition from local to EC2, just be aware that some keys you generate from the server will change if you re-compile in the cloud
+
 ## Compilation
 
 ### The easy way
@@ -122,6 +130,16 @@ curl -X POST http://127.0.0.1:8080/v1/session
 
 When running Signal-Server in a Docker container, replace port `8080` with port `7006`
 
+## Other Self-Hosted Services
+
+Once you get the server running without errors in EC2, there are a couple other services you need to set up
+
+- [NGINX and Certbot to handle SSL certificates](https://github.com/JJTofflemire/Signal-Docker/tree/main/nginx-certbot)
+
+  - NGINX needs to be done first to generate certificates which will be used while configuring `registration-service`
+
+- [Signalapp's registration-service](https://github.com/JJTofflemire/Signal-Docker/tree/main/registration-service) to handle registering phone numbers
+
 ### Recloning
 
 The [recloner.sh](scripts/recloner.sh) bash script moves the folder [personal-config](personal-config) up one level outside of `Signal-Server`, then reclones from this repository
@@ -136,13 +154,13 @@ Call it from inside `scripts` with `bash recloner.sh`
 
 ### General
 
+- Update `DynamoDB` docs
+
+- Finish up `registration-service`
+
+- Update the relavent sections of Signal-Server-documentation.md
+
 - Figure out how to generate certificates for `generic zkconfig` (possibly in libsignal?)
-
-- Add new sections to the compiler script that automatically grabs the server.jar, dumps the output of `unidentifiedelivery` and `zkgroups` into a `.txt`, and moves everything into a dedicated folder (that can be re-used everywhere)
-
-  - This is most likely neccessary because the app / registration-service will ask for your server's specific output of those commands
-  
-  - The `signal-server.jar` along with `personal-config` could all be thrown into a `target`esque folder for easy reproducible builds (i.e.: build on one machine and have identical deployment in EC2 or elsewhere)
 
 ### Running the server
 
@@ -159,3 +177,9 @@ Call it from inside `scripts` with `bash recloner.sh`
 - Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
 
 - Set up Signal-iOS and Signal-Desktop
+
+- Add new sections to the compiler script that automatically grabs the server.jar, dumps the output of `unidentifiedelivery` and `zkgroups` into a `.txt`, and moves everything into a dedicated folder (that can be re-used everywhere)
+  
+  - The `signal-server.jar` along with `personal-config` could all be thrown into a `target`esque folder for easy reproducible builds (i.e.: build on one machine and have identical deployment in EC2 or elsewhere)
+  
+  - Write a script where you can choose which Signal-Docker packages to include in the `runtime` folder

@@ -491,6 +491,8 @@ Go to `AWS` > `EC2` > `Launch instance` in a panel in the middle of the page
 
   - A single `t2.micro` running 24/7 is free, but anything more will start charging you a couple of cents per hour
 
+  - The `t2.micro` might not be beefy enough to run Signal-Server, registration-service, and nginx all at the same time. If you are running into crashes then try upgrading to a `t2.small` or larger
+
 - Generate a keypair and save the `.pem` for ssh'ing into the instance
 
 - You can increase your default storage if you want, up to 30gb is free
