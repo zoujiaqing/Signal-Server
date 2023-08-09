@@ -38,11 +38,11 @@ else
 fi
 
 # Compile
-source mvnw clean install -DskipTests -Pexclude-spam-filter
+./mvnw clean install -DskipTests -Pexclude-spam-filter
 
 # Find the compiled server.jar and move files into 'runtime'
 jar_file=$(find service/target -name "TextSecureServer*.jar" ! -name "*-tests.jar" | head -n 1)
-sudo cp service/target/"$jar_file" runtime/Signal-Server.jar
+sudo cp "$jar_file" runtime/Signal-Server.jar
 sudo cp -r personal-config runtime/personal-config
 
 # Download the latest Signal-Docker.zip and grab 'registration-service' and `redis-cluster`
