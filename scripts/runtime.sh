@@ -3,7 +3,7 @@
 cd ..
 
 # Check if 'runtime.sh' has already been ran and try to prevent mistakes
-if [ -e "runtime/signal-server.jar" ]; then
+if [ -e "runtime/Signal-Server.jar" ]; then
     read -p "It looks like you already ran 'runtime.sh'! Do you want to remove the contents of 'runtime' and re-create 'runtime'? (Press Enter to stop type 'n' to continue): " choice
 
     if [[ $choice == "n" ]]; then
@@ -11,7 +11,7 @@ if [ -e "runtime/signal-server.jar" ]; then
     else
         echo -e "Don't worry, I made a backup anyways!\n"
         sudo cp -r runtime runtime-backup
-        sudo rm -rf signal-server.jar server-certificates.md personal-config registration-service redis-cluster
+        sudo rm -rf Signal-Server.jar server-certificates.md personal-config registration-service redis-cluster
 
         cd runtime/redis-cluster
         cd redis-cluster
@@ -56,10 +56,10 @@ cd runtime
 
 # Generate 'UnidentifiedDelivery' values and place them in server-certificates.md
 java -jar -Dsecrets.bundle.filename=personal-config/config-secrets-bundle.yml \
-    signal-server.jar certificate -ca | tee >(grep -oP '(?<=Private key: ).*' > private_key.txt) | \
+    Signal-Server.jar certificate -ca | tee >(grep -oP '(?<=Private key: ).*' > private_key.txt) | \
     grep -oP '(?<=Public key : ).*' > public_key.txt
 java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml \
-    signal-server.jar certificate --key "$(cat private_key.txt)" --id 123456 > certificate_output.txt
+    Signal-Server.jar certificate --key "$(cat private_key.txt)" --id 123456 > certificate_output.txt
 
 echo "# Command Outputs" >> server-certificates.md
 echo -e "\n## First Command Output" >> server-certificates.md
@@ -75,13 +75,13 @@ rm certificate_output.txt private_key.txt public_key.txt
 # Set up redis-cluster
 wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
 sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
-rm docker-compose-first-run.yml
+sudo rm docker-compose-first-run.yml
 cd ..
 
 # Build 'registration-service' if the image doesn't already exist 
-if ! docker image ls | grep -q "registration-service"; then
+if ! sudo docker image ls | grep -q "registration-service"; then
     cd registration-service
-    docker build -t registration-service:1.0 .
+    sudo docker build -t registration-service:1.0 .
     cd ..
 else
     echo "'registration-service' found. Skipping building..."
