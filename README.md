@@ -30,13 +30,11 @@ Signal-Server needs to be ran in an AWS EC2 instance for it to function. You can
 
 ```
 git clone https://github.com/JJTofflemire/Signal-Server.git
-
 cd Signal-Server/scripts
-
 bash surgery-compiler.sh
 ```
 
-Make sure to compile with `bash <script>` so that `cd` and `mvn` function as intended (or with `./` or `bash` if you aren't on bash)
+Make sure to compile with `bash <script>`
 
 Using the scripted compilers are recommended to ensure that the server is in the correct configuration (with or without `zkgroup`)
 

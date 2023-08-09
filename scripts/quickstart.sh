@@ -49,7 +49,7 @@ if [[ $choice == "n" ]]; then
 else
   sudo docker-compose down
   cd scripts
-  echo -e "\nStopped docker-compose dependancies"
+  echo -e "\nStopped docker-compose dependencies"
 fi
 
 # Here is a stripped down version of this script in case it fails (enter one-by-one or place this script in `Signal-Server`)

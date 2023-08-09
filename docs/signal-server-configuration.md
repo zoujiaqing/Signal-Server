@@ -27,9 +27,6 @@
 
 [Configuring for `quickstart.sh`](#configuring-for-quickstartsh)
 
-[Dockerized Signal-Server setup](#dockerized-signal-server-documentation)
-- Here are all the extra configuration needed to do to make Signal-Server-Docker run. This can be ignored if on Main branch
-
 ## Dependancies
 
 ### [Required](#dependancies-verbose)
