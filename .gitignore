@@ -36,3 +36,4 @@ personal-config/*
 runtime/*
 !runtime/README.md
 !runtime/regenerate-docker-dependencies.sh
+!runtime/start.sh
