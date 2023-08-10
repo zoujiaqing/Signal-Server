@@ -35,3 +35,4 @@ personal-config/*
 .DS_Store
 runtime/*
 !runtime/README.md
+!runtime/regenerate-docker-dependencies.sh
