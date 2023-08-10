@@ -4,7 +4,7 @@
 cd redis-cluster
 if ! sudo docker volume ls | grep -q "redis-cluster_redis-cluster"; then
     echo -e "No redis-cluster volumes found! Generating...\n"
-    wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
+    sudo wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
     sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
     rm docker-compose-first-run.yml
 else
@@ -16,7 +16,7 @@ else
     sudo docker volume rm -f redis-cluster_redis-cluster_data-4
     sudo docker volume rm -f redis-cluster_redis-cluster_data-5
 
-    wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
+    sudo wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
     sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
     rm docker-compose-first-run.yml
 fi
