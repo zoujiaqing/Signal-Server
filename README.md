@@ -154,11 +154,7 @@ Call it from inside `scripts` with `bash recloner.sh`
 
 - Update `DynamoDB` docs
 
-- Finish up `registration-service`
-
-- Update the relavent sections of Signal-Server-documentation.md
-
-- Figure out how to generate certificates for `generic zkconfig` (possibly in libsignal?)
+- Finish implementing `runtime`
 
 ### Running the server
 

@@ -26,7 +26,6 @@ cd registration-service
 if ! sudo docker image ls | grep -q "registration-service"; then
     echo -e "No registration-service image found. Building...\n"
     sudo docker build -t registration-service:1.0 .
-    cd ..
 else
     echo -e "registration-service image found. Deleting and rebuilding...\n"
     sudo docker rmi -f registration-service:1.0

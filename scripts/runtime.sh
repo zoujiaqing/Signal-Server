@@ -16,13 +16,12 @@ if [ -e "runtime/Signal-Server.jar" ]; then
         cd runtime/redis-cluster
         cd redis-cluster
 
-        folder=$(basename "$(pwd)" | tr '[:upper:]' '[:lower:]')
-        sudo docker volume rm -f "$folder"_redis-cluster_data-0
-        sudo docker volume rm -f "$folder"_redis-cluster_data-1
-        sudo docker volume rm -f "$folder"_redis-cluster_data-2
-        sudo docker volume rm -f "$folder"_redis-cluster_data-3
-        sudo docker volume rm -f "$folder"_redis-cluster_data-4
-        sudo docker volume rm -f "$folder"_redis-cluster_data-5
+        sudo docker volume rm -f redis-cluster_redis-cluster_data-0
+        sudo docker volume rm -f redis-cluster_redis-cluster_data-1
+        sudo docker volume rm -f redis-cluster_redis-cluster_data-2
+        sudo docker volume rm -f redis-cluster_redis-cluster_data-3
+        sudo docker volume rm -f redis-cluster_redis-cluster_data-4
+        sudo docker volume rm -f redis-cluster_redis-cluster_data-5
 
         cd ../..
     fi
@@ -43,7 +42,9 @@ fi
 # Find the compiled server.jar and move files into 'runtime'
 jar_file=$(find service/target -name "TextSecureServer*.jar" ! -name "*-tests.jar" | head -n 1)
 sudo cp "$jar_file" runtime/Signal-Server.jar
-sudo cp -r personal-config runtime/personal-config
+sudo cp -r personal-config runtime/
+
+cd runtime
 
 # Download the latest Signal-Docker.zip and grab 'registration-service' and `redis-cluster`
 wget -q https://github.com/JJTofflemire/Signal-Docker/archive/refs/heads/main.zip
@@ -51,8 +52,6 @@ jar xf main.zip
 sudo cp -r Signal-Docker-main/registration-service registration-service
 sudo cp -r Signal-Docker-main/redis-cluster redis-cluster
 sudo rm -rf main.zip Signal-Docker-main
-
-cd runtime
 
 # Generate 'UnidentifiedDelivery' values and place them in server-certificates.md
 java -jar -Dsecrets.bundle.filename=personal-config/config-secrets-bundle.yml \
