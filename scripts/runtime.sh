@@ -14,7 +14,6 @@ if [ -e "runtime/Signal-Server.jar" ]; then
         sudo rm -rf Signal-Server.jar server-certificates.md personal-config registration-service redis-cluster
 
         cd runtime/redis-cluster
-        cd redis-cluster
 
         sudo docker volume rm -f redis-cluster_redis-cluster_data-0
         sudo docker volume rm -f redis-cluster_redis-cluster_data-1
@@ -57,7 +56,7 @@ sudo rm -rf main.zip Signal-Docker-main
 java -jar -Dsecrets.bundle.filename=personal-config/config-secrets-bundle.yml \
     Signal-Server.jar certificate -ca | tee >(grep -oP '(?<=Private key: ).*' > private_key.txt) | \
     grep -oP '(?<=Public key : ).*' > public_key.txt
-java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml \
+java -jar -Dsecrets.bundle.filename=personal-config/config-secrets-bundle.yml \
     Signal-Server.jar certificate --key "$(cat private_key.txt)" --id 123456 > certificate_output.txt
 
 echo "# Command Outputs" >> server-certificates.md
@@ -73,7 +72,7 @@ rm certificate_output.txt private_key.txt public_key.txt
 
 # Set up redis-cluster
 cd redis-cluster
-wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
+sudo wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
 sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
 sudo rm docker-compose-first-run.yml
 cd ..
