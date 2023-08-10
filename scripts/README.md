@@ -4,7 +4,7 @@
 
 `intact` and `post-surgery`
 
-- contain `WhisperServerService.java` files that either have `zkgroup` dependancies or have them removed respectively
+- contain `WhisperServerService.java` files that either have `zkgroup` dependencies or have them removed respectively
 
 ## Files
 
@@ -22,13 +22,17 @@
 
 - A script that tries to do everything without you noticing
 
-- Will try to automatically find the correct `server.jar` to start, then start dependancies and the server using config files from `personal-config` (and stop dependancies after receiving a `^C`)
+- Will try to automatically find the correct `server.jar` to start, then start dependencies and the server using config files from `personal-config` (and stop dependencies after receiving a `^C`)
 
 `recloner.sh`
 
 - A script that conserves the `personal-config` folder, then `rm -rf`'s the whole `Signal-Server` folder and re`git clone`'s this repo
 
   - Unfortunately this script is necessary, as running `git reset` or similar sometimes won't stop weird maven errors that can be fixed with a fresh reclone
+
+`runtime.sh`
+
+- A script that bundles all dependencies required for Signal-Server into a single folder, and generates the required certificates
 
 `surgery-compiler.sh`
 

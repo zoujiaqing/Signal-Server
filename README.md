@@ -2,9 +2,9 @@
 
 - [Roadmap! New readers probably start here](https://github.com/JJTofflemire/Signal-Docker)
 - Written for Signal-Server v9.81.0
-- Documented with a Debian-based server implementation in mind, though nothing besides the dependancies notes should be Debian-specific
+- Documented with a Debian-based server implementation in mind, though nothing besides the dependencies notes should be Debian-specific
 
-## Dependancies
+## Dependencies
 
 Required:
 - `git`
@@ -54,7 +54,7 @@ Which uses the maven build script that comes bundled with Signal-Server. You can
 mvn clean install -DskipTests -Pexclude-spam-filter
 ```
 
-### Removing zkgroup dependancies manually
+### Removing zkgroup dependencies manually
 
 - This removes `zkgroup` (originally called from [libsignal](https://github.com/signalapp/libsignal)) which will let the server start
 
@@ -153,8 +153,6 @@ Call it from inside `scripts` with `bash recloner.sh`
 ### General
 
 - Update `DynamoDB` docs
-
-- Finish implementing `runtime`
 
 ### Running the server
 

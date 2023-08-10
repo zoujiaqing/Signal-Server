@@ -28,7 +28,7 @@
 
 `signal-server-configuration.md`
 
-- Exhuastive documentation on all the dependancies required by `config.yml` and `config-secrets-bundle.yml`
+- Exhuastive documentation on all the dependencies required by `config.yml` and `config-secrets-bundle.yml`
 
 `signal-server-wiki-api-protocol.md`
 

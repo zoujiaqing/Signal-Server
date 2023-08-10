@@ -2,9 +2,9 @@
 
 - This is documentation for filling out `sample.yml` and `sample-secrets-bundle.yml` inside `/service/config/`
 
-  - To create a config file that starts a usable Signal-Server, follow all of [General Config](#general-config) and [Required Dependancies](#required)
+  - To create a config file that starts a usable Signal-Server, follow all of [General Config](#general-config) and [Required Dependencies](#required)
 
-  - Unfortunately, properly documenting every dependancy necessary has resulted in very unintuitive documentation. For the least painful time, follow all the [Required Dependancies Instructions](#required) before starting on [General Configuration](#general-configuration), because sections there are more involved and require pre-configured AWS / Google Cloud instances
+  - Unfortunately, properly documenting every dependency necessary has resulted in very unintuitive documentation. For the least painful time, follow all the [Required Dependencies Instructions](#required) before starting on [General Configuration](#general-configuration), because sections there are more involved and require pre-configured AWS / Google Cloud instances
 
 - [Here](docs/documented-sample.yml) is an example of `sample.yml` with extra comments and some sections filled out
 - [Here](docs/documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments and some sections filled out
@@ -27,9 +27,9 @@
 
 [Configuring for `quickstart.sh`](#configuring-for-quickstartsh)
 
-## Dependancies
+## Dependencies
 
-### [Required](#dependancies-verbose)
+### [Required](#dependencies-verbose)
 
 [Apple Push Notifications](#apple-push-notifications-apn)
 - In `sample.yml`
@@ -218,7 +218,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
   - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`bash recloner.sh`](scripts/recloner.sh)
 
-- The script should work out of the box - it should start all dependancies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
+- The script should work out of the box - it should start all dependencies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
 
   - In case it doesn't function, a barebones version is commented out at the bottom - either run each line or create a new bash script in `Signal-Server`
 
@@ -238,7 +238,7 @@ The `personal-config` folder is functionally the same as in the Main branch, and
 
 - `personal-config` needs a completed `config.yml`, `config-secrets-bundle`, and `secrets.env` in order for the server to start properly (assuming correct configuration)
 
-# Dependancies (verbose)
+# Dependencies (verbose)
 
 ## Apple Push Notifications (APN)
 
@@ -410,13 +410,18 @@ appConfig:
   
 ### AWS DynamoDb Configuration
   
-- Sign into AWS, look up DynamoDb, and make tables of all of the following (not sure what to do about Partition Keys)
+- Sign into AWS, look up DynamoDb, and make tables of all of the following:
+  
+  - All of these have specific partition keys they need, however they are only specified in the source code so I am only stating the ones needed for registering and chatting
 
 - If you change these names, also change them in [sample.yml](/service/config/sample.yml)
   
   - Accounts
+    - Partition key: U
   - Accounts_PhoneNumbers
+    - Partition key: P
   - Accounts_PhoneNumberIdentifiers
+    - Partition key: P
   - Accounts_Usernames
   - DeletedAccounts
   - DeletedAccountsLock
@@ -429,6 +434,7 @@ appConfig:
   - Messages
     - expiration: P30D
   - PendingAccounts
+    - Partition key: P
   - PendingDevices
   - PhoneNumberIdentifiers
   - Profiles
@@ -544,7 +550,7 @@ sshfs -o IdentityFile="$HOME/full/path/to/key.pem" admin@elastic-ip:/home/admin/
 
 **Installing Signal-Server**
 
-Installing is the same as ever. Install your dependancies (`git`, `java`, `docker`, and `docker-compose`). Run these for the very lazy (assuming you are using Debian-based because I don't like Amazon Linux):
+Installing is the same as ever. Install your dependencies (`git`, `java`, `docker`, and `docker-compose`). Run these for the very lazy (assuming you are using Debian-based because I don't like Amazon Linux):
 
 ```
 sudo apt update && sudo apt upgrade -y && sudo apt install -y git openjdk-19-jre-headless docker docker-compose
