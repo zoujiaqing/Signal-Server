@@ -73,6 +73,7 @@ echo -e "\n --id 123456" >> server-certificates.md
 rm certificate_output.txt private_key.txt public_key.txt
 
 # Set up redis-cluster
+cd redis-cluster
 wget -O docker-compose-first-run.yml https://raw.githubusercontent.com/bitnami/containers/fd15f56824528476ca6bd922d3f7ae8673f1cddd/bitnami/redis-cluster/7.0/debian-11/docker-compose.yml
 sudo docker-compose -f docker-compose-first-run.yml up -d && sudo docker-compose -f docker-compose-first-run.yml down
 sudo rm docker-compose-first-run.yml
