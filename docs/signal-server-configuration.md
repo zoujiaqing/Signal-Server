@@ -6,8 +6,8 @@
 
   - Unfortunately, properly documenting every dependency necessary has resulted in very unintuitive documentation. For the least painful time, follow all the [Required Dependencies Instructions](#required) before starting on [General Configuration](#general-configuration), because sections there are more involved and require pre-configured AWS / Google Cloud instances
 
-- [Here](docs/documented-sample.yml) is an example of `sample.yml` with extra comments and some sections filled out
-- [Here](docs/documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments and some sections filled out
+- [Here](documented-sample.yml) is an example of `sample.yml` with extra comments and some sections filled out
+- [Here](documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments and some sections filled out
 - [Here](sample-secrets.env) is an example of a file that manages your environmental variables
 - [Here](sample-secrets.md) is a sample file to store any other sensitive Signal-Server keys / data
 
