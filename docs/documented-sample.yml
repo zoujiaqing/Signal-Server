@@ -16,7 +16,7 @@ logging:
 #      apiKey: secret://datadog.apiKey
 #      environment: staging
 
-# Unneccessary
+# Unnecessary
 metrics:
   reporters:
     - type: signal-datadog

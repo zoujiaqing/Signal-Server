@@ -2,7 +2,7 @@
 
 - [Roadmap! New readers probably start here](https://github.com/JJTofflemire/Signal-Docker)
 - Written for Signal-Server v9.81.0
-- Documented with a Debian-based server implementation in mind, though nothing besides the dependencies notes should be Debian-specific
+- Documented with a Debian / Ubuntu EC2 instance in mind
 
 ## Dependencies
 
@@ -10,7 +10,7 @@ Required:
 - `git`
 - `java`
 - `docker`
-- `docker-dompose`
+- `docker-compose`
 
 Optional:
 - `maven` (v3.8.6 or newer)
@@ -18,11 +18,9 @@ Optional:
 
 ## Pre-Compilation
 
-Signal-Server needs to be ran in an AWS EC2 instance for it to function. You can either do this now or configure everything locally and `scp` all your files into the instance
+Signal-Server needs to be ran in an AWS EC2 instance for it to function. While you can configure locally and `scp` your files into the instance, this is a pain
 
-- Create an account with AWS, then follow [this section (don't worry, you don't have to do the rest of that until later)](docs/signal-server-configuration.md#aws-ec2)
-
-- It doesn't really matter when you transition from local to EC2, just be aware that some keys you generate from the server will change if you re-compile in the cloud
+- Create an account with AWS, then follow [these sections](docs/signal-server-configuration.md#aws-ec2) about making an EC2 instance and associating an elastic ip
 
 ## Compilation
 
@@ -31,16 +29,15 @@ Signal-Server needs to be ran in an AWS EC2 instance for it to function. You can
 ```
 git clone https://github.com/JJTofflemire/Signal-Server.git
 cd Signal-Server/scripts
+# now choose surgery-compiler.sh or main-compiler.sh, though surgery-compiler is the one that will work currently
 bash surgery-compiler.sh
 ```
-
-Make sure to compile with `bash <script>`
 
 Using the scripted compilers are recommended to ensure that the server is in the correct configuration (with or without `zkgroup`)
 
 ### Manually
 
-- If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server`, and if you want to specify v9.81.0, also run `git checkout 9c93d37`
+- If you want to pull from signalapp's repo, you can run `git clone https://github.com/signalapp/Signal-Server` (mileage may vary on configuring a newer version), and if you want to specify v9.81.0, also run `git checkout 9c93d37`
 
 Then compile with:
 
@@ -62,23 +59,26 @@ mvn clean install -DskipTests -Pexclude-spam-filter
 
 - Alternatively, copy the `WhisperServerService.java` file from either the folder `intact` or `post-surgery` to `service/src/main/java/org/whispersystems/textsecuregcm` to either include or remove `zkgroup`
 
-- This is automated with [surgery-compiler.sh](scripts/surgery-compiler.sh), run it with `bash surgery-compiler.sh`
-
 ## Configuration
 
 ### Fill out `sample.yml` and `sample-secrets-bundle.yml`, located in `service/config/`
 
-- Any configuration notes related to these two `.yml` files are located [here](docs/si .signal-server-configuration.md)
+- Any configuration notes related to these two `.yml` files are located [here](docs/signal-server-configuration.md)
 
-### Docker first run
+### Docker configuration
+
+Note: this is only for docker containers bundled in `Signal-Server`, there are some other docker dependencies - check out [Other Self-Hosted Services](#other-self-hosted-services)
 
 In order to for the redis-cluster to successfully start, it has to start without any modifications to the source [docker-compose.yml](https://github.com/bitnami/containers/blob/main/bitnami/redis-cluster/docker-compose.yml)
 
 **The easy way**
 
-This can be done with `bash docker-compose-first-run.sh` inside the `scripts` folder
+```
+cd scripts
+bash docker-compose-first-run.sh
+```
 
-- Note: this script automatically deletes any currently existing volumes, since the unmodified `docker-compose-first-run.yml` would re-use the incorrect ones
+Note: this will delete any existing redis-cluster volumes generated in the `Signal-Server` folder
 
 **Manually**
 
@@ -88,11 +88,10 @@ Check out [this README in Signal-Docker](https://github.com/JJTofflemire/Signal-
 
 ### The easy way
 
-[Make sure you configure `quickstart.sh` first!](docs/signal-server-configuration.md#configuring-for-quickstartsh)
+[Make sure you configure the repo for `quickstart.sh` first!](docs/signal-server-configuration.md#configuring-for-quickstartsh)
 
 ```
 cd scripts
-
 bash quickstart.sh
 ```
 
@@ -116,14 +115,10 @@ java -jar -Dsecrets.bundle.filename=service/config/sample-secrets-bundle.yml ser
 
 ## Running the server
 
-To ping the server, try these commands:
+To ping the server, try this command (or any of the ones listed when starting the server)
 
 ```
-curl http://127.0.0.1:8080/v1/accounts/config
 curl http://127.0.0.1:8080/v1/accounts/whoami
-curl http://127.0.0.1:8080/v1/test/hello
-curl -X POST http://127.0.0.1:8080/v1/registration
-curl -X POST http://127.0.0.1:8080/v1/session
 ```
 
 When running Signal-Server in a Docker container, replace port `8080` with port `7006`
@@ -142,21 +137,28 @@ Once you get the server running without errors in EC2, there are a couple other 
 
 The [recloner.sh](scripts/recloner.sh) bash script moves the folder [personal-config](personal-config) up one level outside of `Signal-Server`, then reclones from this repository
 
-Call it from inside `scripts` with `bash recloner.sh`
+- This is useful when a compilation fails, but hopefully everything is streamlined so you don't run into this (usually you can just `git pull` and call it a day)
 
-### Connecting the server to an Android app (unfinished)
+```
+cd scripts
+bash recloner.sh
+```
 
-- Current documentation on getting the Android app running and connected to this server is [here](https://github.com/JJTofflemire/Signal-Android)
+### Connecting the server to an Android app
+
+- Check out [JJTofflemire/Signal-Android](https://github.com/JJTofflemire/Signal-Android)!
 
 ## To-Do
 
 ### General
 
-- Update `DynamoDB` docs
-
 ### Running the server
 
 - Make EC2 role and policy narrower
+
+- Make the account crawler wait longer between runs
+
+- Fix the redis-cluster error (doesn't show up every time but it complains about null values)
 
 ### Documentation
 
@@ -165,13 +167,3 @@ Call it from inside `scripts` with `bash recloner.sh`
 ### Extra Credit
 
 - Write scripts for AWS / Google Cloud cli
-
-- Check out a [local DynamoDB Docker instance](https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/docker-compose.yml)
-
-- Set up Signal-iOS and Signal-Desktop
-
-- Add new sections to the compiler script that automatically grabs the server.jar, dumps the output of `unidentifiedelivery` and `zkgroups` into a `.txt`, and moves everything into a dedicated folder (that can be re-used everywhere)
-  
-  - The `signal-server.jar` along with `personal-config` could all be thrown into a `target`esque folder for easy reproducible builds (i.e.: build on one machine and have identical deployment in EC2 or elsewhere)
-  
-  - Write a script where you can choose which Signal-Docker packages to include in the `runtime` folder

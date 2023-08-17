@@ -484,17 +484,15 @@ The same access key and secret from [AWS IAM Configuration](#aws-iam-configurati
 
 **Creating an EC2 Instance**
 
-Note: this section is only necessary if you are implementing Signal-Server in an EC2 instance. 
-
 Go to `AWS` > `EC2` > `Launch instance` in a panel in the middle of the page
 
-- For ease of deployment, choose whatever distro is the most comfortable, though Ubuntu / Debian has already been throroughly documented here
+- For ease of deployment, choose whatever distro is the most comfortable - Ubuntu / Debian has already been thoroughly documented here
 
-- Under `Instance type`, leave it as `t2.micro` unless you are willing to pay for uptime on your instance
+- For `Instance type`, leave it as `t2.micro`, which is free to leave running 24/7
 
-  - A single `t2.micro` running 24/7 is free, but anything more will start charging you a couple of cents per hour
-
-  - The `t2.micro` might not be beefy enough to run Signal-Server, registration-service, and nginx all at the same time. If you are running into crashes then try upgrading to a `t2.small` or larger
+  - The `t2.micro` might not be beefy enough to run Signal-Server, registration-service, and nginx all at the same time. If you are running into crashes then try upgrading to a `t2.small` or larger (you can do this after initial creation, so no sweat)
+  
+    - If you do want to change: go to `EC2` > your EC2 instance: first, `Instance` > `Stop instance` then `Actions` > `Instance settings` > `Change instance type` and select the desired instance
 
 - Generate a keypair and save the `.pem` for ssh'ing into the instance
 
@@ -510,20 +508,7 @@ Hit `Allocate Elastic IP address`, then hit `Allocate` (the default settings are
 
 - Then, select the newly created EC2 instance from the dropdown and hit `Associate`
 
-Note: If you stop your EC2 instance, you will get charged for the Elastic IP even if it is still associated with the EC2 instance
-
-- You could also use this script which finds an instance's public IP address with `aws-cli-v2`:
-
-```
-#!/bin/bash
-INSTANCE_ID="your-ec2-id"
-INSTANCE_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
-if [[ -n "$INSTANCE_IP" ]]; then
-    ssh -i "path/to/your/key.pem" user@"$INSTANCE_IP"
-else
-    echo "This instance probably isn't started yet."
-fi
-```
+Note: The elastic ip is free so long as it is associated with a running ip, but stopping a `t2.small` and paying for the elastic ip is cheaper than leaving it running 24/7
 
 **Interacting with the EC2 Instance**
 

@@ -1,7 +1,7 @@
   accounts:
-    tableName: Accounts - `U`
+    tableName: Accounts - `U` in Binary
     phoneNumberTableName: Accounts_PhoneNumbers `P`
-    phoneNumberIdentifierTableName: Accounts_PhoneNumberIdentifiers `P`
+    phoneNumberIdentifierTableName: Accounts_PhoneNumberIdentifiers `PNI` in Binary
     usernamesTableName: Accounts_Usernames - `U`
     scanPageSize: 100
 
@@ -10,16 +10,16 @@
     expiration: P30D # Duration of time until rows expire
     generator: abcdefg12345678= # random base64-encoded binary sequence
 
-  ecKeys: - `S`
+  ecKeys: - `S` - Binary
     tableName: Keys
 
-  pqKeys: - `P`
+  pqKeys: - `P` - Binary
     tableName: PQ_Keys
 
   pqLastResortKeys:
     tableName: PQ_Last_Resort_Keys - `U` - sort - `DK`
 
-  messages:
+  messages: - `H` - sort - `S`
     tableName: Messages
     expiration: P30D # Duration of time until rows expire
 
@@ -29,7 +29,7 @@
   pendingDevices: - `P` - uncertain
     tableName: PendingDevices
 
-  phoneNumberIdentifiers:
+  phoneNumberIdentifiers: - `P`
     tableName: PhoneNumberIdentifiers
 
   profiles:
@@ -54,7 +54,7 @@
 
 ## Not Needed Yet
 
-  deletedAccounts:
+  deletedAccounts: `P`Accounts_PhoneNumberIdentifiers
     tableName: DeletedAccounts
 
   deletedAccountsLock: - `P`
