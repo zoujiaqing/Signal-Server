@@ -216,7 +216,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
 - It looks for a `config.yml`, `config-secrets-bundle.yml`, and `secrets.env` located in `Signal-Server/personal-config`
 
-  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`bash recloner.sh`](scripts/recloner.sh)
+  - The contents of this folder are already `.gitignore`'d and gets perserved between reclones when using [`bash recloner.sh`](../scripts/recloner.sh)
 
 - The script should work out of the box - it should start all dependencies, find the correct .jar regardless of version, and ask to stop the redis-cluster after the server stops
 
