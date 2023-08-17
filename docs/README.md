@@ -16,11 +16,9 @@
 
   - Since, the error this file was attempting to fix was fixed by running in EC2
 
-`sample-secrets.env`
+`sample-secrets.sh`
 
-- A file to set all required environmental variables. Was a `secrets.sh` before attempting to dockerize Signal-Server, and there has been no reason to switch back
-
-  - Sometimes EC2 gets confused by `.env` files for some reason, so this might get reverted
+- A file to set all required environmental variables
 
 `sample-secrets.md`
 

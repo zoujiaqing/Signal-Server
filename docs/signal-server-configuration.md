@@ -2,30 +2,12 @@
 
 - This is documentation for filling out `sample.yml` and `sample-secrets-bundle.yml` inside `/service/config/`
 
-  - To create a config file that starts a usable Signal-Server, follow all of [General Config](#general-config) and [Required Dependencies](#required)
-
-  - Unfortunately, properly documenting every dependency necessary has resulted in very unintuitive documentation. For the least painful time, follow all the [Required Dependencies Instructions](#required) before starting on [General Configuration](#general-configuration), because sections there are more involved and require pre-configured AWS / Google Cloud instances
+  - Follow all of [Required Dependencies](#required) - the `Optional` and `Unknown` sections are there to document how much has been configured
 
 - [Here](documented-sample.yml) is an example of `sample.yml` with extra comments and some sections filled out
 - [Here](documented-sample-secrets-bundle.yml) is an example of `sample-secrets-bundle.yml` with added comments and some sections filled out
-- [Here](sample-secrets.env) is an example of a file that manages your environmental variables
+- [Here](sample-secrets.sh) is an example of a file that manages your environmental variables
 - [Here](sample-secrets.md) is a sample file to store any other sensitive Signal-Server keys / data
-
-## [General Configuration](#general-config)
-
-[Certificate Generation](#certificate-generation)
-- In `sample.yml`
-  - svr2
-  - storageService
-  - backupService
-  - registrationService
-- In `sample-secrets-bundle.yml`
-  - svr2.userAuthenticationTokenSharedSecret
-  - svr2.userIdTokenSharedSecret
-  - storageService.userAuthenticationTokenSharedSecret
-  - backupService.userAuthenticationTokenSharedSecret
-
-[Configuring for `quickstart.sh`](#configuring-for-quickstartsh)
 
 ## Dependencies
 
@@ -36,6 +18,12 @@
   - apn
 - In `sample-secrets-bundle.yml`
   - apn.signingKey
+
+[hCaptcha](#hcaptcha)
+- In `sample.yml`
+  - hCaptcha
+- In `sample-secrets-bundle.yml`
+  - hCaptcha.apiKey
 
 [AWS](#aws)
 - In `sample.yml`
@@ -89,6 +77,20 @@
   - zkConfig.serverSecret
   - genericZkConfig.serverSecret
 
+[External Service Configuration](#external-service-configuration)
+- In `sample.yml`
+  - svr2
+  - storageService
+  - backupService
+  - registrationService
+- In `sample-secrets-bundle.yml`
+  - svr2.userAuthenticationTokenSharedSecret
+  - svr2.userIdTokenSharedSecret
+  - storageService.userAuthenticationTokenSharedSecret
+  - backupService.userAuthenticationTokenSharedSecret
+
+[Configuring for `quickstart.sh`](#configuring-for-quickstartsh)
+
 ### Optional
 
 Leave untouched:
@@ -98,6 +100,7 @@ Leave untouched:
   - paymentsService 
   - subscription
   - oneTimeDoncations
+  - badges
 - In `sample-secrets-bundle.yml`
   - datadog.apiKey
   - stripe.apiKey
@@ -107,23 +110,14 @@ Leave untouched:
   - paymentsService.fixerApiKey
   - paymentsService.coinMarketCapApiKey
 
-I believe that you can use Signal's url in `Signal-Android` (untested)
-- In `sample.yml`
-  - hCaptcha
-  - badges
-- In `sample-secrets-bundle.yml`
-  - hCaptcha.apiKey
-
 ### Unknown (will get sorted into the above)
 
 In `sample.yml`
-
 - DirectoryV2
 - remoteConfig
 - artService
 
 In `sample-secrets-bundle.yml`
-
 - directoryV2.client.userAuthenticationTokenSharedSecret
 - directoryV2.client.userIdTokenSharedSecret
 - remoteConfig.authorizedTokens
@@ -132,9 +126,9 @@ In `sample-secrets-bundle.yml`
 - currentReportingKey.secret
 - currentReportingKey.salt
 
-# General Config
+# Dependencies (verbose)
 
-## Certificate Generation
+## External Service Configuration
 
 - `svr2` > `svrCaCertificates`, `storageService` > `storageCaCertificates`, `backupService` > `backupCaCertificates`, and `registrationService` > `registrationCaCertificate` all only look for a valid key of any kind
 
@@ -238,8 +232,6 @@ The `personal-config` folder is functionally the same as in the Main branch, and
 
 - `personal-config` needs a completed `config.yml`, `config-secrets-bundle`, and `secrets.env` in order for the server to start properly (assuming correct configuration)
 
-# Dependencies (verbose)
-
 ## Apple Push Notifications (APN)
 
 - For actual APN implementation, [this guide](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_certificate-based_connection_to_apns) might help
@@ -248,12 +240,8 @@ The `personal-config` folder is functionally the same as in the Main branch, and
 
 - In `sample-secrets-bundle.yml`, replace the `apn.signingKey` with:
 
-```
-  -----BEGIN PRIVATE KEY-----
-  MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBd6GS02oWsHHPZRDmI
-  K4owyLme46NVNVisLJSC+cNFFQ==
-  -----END PRIVATE KEY-----
-```
+- In `sample-secrets-bundle.yml`
+  - hCaptcha.apiKey
 
 - This key is a dummy key but should stop any apn key-related errors
 
@@ -263,6 +251,20 @@ The `personal-config` folder is functionally the same as in the Main branch, and
 keytool -genkeypair -alias mykey -keyalg EC -keysize 256 -sigalg SHA256withECDSA -keystore keystore.p12 -storetype PKCS12
 
 openssl pkcs12 -in keystore.p12 -nodes -nocerts -out ec_private_key.pem
+```
+
+## hCaptcha
+
+- hCaptcha is required for registering a phone number on Signal-Android, and it checks the sitekey on the self-hosted captcha website with the secret in `sample-secrets-bundle.yml`
+
+- Go to [hcaptcha.com](https://hcaptcha.com), create an account (I used my gmail), and copy the `Sitekey` and `Secret` that pop up
+
+  - If you need to get to these again, you can acess the sitekey from the `Sites` tab and the `Secret` from your account picture > `Settings`
+
+Then paste the `Secret` key into `sample-secrets-bundle.yml`:
+
+```
+hCaptcha.apiKey: your-secret
 ```
 
 ## AWS
@@ -287,102 +289,15 @@ openssl pkcs12 -in keystore.p12 -nodes -nocerts -out ec_private_key.pem
 
   - Enter the following lines:
 
-```
-
-# By far the most important bit - this section isn't included anywhere in config.yml but necessary for Signal-Server to run    
+```    
 captcha:
   scoreFloor: 1.0
-
-# I'm not sure if you need the DynamoDB section, but I haven't had time to exhaustively test it
-dynamoDbClientConfiguration:
-  region: us-west-1 # AWS Region
-
-dynamoDbTables:
-  accounts:
-    tableName: Accounts
-    phoneNumberTableName: Accounts_PhoneNumbers
-    phoneNumberIdentifierTableName: Accounts_PhoneNumberIdentifiers
-    usernamesTableName: Accounts_Usernames
-    scanPageSize: 100
-  deletedAccounts:
-    tableName: DeletedAccounts
-  deletedAccountsLock:
-    tableName: DeletedAccountsLock
-  issuedReceipts:
-    tableName: IssuedReceipts
-    expiration: P30D # Duration of time until rows expire
-    generator: abcdefg12345678= # random base64-encoded binary sequence
-  ecKeys:
-    tableName: Keys
-  pqKeys:
-    tableName: PQ_Keys
-  pqLastResortKeys:
-    tableName: PQ_Last_Resort_Keys
-  messages:
-    tableName: Messages
-    expiration: P30D # Duration of time until rows expire
-  pendingAccounts:
-    tableName: PendingAccounts
-  pendingDevices:
-    tableName: PendingDevices
-  phoneNumberIdentifiers:
-    tableName: PhoneNumberIdentifiers
-  profiles:
-    tableName: Profiles
-  pushChallenge:
-    tableName: PushChallenge
-  redeemedReceipts:
-    tableName: RedeemedReceipts
-    expiration: P30D # Duration of time until rows expire
-  registrationRecovery:
-    tableName: RegistrationRecovery
-    expiration: P300D # Duration of time until rows expire
-  remoteConfig:
-    tableName: RemoteConfig
-  reportMessage:
-    tableName: ReportMessage
-  subscriptions:
-    tableName: Subscriptions
-  verificationSessions:
-    tableName: VerificationSessions
-  
-# I'm not convinced that this is required at all, since it is outdated compared to what I have in my config.yml with no problems. You are probably fine to leave it out
-registrationService:
-  host: registration.example.com
-  port: 443
-  credentialConfigurationJson: |
-    {
-      "example": "example"
-    }
-  secondaryCredentialConfigurationJson: |
-    {
-      "example": "example"
-    }
-  identityTokenAudience: https://registration.example.com
-  registrationCaCertificate: | # Registration service TLS certificate trust root
-    -----BEGIN CERTIFICATE-----
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ/0123456789+abcdefghijklmnopqrstuvwxyz
-    AAAAAAAAAAAAAAAAAAAA
-    -----END CERTIFICATE-----
-
-# Currently there is alot more that I might need to add here - do I have to add all pem key-related bits?
+  allowHCaptcha: true
+  hCaptchaSiteKeys:
+    challenge:
+      - sitekey
+    registration:
+      - sitekey
 ```
 
 - In the `Environments` tab, select `Create Environment`, enter a name, and ceate the environment
@@ -409,10 +324,14 @@ appConfig:
   - cdn
   
 ### AWS DynamoDb Configuration
-  
+
+- DynamoDB handles storing data about accounts, phone numbers, and messages
+
+- Go to `DynamoDB` > `Tables` > `Create table` > enter the table details from below > Hit `Customize settings` > Under `Read/write capacity settings` > Select `On-demand`
+
+  - Selecting `On-demand` will avoid making `Cloudwatch` alarms that cost more than just paying as you go
+
 - Sign into AWS, look up DynamoDb, and make tables of all of the following:
-  
-  - All of these have specific partition keys they need, however they are only specified in the source code so I am only stating the ones needed for registering and chatting
 
 - If you change these names, also change them in [sample.yml](/service/config/sample.yml)
   
@@ -426,23 +345,17 @@ appConfig:
   - DeletedAccounts
   - DeletedAccountsLock
   - IssuedReceipts
-    - expiration: P30D
-    - generator: abcdefg12345678=
   - Keys
   - PQ_Keys
   - PQ_Last_Resort_Keys
   - Messages
-    - expiration: P30D
   - PendingAccounts
-    - Partition key: P
   - PendingDevices
   - PhoneNumberIdentifiers
   - Profiles
   - PushChallenge
   - RedeemedReceipts
-    - expiration: P30D
   - RegistrationRecovery
-    - expiration: P30D
   - RemoteConfig
   - ReportMessage
   - Subscriptions
@@ -450,9 +363,11 @@ appConfig:
 
 ### AWS CloudWatch
 
-AWS loves to nickel and dime you for everything you got, and making all the `DynamoDB` tables will generate tons of alarms in `CloudWatch`
+If you make your `DynamoDB` tables with the `Provisioned with auto scaling` setting instead of `On-demand`, eight `Cloudwatch` alarms will be created to handle scaling the read/write of the table
 
-To minimize charges (though you will probably still need to pay ~$1 USD a month)
+- Note that deleting these alarms will remove the auto-scaling functionality, but also remove the massive charges from having hundreds of alarms
+
+To minimize charges:
 
 - Go to `CloudWatch` > `Alarms` dropdown > `All alarms`
 
@@ -464,7 +379,7 @@ To minimize charges (though you will probably still need to pay ~$1 USD a month)
 
 Signal-Server looks at your environmental variables for some AWS credentials
 
-- You can either set these in your `~/.bashrc` or by renaming and filling out [sample-secrets.env](sample-secrets.env)
+- You can either set these in your `~/.bashrc` or by renaming and filling out [sample-secrets.sh](sample-secrets.sh)
 
 Going from top to bottom:
 
@@ -797,6 +712,8 @@ unidentifiedDelivery.privateKey: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ## ZkConfig
 
 - NOTE: you probably (untested) don't have to do this in `post-surgery`
+
+  - Try leaving the dummy value in and see if you run into problems (if not open an Issue)
 
 - Generate a `public` and `private` value:
 
