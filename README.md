@@ -160,10 +160,6 @@ bash recloner.sh
 
 - Fix the redis-cluster error (doesn't show up every time but it complains about null values)
 
-### Documentation
-
-- Revisit [AWS appConfig docs](docs/signal-server-configuration.md#aws-appconfig) and clean up the AWS appConfig cloud input
-
 ### Extra Credit
 
 - Write scripts for AWS / Google Cloud cli
