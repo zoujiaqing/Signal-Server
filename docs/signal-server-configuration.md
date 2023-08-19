@@ -19,38 +19,9 @@
 - In `sample-secrets-bundle.yml`
   - apn.signingKey
 
-[hCaptcha](#hcaptcha)
-- In `sample.yml`
-  - hCaptcha
-- In `sample-secrets-bundle.yml`
-  - hCaptcha.apiKey
-
-[AWS](#aws)
-- In `sample.yml`
-  - dynamoDbClientConfiguration
-  - dynamoDbTables
-  - awsAttachments
-  - cdn
-  - appConfig
-- In `sample-secrets-bundel.yml`
-  - awsAttachments.accessKey
-  - awsAttachments.accessSecret
-  - cdn.accessKey
-  - cdn.accessSecret
-
 [Braintree](#braintree)
 - In `sample.yml`
   - braintree
-
-[Google Cloud](#google-cloud)
-- In `sample.yml`
-  - adminEventLoggingConfiguration
-  - gcpAttachments
-  - fcm
-  - recaptcha
-- In `sample-secrets-bundel.yml`
-  - gcpAttachments.rsaSigningKey
-  - fcm.credentials
 
 [Redis](#redis-notes)
 - In `Sample.yml`
@@ -76,6 +47,35 @@
 - In `sample-secrets-bundle.yml`
   - zkConfig.serverSecret
   - genericZkConfig.serverSecret
+
+[hCaptcha](#hcaptcha)
+- In `sample.yml`
+  - hCaptcha
+- In `sample-secrets-bundle.yml`
+  - hCaptcha.apiKey
+
+[AWS](#aws)
+- In `sample.yml`
+  - dynamoDbClientConfiguration
+  - dynamoDbTables
+  - awsAttachments
+  - cdn
+  - appConfig
+- In `sample-secrets-bundel.yml`
+  - awsAttachments.accessKey
+  - awsAttachments.accessSecret
+  - cdn.accessKey
+  - cdn.accessSecret
+
+[Google Cloud](#google-cloud)
+- In `sample.yml`
+  - adminEventLoggingConfiguration
+  - gcpAttachments
+  - fcm
+  - recaptcha
+- In `sample-secrets-bundel.yml`
+  - gcpAttachments.rsaSigningKey
+  - fcm.credentials
 
 [External Service Configuration](#external-service-configuration)
 - In `sample.yml`
@@ -152,7 +152,58 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 -----END CERTIFICATE-----
 ```
 
+- All of these sections are ssl certificates for other required self-hosted services - namely, [registration-service](https://github.com/signalapp/registration-service), [storage-service](https://github.com/signalapp/storage-service), and [SecureValueRecoveryV2](https://github.com/signalapp/SecureValueRecovery2)
+
+- Out of all of these, only `registration-service` has been sucessfully deployed. Here is what you need to do for `registration-service` (or just use a dummy value until you get all the other pieces):
+
+  - The `registrationService` `host` and `port` specify where your registration-service instance is running, and the Signal-Server will attempt to connect to it over `https`
+
+  - The `registrationCaCertificate` is a root certificate taken from [letsencrypt.org](letsencrypt.org) - you can also get the `.pem` [here](https://letsencrypt.org/certificates/) - select the Active, Self-signed pem link
+
+```
+registrationService:
+  host: chat.your.domain
+  port: 442
+
+. . .
+
+  identityTokenAudience: https://chat.your.domain
+  registrationCaCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIFFjCCAv6gAwIBAgIRAJErCErPDBinU/bWLiWnX1owDQYJKoZIhvcNAQELBQAw
+    TzELMAkGA1UEBhMCVVMxKTAnBgNVBAoTIEludGVybmV0IFNlY3VyaXR5IFJlc2Vh
+    cmNoIEdyb3VwMRUwEwYDVQQDEwxJU1JHIFJvb3QgWDEwHhcNMjAwOTA0MDAwMDAw
+    WhcNMjUwOTE1MTYwMDAwWjAyMQswCQYDVQQGEwJVUzEWMBQGA1UEChMNTGV0J3Mg
+    RW5jcnlwdDELMAkGA1UEAxMCUjMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+    AoIBAQC7AhUozPaglNMPEuyNVZLD+ILxmaZ6QoinXSaqtSu5xUyxr45r+XXIo9cP
+    R5QUVTVXjJ6oojkZ9YI8QqlObvU7wy7bjcCwXPNZOOftz2nwWgsbvsCUJCWH+jdx
+    sxPnHKzhm+/b5DtFUkWWqcFTzjTIUu61ru2P3mBw4qVUq7ZtDpelQDRrK9O8Zutm
+    NHz6a4uPVymZ+DAXXbpyb/uBxa3Shlg9F8fnCbvxK/eG3MHacV3URuPMrSXBiLxg
+    Z3Vms/EY96Jc5lP/Ooi2R6X/ExjqmAl3P51T+c8B5fWmcBcUr2Ok/5mzk53cU6cG
+    /kiFHaFpriV1uxPMUgP17VGhi9sVAgMBAAGjggEIMIIBBDAOBgNVHQ8BAf8EBAMC
+    AYYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMBIGA1UdEwEB/wQIMAYB
+    Af8CAQAwHQYDVR0OBBYEFBQusxe3WFbLrlAJQOYfr52LFMLGMB8GA1UdIwQYMBaA
+    FHm0WeZ7tuXkAXOACIjIGlj26ZtuMDIGCCsGAQUFBwEBBCYwJDAiBggrBgEFBQcw
+    AoYWaHR0cDovL3gxLmkubGVuY3Iub3JnLzAnBgNVHR8EIDAeMBygGqAYhhZodHRw
+    Oi8veDEuYy5sZW5jci5vcmcvMCIGA1UdIAQbMBkwCAYGZ4EMAQIBMA0GCysGAQQB
+    gt8TAQEBMA0GCSqGSIb3DQEBCwUAA4ICAQCFyk5HPqP3hUSFvNVneLKYY611TR6W
+    PTNlclQtgaDqw+34IL9fzLdwALduO/ZelN7kIJ+m74uyA+eitRY8kc607TkC53wl
+    ikfmZW4/RvTZ8M6UK+5UzhK8jCdLuMGYL6KvzXGRSgi3yLgjewQtCPkIVz6D2QQz
+    CkcheAmCJ8MqyJu5zlzyZMjAvnnAT45tRAxekrsu94sQ4egdRCnbWSDtY7kh+BIm
+    lJNXoB1lBMEKIq4QDUOXoRgffuDghje1WrG9ML+Hbisq/yFOGwXD9RiX8F6sw6W4
+    avAuvDszue5L3sz85K+EC4Y/wFVDNvZo4TYXao6Z0f+lQKc0t8DQYzk1OXVu8rp2
+    yJMC6alLbBfODALZvYH7n7do1AZls4I9d1P4jnkDrQoxB3UqQ9hVl3LEKQ73xF1O
+    yK5GhDDX8oVfGKF5u+decIsH4YaTw7mP3GFxJSqv3+0lUFJoi5Lc5da149p90Ids
+    hCExroL1+7mryIkXPeFM5TgO9r0rvZaBFOvV2z0gp35Z0+L4WPlbuEjN/lxPFin+
+    HlUjr8gRsI3qfJOQFy/9rKIJR0Y/8Omwt/8oTWgy1mdeHmmjk7j1nYsvC9JSQ6Zv
+    MldlTTKB3zhThV1+XWYp6rjd5JW1zbVWEkLNxE7GJThEUG3szgBVGP7pSWTUTsqX
+    nLRbwHOoq7hHwg==
+    -----END CERTIFICATE-----
+```
+
 - `registrationService` also requires extra configuration with AWS and Google Cloud:
+
+### Creating a Cognito User Pool and Integrating with Google Cloud 
 
 - In AWS, go to `Cognito`
 
@@ -160,13 +211,11 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
 - Choose `Federated identity providers` and select `Google` from the options that appear
 
-- Most of the configuration is personal preference, so I went for the least hassle: no MFA, send emails with Cognito whenever possible
+  - I believe that the intended deployment is to select `Phone number` / `SMS`, since this is how verification codes will be sent while registering a phone number
+
+  - So long as you are using the `dev` environment for `registration-service`, it doesn't matter how you set this up (just that you do in the first place), since the code is consistent every session
 
   - In Step 5, make sure to select `Confidential client` under `Initial app client`
-  
-- Under the `App integration` tab, find the `Cognito Domain` and paste it into `sample.yml` > `registrationService` > `host` without the `https://`
-
-  - If there isn't a domain already listed there, create one (there should be a button on the right of that section) and name it anything
   
 - Integrating this Cognito User Pool with Google Cloud (heavily following [this guide](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds))
 
@@ -178,7 +227,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
   
   - For `AWS account ID`: click on your name in the top right, and the dropdown will have your account ID then create the pool
   
-  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Owner` and `IAM Workload Identity Pool Admin`
+  - Create a new service account (hamburger menu > `IAM and Admin` > `Service Accounts`) with the roles: `Owner`, `IAM Workload Identity Pool Admin` and `Service Account OpenID Connect Identity Token Creator`
   
   - Back in `Workload Identity Federation` > the created pool, hit `GRANT ACCESS` in the top middle-ish, and select the new service account that was just created
   
@@ -202,7 +251,47 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 }
 ```
 
-  - If everything looks right, paste the `.json` into `sample.yml` > `registrationService` > `credentialConfigurationJson` and possibly also `secondaryCredentialConfigurationJson`
+  - If everything looks right, paste the `.json` into `sample.yml` > `registrationService` > `credentialConfigurationJson` and `secondaryCredentialConfigurationJson`
+
+### Creating an Identity Pool and integrating with Google Cloud
+
+- In Google Cloud, go to hamburger menu > `APIs & Services` > `Credentials` > `CREATE CREDENTIALS` > `OAuth Client ID`
+
+  - Choose `Android` as the `Application type`
+
+  - Enter in the new package name from Firebase and the SHA1 from your `debug.store` (probably located in `.android`)
+
+    - If you can't find the `debug.keystore`, make sure you have Android Studio installed and try finding it with `locate debug.keystore`
+
+  - Generate the `SHA1` with the Google provided command:
+
+```
+cd ~/.android
+keytool -keystore debug.keystore -list -v
+```
+
+- Now link this OAuth2.0 Client ID to an AWS Identity Pool:
+
+- Go to `Cognito` > `Identity pools` > `Create identity pool`
+
+- Choose `Authenticated access` > `Google`
+
+- Reuse the `IAM role` from your `User pool`
+
+- Enter the `Client ID` from your Google Cloud OAuth2.0 Client ID
+
+  - If you want to set this up later, you can find it at `Cognito` > `Identity pools` > your pool > `User access` > `Identity providers` > `Add identity provider`
+
+- All of this configuration gets called by the one external account added to the `credentialConfigurationJson`, though none of it will actually function (but it will throw errors without)
+
+### Roadblocks
+
+- `registration-service` wants to send sms verification codes, which both requires setting the service up and getting a phone number from AWS
+
+  - Getting a phone number is much more heavily regulated compared to other AWS services, and you almost definitely won't be able to get one for a personal deployment
+
+  - You might be able to configure `Twilio` in `registration-service`, but for now the `dev` environment works fine
+
 
 ## Configuring for `quickstart.sh`
 
@@ -267,6 +356,8 @@ Then paste the `Secret` key into `sample-secrets-bundle.yml`:
 hCaptcha.apiKey: your-secret
 ```
 
+And hold onto the sitekey for when you set up AWS AppConfig
+
 ## AWS
 
 ### AWS IAM Configuration
@@ -287,7 +378,7 @@ hCaptcha.apiKey: your-secret
 
 - Select `YAML` as the type of `Feature Flag`
 
-  - Enter the following lines:
+  - Enter the following lines, and fill in the `sitekey` with the key generated from the `hcaptcha` section:
 
 ```    
 captcha:
@@ -299,6 +390,8 @@ captcha:
     registration:
       - sitekey
 ```
+
+  - The `scoreFloor` section is supposed to be the "score" needed to avoid a captcha during registration, though it doesn't appear to do anything besides cause an error if missing
 
 - In the `Environments` tab, select `Create Environment`, enter a name, and ceate the environment
 
@@ -336,30 +429,54 @@ appConfig:
 - If you change these names, also change them in [sample.yml](/service/config/sample.yml)
   
   - Accounts
-    - Partition key: U
+    - Partition key: `U` - Binary
   - Accounts_PhoneNumbers
-    - Partition key: P
+    - Partition key: `PNI` - Binary
   - Accounts_PhoneNumberIdentifiers
-    - Partition key: P
+    - Partition key: `P` - String
   - Accounts_Usernames
+    - Partition key: `N` - Binary
   - DeletedAccounts
+    - Partition key: `P` - String
   - DeletedAccountsLock
+    - Partition key: `P` - String
   - IssuedReceipts
+    - Partition key: `A` - String
   - Keys
+    - Partition key: `U` - Binary
+    - Sort Key: `DK` - Binary
   - PQ_Keys
+    - Partition key: `U` - Binary
+    - Sort Key: `DK` - Binary
   - PQ_Last_Resort_Keys
+    - Partition key: `U` - Binary
+    - Sort Key: `DK` - Binary
   - Messages
+    - Partition key: `H` - Binary
+    - Sort key: `S` - Binary
   - PendingAccounts
+    - Partition key: `P` - String
   - PendingDevices
+    - Partition key: `P` - String
   - PhoneNumberIdentifiers
+    - Partition key: `P` - String
   - Profiles
+    - Partition key: `U` - Binary
+    - Sot key: `V` - String
   - PushChallenge
+    - Partition key: `U` - Binary
   - RedeemedReceipts
+    - Partition key: `S` - Binary
   - RegistrationRecovery
+    - Partition key: `P` - String
   - RemoteConfig
+    - Partition key: `N` - String
   - ReportMessage
+    - Partition key: `H` - Binary
   - Subscriptions
+    - Partition key: `U` - Binary
   - VerificationSessions
+    - Partition key: `K` - String
 
 ### AWS CloudWatch
 
