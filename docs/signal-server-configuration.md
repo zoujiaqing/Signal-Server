@@ -376,9 +376,9 @@ And hold onto the sitekey for when you set up AWS AppConfig
 
 - Under `Configuration Profiles and Feature Flags`, hit `CREATE` and choose `Feature Flag`. Enter a name and hit `Freeform configuration profile`
 
-- Select `YAML` as the type of `Feature Flag`
+- Select `YAML` as the type of `Freeform Configuration`
 
-  - Enter the following lines, and fill in the `sitekey` with the key generated from the `hcaptcha` section:
+  - Enter the following lines, and replace the `sitekey` with the key generated from the `hcaptcha` section:
 
 ```    
 captcha:
