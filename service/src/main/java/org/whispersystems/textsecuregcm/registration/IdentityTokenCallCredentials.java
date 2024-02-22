@@ -35,27 +35,27 @@ class IdentityTokenCallCredentials extends CallCredentials {
     this.identityTokenSupplier = identityTokenSupplier;
   }
 
-  static IdentityTokenCallCredentials fromCredentialConfig(final String credentialConfigJson, final String audience) throws IOException {
-    try (final InputStream configInputStream = new ByteArrayInputStream(credentialConfigJson.getBytes(StandardCharsets.UTF_8))) {
-      final ExternalAccountCredentials credentials = ExternalAccountCredentials.fromStream(configInputStream);
-      final ImpersonatedCredentials impersonatedCredentials = ImpersonatedCredentials.create(credentials,
-          credentials.getServiceAccountEmail(), null, List.of(), (int) IDENTITY_TOKEN_LIFETIME.toSeconds());
-
-      final Supplier<String> idTokenSupplier = Suppliers.memoizeWithExpiration(() -> {
-            try {
-              impersonatedCredentials.getSourceCredentials().refresh();
-              return impersonatedCredentials.idTokenWithAudience(audience, null).getTokenValue();
-            } catch (final IOException e) {
-              logger.warn("Failed to retrieve identity token", e);
-              throw new UncheckedIOException(e);
-            }
-          },
-          IDENTITY_TOKEN_LIFETIME.minus(IDENTITY_TOKEN_REFRESH_BUFFER).toMillis(),
-          TimeUnit.MILLISECONDS);
-
-      return new IdentityTokenCallCredentials(idTokenSupplier);
-    }
-  }
+//  static IdentityTokenCallCredentials fromCredentialConfig(final String credentialConfigJson, final String audience) throws IOException {
+//    try (final InputStream configInputStream = new ByteArrayInputStream(credentialConfigJson.getBytes(StandardCharsets.UTF_8))) {
+//      final ExternalAccountCredentials credentials = ExternalAccountCredentials.fromStream(configInputStream);
+//      final ImpersonatedCredentials impersonatedCredentials = ImpersonatedCredentials.create(credentials,
+//          credentials.getServiceAccountEmail(), null, List.of(), (int) IDENTITY_TOKEN_LIFETIME.toSeconds());
+//
+//      final Supplier<String> idTokenSupplier = Suppliers.memoizeWithExpiration(() -> {
+//            try {
+//              impersonatedCredentials.getSourceCredentials().refresh();
+//              return impersonatedCredentials.idTokenWithAudience(audience, null).getTokenValue();
+//            } catch (final IOException e) {
+//              logger.warn("Failed to retrieve identity token", e);
+//              throw new UncheckedIOException(e);
+//            }
+//          },
+//          IDENTITY_TOKEN_LIFETIME.minus(IDENTITY_TOKEN_REFRESH_BUFFER).toMillis(),
+//          TimeUnit.MILLISECONDS);
+//
+//      return new IdentityTokenCallCredentials(idTokenSupplier);
+//    }
+//  }
 
   @Override
   public void applyRequestMetadata(final RequestInfo requestInfo,

@@ -105,7 +105,7 @@ class DonationControllerTest {
         .addProvider(new PolymorphicAuthValueFactoryProvider.Binder<>(
             ImmutableSet.of(AuthenticatedAccount.class, DisabledPermittedAuthenticatedAccount.class)))
         .setTestContainerFactory(new GrizzlyWebTestContainerFactory())
-        .addResource(new DonationController(clock, zkReceiptOperations, redeemedReceiptsManager, accountsManager,
+        .addResource(new DonationController(clock, /*zkReceiptOperations,*/ redeemedReceiptsManager, accountsManager,
             getBadgesConfiguration(), receiptCredentialPresentationFactory))
         .build();
     resources.before();

@@ -25,7 +25,7 @@ public class PushNotificationManager {
 
   private final AccountsManager accountsManager;
   private final APNSender apnSender;
-  private final FcmSender fcmSender;
+//  private final FcmSender fcmSender;
   private final ApnPushNotificationScheduler apnPushNotificationScheduler;
   private final PushLatencyManager pushLatencyManager;
 
@@ -36,13 +36,13 @@ public class PushNotificationManager {
 
   public PushNotificationManager(final AccountsManager accountsManager,
       final APNSender apnSender,
-      final FcmSender fcmSender,
+//      final FcmSender fcmSender,
       final ApnPushNotificationScheduler apnPushNotificationScheduler,
       final PushLatencyManager pushLatencyManager) {
 
     this.accountsManager = accountsManager;
     this.apnSender = apnSender;
-    this.fcmSender = fcmSender;
+//    this.fcmSender = fcmSender;
     this.apnPushNotificationScheduler = apnPushNotificationScheduler;
     this.pushLatencyManager = pushLatencyManager;
   }
@@ -118,7 +118,8 @@ public class PushNotificationManager {
 
     } else {
       final PushNotificationSender sender = switch (pushNotification.tokenType()) {
-        case FCM -> fcmSender;
+//        case FCM -> fcmSender;
+        case FCM -> null;
         case APN, APN_VOIP -> apnSender;
       };
 

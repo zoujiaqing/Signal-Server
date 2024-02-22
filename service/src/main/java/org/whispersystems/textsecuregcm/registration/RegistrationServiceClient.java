@@ -72,8 +72,9 @@ public class RegistrationServiceClient implements Managed {
       this.channel = Grpc.newChannelBuilderForAddress(host, port, tlsChannelCredentials).build();
     }
 
-    this.stub = RegistrationServiceGrpc.newFutureStub(channel)
-        .withCallCredentials(IdentityTokenCallCredentials.fromCredentialConfig(credentialConfigJson, identityTokenAudience));
+    this.stub = RegistrationServiceGrpc.newFutureStub(channel);
+//    this.stub = RegistrationServiceGrpc.newFutureStub(channel)
+//        .withCallCredentials(IdentityTokenCallCredentials.fromCredentialConfig(credentialConfigJson, identityTokenAudience));
 
     this.callbackExecutor = callbackExecutor;
   }

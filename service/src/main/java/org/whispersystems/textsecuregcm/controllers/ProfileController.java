@@ -121,7 +121,7 @@ public class ProfileController {
 
   private final PolicySigner              policySigner;
   private final PostPolicyGenerator       policyGenerator;
-  private final ServerZkProfileOperations zkProfileOperations;
+//  private final ServerZkProfileOperations zkProfileOperations;
 
   private final S3Client            s3client;
   private final String              bucket;
@@ -148,7 +148,7 @@ public class ProfileController {
       PostPolicyGenerator policyGenerator,
       PolicySigner policySigner,
       String bucket,
-      ServerZkProfileOperations zkProfileOperations,
+//      ServerZkProfileOperations zkProfileOperations,
       Executor batchIdentityCheckExecutor) {
     this.clock = clock;
     this.rateLimiters        = rateLimiters;
@@ -158,7 +158,7 @@ public class ProfileController {
     this.profileBadgeConverter = profileBadgeConverter;
     this.badgeConfigurationMap = badgesConfiguration.getBadges().stream().collect(Collectors.toMap(
         BadgeConfiguration::getId, Function.identity()));
-    this.zkProfileOperations = zkProfileOperations;
+//    this.zkProfileOperations = zkProfileOperations;
     this.bucket              = bucket;
     this.s3client            = s3client;
     this.policyGenerator     = policyGenerator;
@@ -476,8 +476,9 @@ public class ProfileController {
       final ProfileKeyCredentialRequest request = new ProfileKeyCredentialRequest(
           HexFormat.of().parseHex(encodedCredentialRequest));
 
-      return zkProfileOperations.issueExpiringProfileKeyCredential(request, accountIdentifier, commitment, expiration);
-    } catch (IllegalArgumentException | VerificationFailedException | InvalidInputException e) {
+      return null;
+//      return zkProfileOperations.issueExpiringProfileKeyCredential(request, accountIdentifier, commitment, expiration);
+    } catch (IllegalArgumentException | /*VerificationFailedException |*/ InvalidInputException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.BAD_REQUEST).build());
     }
   }

@@ -440,15 +440,15 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
         .minThreads(2)
         .build();
 
-    final AdminEventLogger adminEventLogger = new GoogleCloudAdminEventLogger(
-        LoggingOptions.newBuilder().setProjectId(config.getAdminEventLoggingConfiguration().projectId())
-            .setCredentials(GoogleCredentials.fromStream(new ByteArrayInputStream(
-                useSecondaryCredentialsJson
-                    ? config.getAdminEventLoggingConfiguration().secondaryCredentials().getBytes(StandardCharsets.UTF_8)
-                    : config.getAdminEventLoggingConfiguration().credentials().getBytes(StandardCharsets.UTF_8))))
-            .build().getService(),
-        config.getAdminEventLoggingConfiguration().projectId(),
-        config.getAdminEventLoggingConfiguration().logName());
+//    final AdminEventLogger adminEventLogger = new GoogleCloudAdminEventLogger(
+//        LoggingOptions.newBuilder().setProjectId(config.getAdminEventLoggingConfiguration().projectId())
+//            .setCredentials(GoogleCredentials.fromStream(new ByteArrayInputStream(
+//                useSecondaryCredentialsJson
+//                    ? config.getAdminEventLoggingConfiguration().secondaryCredentials().getBytes(StandardCharsets.UTF_8)
+//                    : config.getAdminEventLoggingConfiguration().credentials().getBytes(StandardCharsets.UTF_8))))
+//            .build().getService(),
+//        config.getAdminEventLoggingConfiguration().projectId(),
+//        config.getAdminEventLoggingConfiguration().logName());
 
     StripeManager stripeManager = new StripeManager(config.getStripe().apiKey().value(), subscriptionProcessorExecutor,
         config.getStripe().idempotencyKeyGenerator().value(), config.getStripe().boostDescription(), config.getStripe()
@@ -514,10 +514,10 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
         experimentEnrollmentManager, registrationRecoveryPasswordsManager, clock);
     RemoteConfigsManager remoteConfigsManager = new RemoteConfigsManager(remoteConfigs);
     APNSender apnSender = new APNSender(apnSenderExecutor, config.getApnConfiguration());
-    FcmSender fcmSender = new FcmSender(fcmSenderExecutor, config.getFcmConfiguration().credentials().value());
+//    FcmSender fcmSender = new FcmSender(fcmSenderExecutor, config.getFcmConfiguration().credentials().value());
     ApnPushNotificationScheduler apnPushNotificationScheduler = new ApnPushNotificationScheduler(pushSchedulerCluster,
         apnSender, accountsManager, Optional.empty(), dynamicConfigurationManager);
-    PushNotificationManager pushNotificationManager = new PushNotificationManager(accountsManager, apnSender, fcmSender,
+    PushNotificationManager pushNotificationManager = new PushNotificationManager(accountsManager, apnSender, /*fcmSender,*/
         apnPushNotificationScheduler, pushLatencyManager);
     RateLimiters rateLimiters = RateLimiters.createAndValidate(config.getLimitsConfiguration(),
         dynamicConfigurationManager, rateLimitersCluster);
@@ -555,17 +555,17 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     final ReceiptSender receiptSender = new ReceiptSender(accountsManager, messageSender, receiptSenderExecutor);
     final TurnTokenGenerator turnTokenGenerator = new TurnTokenGenerator(dynamicConfigurationManager);
 
-    RecaptchaClient recaptchaClient = new RecaptchaClient(
-        config.getRecaptchaConfiguration().projectPath(),
-        useSecondaryCredentialsJson
-            ? config.getRecaptchaConfiguration().secondaryCredentialConfigurationJson()
-            : config.getRecaptchaConfiguration().credentialConfigurationJson(),
-        dynamicConfigurationManager);
+//    RecaptchaClient recaptchaClient = new RecaptchaClient(
+//        config.getRecaptchaConfiguration().projectPath(),
+//        useSecondaryCredentialsJson
+//            ? config.getRecaptchaConfiguration().secondaryCredentialConfigurationJson()
+//            : config.getRecaptchaConfiguration().credentialConfigurationJson(),
+//        dynamicConfigurationManager);
     HttpClient hcaptchaHttpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
         .connectTimeout(Duration.ofSeconds(10)).build();
     HCaptchaClient hCaptchaClient = new HCaptchaClient(config.getHCaptchaConfiguration().apiKey().value(), hcaptchaHttpClient,
         dynamicConfigurationManager);
-    CaptchaChecker captchaChecker = new CaptchaChecker(List.of(recaptchaClient, hCaptchaClient));
+    CaptchaChecker captchaChecker = new CaptchaChecker(List.of(/*recaptchaClient,*/ hCaptchaClient));
 
     PushChallengeManager pushChallengeManager = new PushChallengeManager(pushNotificationManager,
         pushChallengeDynamoDb);
@@ -635,11 +635,11 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     PolicySigner profileCdnPolicySigner = new PolicySigner(config.getCdnConfiguration().accessSecret().value(),
         config.getCdnConfiguration().region());
 
-    ServerSecretParams zkSecretParams = new ServerSecretParams(config.getZkConfig().serverSecret().value());
-    // GenericServerSecretParams genericZkSecretParams = new GenericServerSecretParams(config.getGenericZkConfig().serverSecret().value());
-    ServerZkProfileOperations zkProfileOperations = new ServerZkProfileOperations(zkSecretParams);
-    ServerZkAuthOperations zkAuthOperations = new ServerZkAuthOperations(zkSecretParams);
-    ServerZkReceiptOperations zkReceiptOperations = new ServerZkReceiptOperations(zkSecretParams);
+//    ServerSecretParams zkSecretParams = new ServerSecretParams(config.getZkConfig().serverSecret().value());
+//    // GenericServerSecretParams genericZkSecretParams = new GenericServerSecretParams(config.getGenericZkConfig().serverSecret().value());
+//    ServerZkProfileOperations zkProfileOperations = new ServerZkProfileOperations(zkSecretParams);
+//    ServerZkAuthOperations zkAuthOperations = new ServerZkAuthOperations(zkSecretParams);
+//    ServerZkReceiptOperations zkReceiptOperations = new ServerZkReceiptOperations(zkSecretParams);
 
     AuthFilter<BasicCredentials, AuthenticatedAccount> accountAuthFilter = new BasicCredentialAuthFilter.Builder<AuthenticatedAccount>().setAuthenticator(
         accountAuthenticator).buildAuthFilter();
@@ -735,31 +735,31 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
             registrationLockVerificationManager, rateLimiters),
         new ArtController(rateLimiters, artCredentialsGenerator),
         new AttachmentControllerV2(rateLimiters, config.getAwsAttachmentsConfiguration().accessKey().value(), config.getAwsAttachmentsConfiguration().accessSecret().value(), config.getAwsAttachmentsConfiguration().region(), config.getAwsAttachmentsConfiguration().bucket()),
-        new AttachmentControllerV3(rateLimiters, config.getGcpAttachmentsConfiguration().domain(), config.getGcpAttachmentsConfiguration().email(), config.getGcpAttachmentsConfiguration().maxSizeInBytes(), config.getGcpAttachmentsConfiguration().pathPrefix(), config.getGcpAttachmentsConfiguration().rsaSigningKey().value()),
+//        new AttachmentControllerV3(rateLimiters, config.getGcpAttachmentsConfiguration().domain(), config.getGcpAttachmentsConfiguration().email(), config.getGcpAttachmentsConfiguration().maxSizeInBytes(), config.getGcpAttachmentsConfiguration().pathPrefix(), config.getGcpAttachmentsConfiguration().rsaSigningKey().value()),
         // new CallLinkController(rateLimiters, genericZkSecretParams),
         // new CertificateController(new CertificateGenerator(config.getDeliveryCertificate().certificate().value(), config.getDeliveryCertificate().ecPrivateKey(), config.getDeliveryCertificate().expiresDays()), zkAuthOperations, genericZkSecretParams, clock),
         new ChallengeController(rateLimitChallengeManager),
         new DeviceController(pendingDevicesManager, accountsManager, messagesManager, keys, rateLimiters, config.getMaxDevices()),
         new DirectoryV2Controller(directoryV2CredentialsGenerator),
-        new DonationController(clock, zkReceiptOperations, redeemedReceiptsManager, accountsManager, config.getBadges(),
-            ReceiptCredentialPresentation::new),
+//        new DonationController(clock, /*zkReceiptOperations,*/ redeemedReceiptsManager, accountsManager, config.getBadges(),
+//            ReceiptCredentialPresentation::new),
         new MessageController(rateLimiters, messageSender, receiptSender, accountsManager, deletedAccounts,
             messagesManager, pushNotificationManager, reportMessageManager, multiRecipientMessageExecutor,
             messageDeliveryScheduler, reportSpamTokenProvider),
         new PaymentsController(currencyManager, paymentsCredentialsGenerator),
         new ProfileController(clock, rateLimiters, accountsManager, profilesManager, dynamicConfigurationManager,
             profileBadgeConverter, config.getBadges(), cdnS3Client, profileCdnPolicyGenerator, profileCdnPolicySigner,
-            config.getCdnConfiguration().bucket(), zkProfileOperations, batchIdentityCheckExecutor),
+            config.getCdnConfiguration().bucket(), /*zkProfileOperations,*/ batchIdentityCheckExecutor),
         new ProvisioningController(rateLimiters, provisioningManager),
         new RegistrationController(accountsManager, phoneVerificationTokenManager, registrationLockVerificationManager,
             keys, rateLimiters),
-        new RemoteConfigController(remoteConfigsManager, adminEventLogger,
-            config.getRemoteConfigConfiguration().authorizedTokens().value(),
-            config.getRemoteConfigConfiguration().authorizedUsers(),
-            config.getRemoteConfigConfiguration().requiredHostedDomain(),
-            config.getRemoteConfigConfiguration().audiences(),
-            new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new GsonFactory()),
-            config.getRemoteConfigConfiguration().globalConfig()),
+//        new RemoteConfigController(remoteConfigsManager, adminEventLogger,
+//            config.getRemoteConfigConfiguration().authorizedTokens().value(),
+//            config.getRemoteConfigConfiguration().authorizedUsers(),
+//            config.getRemoteConfigConfiguration().requiredHostedDomain(),
+//            config.getRemoteConfigConfiguration().audiences(),
+//            new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new GsonFactory()),
+//            config.getRemoteConfigConfiguration().globalConfig()),
         new SecureBackupController(backupCredentialsGenerator, accountsManager),
         new SecureStorageController(storageCredentialsGenerator),
         new SecureValueRecovery2Controller(svr2CredentialsGenerator, accountsManager),
