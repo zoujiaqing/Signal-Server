@@ -85,20 +85,20 @@ public class WhisperServerConfiguration extends Configuration {
   @JsonProperty
   private AwsAttachmentsConfiguration awsAttachments;
 
-  @NotNull
-  @Valid
-  @JsonProperty
-  private GcpAttachmentsConfiguration gcpAttachments;
+//  @NotNull
+//  @Valid
+//  @JsonProperty
+//  private GcpAttachmentsConfiguration gcpAttachments;
 
   @NotNull
   @Valid
   @JsonProperty
   private CdnConfiguration cdn;
 
-  @NotNull
-  @Valid
-  @JsonProperty
-  private DatadogConfiguration datadog;
+//  @NotNull
+//  @Valid
+//  @JsonProperty
+//  private DatadogConfiguration datadog;
 
   @NotNull
   @Valid
@@ -125,10 +125,10 @@ public class WhisperServerConfiguration extends Configuration {
   @JsonProperty
   private SecureValueRecovery2Configuration svr2;
 
-  @NotNull
-  @Valid
-  @JsonProperty
-  private AccountDatabaseCrawlerConfiguration accountDatabaseCrawler;
+//  @NotNull
+//  @Valid
+//  @JsonProperty
+//  private AccountDatabaseCrawlerConfiguration accountDatabaseCrawler;
 
   @NotNull
   @Valid
@@ -300,9 +300,9 @@ public class WhisperServerConfiguration extends Configuration {
     return awsAttachments;
   }
 
-  public GcpAttachmentsConfiguration getGcpAttachmentsConfiguration() {
-    return gcpAttachments;
-  }
+//  public GcpAttachmentsConfiguration getGcpAttachmentsConfiguration() {
+//    return gcpAttachments;
+//  }
 
   public RedisClusterConfiguration getCacheClusterConfiguration() {
     return cacheCluster;
@@ -328,9 +328,9 @@ public class WhisperServerConfiguration extends Configuration {
     return storageService;
   }
 
-  public AccountDatabaseCrawlerConfiguration getAccountDatabaseCrawlerConfiguration() {
-    return accountDatabaseCrawler;
-  }
+//  public AccountDatabaseCrawlerConfiguration getAccountDatabaseCrawlerConfiguration() {
+//    return accountDatabaseCrawler;
+//  }
 
   public MessageCacheConfiguration getMessageCacheConfiguration() {
     return messageCache;
@@ -364,9 +364,9 @@ public class WhisperServerConfiguration extends Configuration {
     return cdn;
   }
 
-  public DatadogConfiguration getDatadogConfiguration() {
-    return datadog;
-  }
+//  public DatadogConfiguration getDatadogConfiguration() {
+//    return datadog;
+//  }
 
   public UnidentifiedDeliveryConfiguration getDeliveryCertificate() {
     return unidentifiedDelivery;

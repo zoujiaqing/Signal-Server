@@ -46,23 +46,23 @@ public class MetricsUtil {
         .build();
 
     {
-      final DatadogMeterRegistry datadogMeterRegistry = new DatadogMeterRegistry(
-          config.getDatadogConfiguration(), io.micrometer.core.instrument.Clock.SYSTEM);
+//      final DatadogMeterRegistry datadogMeterRegistry = new DatadogMeterRegistry(
+//          config.getDatadogConfiguration(), io.micrometer.core.instrument.Clock.SYSTEM);
 
-      datadogMeterRegistry.config().commonTags(
-              Tags.of(
-                  "service", "chat",
-                  "host", HostnameUtil.getLocalHostname(),
-                  "version", WhisperServerVersion.getServerVersion(),
-                  "env", config.getDatadogConfiguration().getEnvironment()))
-          .meterFilter(new MeterFilter() {
-            @Override
-            public DistributionStatisticConfig configure(final Meter.Id id, final DistributionStatisticConfig config) {
-              return defaultDistributionStatisticConfig.merge(config);
-            }
-          });
+//      datadogMeterRegistry.config().commonTags(
+//              Tags.of(
+//                  "service", "chat",
+//                  "host", HostnameUtil.getLocalHostname(),
+//                  "version", WhisperServerVersion.getServerVersion(),
+//                  "env", config.getDatadogConfiguration().getEnvironment()))
+//          .meterFilter(new MeterFilter() {
+//            @Override
+//            public DistributionStatisticConfig configure(final Meter.Id id, final DistributionStatisticConfig config) {
+//              return defaultDistributionStatisticConfig.merge(config);
+//            }
+//          });
 
-      Metrics.addRegistry(datadogMeterRegistry);
+//      Metrics.addRegistry(datadogMeterRegistry);
     }
 
     environment.lifecycle().manage(new MicrometerRegistryManager(Metrics.globalRegistry));

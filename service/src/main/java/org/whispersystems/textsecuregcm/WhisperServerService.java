@@ -108,8 +108,8 @@ import org.whispersystems.textsecuregcm.controllers.StickerController;
 import org.whispersystems.textsecuregcm.controllers.SubscriptionController;
 import org.whispersystems.textsecuregcm.controllers.VerificationController;
 import org.whispersystems.textsecuregcm.currency.CoinMarketCapClient;
-import org.whispersystems.textsecuregcm.currency.CurrencyConversionManager;
-import org.whispersystems.textsecuregcm.currency.FixerClient;
+//import org.whispersystems.textsecuregcm.currency.CurrencyConversionManager;
+//import org.whispersystems.textsecuregcm.currency.FixerClient;
 import org.whispersystems.textsecuregcm.experiment.ExperimentEnrollmentManager;
 import org.whispersystems.textsecuregcm.filters.RemoteDeprecationFilter;
 import org.whispersystems.textsecuregcm.filters.RequestStatisticsFilter;
@@ -579,13 +579,13 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
 
     AccountDatabaseCrawlerCache accountCleanerAccountDatabaseCrawlerCache =
         new AccountDatabaseCrawlerCache(cacheCluster, AccountDatabaseCrawlerCache.ACCOUNT_CLEANER_PREFIX);
-    AccountDatabaseCrawler accountCleanerAccountDatabaseCrawler = new AccountDatabaseCrawler("Account cleaner crawler",
-        accountsManager,
-        accountCleanerAccountDatabaseCrawlerCache,
-        List.of(new AccountCleaner(accountsManager, accountDeletionExecutor)),
-        config.getAccountDatabaseCrawlerConfiguration().getChunkSize(),
-        dynamicConfigurationManager
-    );
+//    AccountDatabaseCrawler accountCleanerAccountDatabaseCrawler = new AccountDatabaseCrawler("Account cleaner crawler",
+//        accountsManager,
+//        accountCleanerAccountDatabaseCrawlerCache,
+//        List.of(new AccountCleaner(accountsManager, accountDeletionExecutor)),
+//        config.getAccountDatabaseCrawlerConfiguration().getChunkSize(),
+//        dynamicConfigurationManager
+//    );
 
     // TODO listeners must be ordered so that ones that directly update accounts come last, so that read-only ones are not working with stale data
     final List<AccountDatabaseCrawlerListener> accountDatabaseCrawlerListeners = List.of(
@@ -595,28 +595,28 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
 
     AccountDatabaseCrawlerCache accountDatabaseCrawlerCache = new AccountDatabaseCrawlerCache(cacheCluster,
         AccountDatabaseCrawlerCache.GENERAL_PURPOSE_PREFIX);
-    AccountDatabaseCrawler accountDatabaseCrawler = new AccountDatabaseCrawler("General-purpose account crawler",
-        accountsManager,
-        accountDatabaseCrawlerCache, accountDatabaseCrawlerListeners,
-        config.getAccountDatabaseCrawlerConfiguration().getChunkSize(),
-        dynamicConfigurationManager
-    );
+//    AccountDatabaseCrawler accountDatabaseCrawler = new AccountDatabaseCrawler("General-purpose account crawler",
+//        accountsManager,
+//        accountDatabaseCrawlerCache, accountDatabaseCrawlerListeners,
+//        config.getAccountDatabaseCrawlerConfiguration().getChunkSize(),
+//        dynamicConfigurationManager
+//    );
 
-    HttpClient currencyClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).connectTimeout(Duration.ofSeconds(10)).build();
-    FixerClient fixerClient = new FixerClient(currencyClient, config.getPaymentsServiceConfiguration().fixerApiKey().value());
-    CoinMarketCapClient coinMarketCapClient = new CoinMarketCapClient(currencyClient, config.getPaymentsServiceConfiguration().coinMarketCapApiKey().value(), config.getPaymentsServiceConfiguration().coinMarketCapCurrencyIds());
-    CurrencyConversionManager currencyManager = new CurrencyConversionManager(fixerClient, coinMarketCapClient,
-        cacheCluster, config.getPaymentsServiceConfiguration().paymentCurrencies(), Clock.systemUTC());
+//    HttpClient currencyClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).connectTimeout(Duration.ofSeconds(10)).build();
+//    FixerClient fixerClient = new FixerClient(currencyClient, config.getPaymentsServiceConfiguration().fixerApiKey().value());
+//    CoinMarketCapClient coinMarketCapClient = new CoinMarketCapClient(currencyClient, config.getPaymentsServiceConfiguration().coinMarketCapApiKey().value(), config.getPaymentsServiceConfiguration().coinMarketCapCurrencyIds());
+//    CurrencyConversionManager currencyManager = new CurrencyConversionManager(fixerClient, coinMarketCapClient,
+//        cacheCluster, config.getPaymentsServiceConfiguration().paymentCurrencies(), Clock.systemUTC());
 
     environment.lifecycle().manage(apnSender);
     environment.lifecycle().manage(apnPushNotificationScheduler);
     environment.lifecycle().manage(provisioningManager);
-    environment.lifecycle().manage(accountDatabaseCrawler);
-    environment.lifecycle().manage(accountCleanerAccountDatabaseCrawler);
+//    environment.lifecycle().manage(accountDatabaseCrawler);
+//    environment.lifecycle().manage(accountCleanerAccountDatabaseCrawler);
     environment.lifecycle().manage(messagesCache);
     environment.lifecycle().manage(messagePersister);
     environment.lifecycle().manage(clientPresenceManager);
-    environment.lifecycle().manage(currencyManager);
+//    environment.lifecycle().manage(currencyManager);
     environment.lifecycle().manage(registrationServiceClient);
 
     final RegistrationCaptchaManager registrationCaptchaManager = new RegistrationCaptchaManager(captchaChecker,
@@ -746,7 +746,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
         new MessageController(rateLimiters, messageSender, receiptSender, accountsManager, deletedAccounts,
             messagesManager, pushNotificationManager, reportMessageManager, multiRecipientMessageExecutor,
             messageDeliveryScheduler, reportSpamTokenProvider),
-        new PaymentsController(currencyManager, paymentsCredentialsGenerator),
+//        new PaymentsController(currencyManager, paymentsCredentialsGenerator),
         new ProfileController(clock, rateLimiters, accountsManager, profilesManager, dynamicConfigurationManager,
             profileBadgeConverter, config.getBadges(), cdnS3Client, profileCdnPolicyGenerator, profileCdnPolicySigner,
             config.getCdnConfiguration().bucket(), /*zkProfileOperations,*/ batchIdentityCheckExecutor),
@@ -817,19 +817,19 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
 
     environment.lifecycle().manage(new ApplicationShutdownMonitor(Metrics.globalRegistry));
 
-    environment.metrics().register(name(CpuUsageGauge.class, "cpu"), new CpuUsageGauge(3, TimeUnit.SECONDS));
-    environment.metrics().register(name(FreeMemoryGauge.class, "free_memory"), new FreeMemoryGauge());
-    environment.metrics().register(name(NetworkSentGauge.class, "bytes_sent"), new NetworkSentGauge());
-    environment.metrics().register(name(NetworkReceivedGauge.class, "bytes_received"), new NetworkReceivedGauge());
-    environment.metrics().register(name(FileDescriptorGauge.class, "fd_count"), new FileDescriptorGauge());
-    environment.metrics().register(name(MaxFileDescriptorGauge.class, "max_fd_count"), new MaxFileDescriptorGauge());
-    environment.metrics()
-        .register(name(OperatingSystemMemoryGauge.class, "buffers"), new OperatingSystemMemoryGauge("Buffers"));
-    environment.metrics()
-        .register(name(OperatingSystemMemoryGauge.class, "cached"), new OperatingSystemMemoryGauge("Cached"));
-
-    BufferPoolGauges.registerMetrics();
-    GarbageCollectionGauges.registerMetrics();
+//    environment.metrics().register(name(CpuUsageGauge.class, "cpu"), new CpuUsageGauge(3, TimeUnit.SECONDS));
+//    environment.metrics().register(name(FreeMemoryGauge.class, "free_memory"), new FreeMemoryGauge());
+//    environment.metrics().register(name(NetworkSentGauge.class, "bytes_sent"), new NetworkSentGauge());
+//    environment.metrics().register(name(NetworkReceivedGauge.class, "bytes_received"), new NetworkReceivedGauge());
+//    environment.metrics().register(name(FileDescriptorGauge.class, "fd_count"), new FileDescriptorGauge());
+//    environment.metrics().register(name(MaxFileDescriptorGauge.class, "max_fd_count"), new MaxFileDescriptorGauge());
+//    environment.metrics()
+//        .register(name(OperatingSystemMemoryGauge.class, "buffers"), new OperatingSystemMemoryGauge("Buffers"));
+//    environment.metrics()
+//        .register(name(OperatingSystemMemoryGauge.class, "cached"), new OperatingSystemMemoryGauge("Cached"));
+//
+//    BufferPoolGauges.registerMetrics();
+//    GarbageCollectionGauges.registerMetrics();
   }
 
 
